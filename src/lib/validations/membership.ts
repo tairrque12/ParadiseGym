@@ -1,7 +1,8 @@
 import { z } from 'zod'
+import { MEMBERSHIP_TYPES } from '@/lib/membership-options'
 import { isValidUsPhone } from '@/lib/validations/shared'
 
-export const MEMBERSHIP_TYPES = ['essential', 'performance', 'elite'] as const
+export { MEMBERSHIP_TYPES }
 
 export const membershipRequestSchema = z.object({
   first_name: z.string().trim().min(1, 'First name is required'),

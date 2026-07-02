@@ -6,22 +6,33 @@ import { Providers } from '@/components/providers'
 import { Pricing } from '@/components/sections/Pricing'
 
 describe('Pricing', () => {
-  it('highlights the middle tier as Most Popular', () => {
+  it('renders recurring and single payment columns with real pricing data', () => {
     render(
       <Providers>
         <Pricing />
       </Providers>
     )
 
-    const popularBadge = screen.getByText('Most Popular')
-    expect(popularBadge).toBeInTheDocument()
-
-    const popularCard = popularBadge.closest('[data-popular="true"]')
-    expect(popularCard).toBeInTheDocument()
-    expect(popularCard).toHaveClass('border-neon')
+    expect(screen.getByText('Recurring')).toBeInTheDocument()
+    expect(screen.getByText('Single Payment')).toBeInTheDocument()
+    expect(screen.getByText('12 Month Contract')).toBeInTheDocument()
+    expect(screen.getByText('$39.99/mo')).toBeInTheDocument()
+    expect(screen.getByText('Month to Month')).toBeInTheDocument()
+    expect(screen.getByText('No contract')).toBeInTheDocument()
+    expect(screen.getByText('1 Year Paid in Full')).toBeInTheDocument()
+    expect(screen.getByText('$430')).toBeInTheDocument()
+    expect(screen.getByText('Day Pass')).toBeInTheDocument()
+    expect(screen.getByText('$17.99')).toBeInTheDocument()
+    expect(screen.getByText(/discounts available/i)).toBeInTheDocument()
+    expect(
+      screen.getByText(/teachers, veterans, and first responders/i)
+    ).toBeInTheDocument()
+    expect(
+      screen.getByText(/please see front desk for current enrollment details/i)
+    ).toBeInTheDocument()
   })
 
-  it('opens membership modal with performance tier pre-selected', async () => {
+  it('opens membership modal with 12 month contract pre-selected', async () => {
     const user = userEvent.setup()
     render(
       <Providers>
@@ -29,16 +40,17 @@ describe('Pricing', () => {
       </Providers>
     )
 
-    const buttons = screen.getAllByRole('button', { name: /get started/i })
-    await user.click(buttons[1])
+    await user.click(screen.getByRole('button', { name: /12 month contract/i }))
 
     expect(screen.getByRole('dialog')).toBeInTheDocument()
     await waitFor(() => {
-      expect(screen.getByLabelText(/membership type/i)).toHaveValue('performance')
+      expect(screen.getByLabelText(/membership type/i)).toHaveValue(
+        '12_month_contract'
+      )
     })
   })
 
-  it('opens membership modal with essential and elite tiers', async () => {
+  it('opens membership modal with day pass pre-selected', async () => {
     const user = userEvent.setup()
     render(
       <Providers>
@@ -46,22 +58,10 @@ describe('Pricing', () => {
       </Providers>
     )
 
-    const buttons = screen.getAllByRole('button', { name: /get started/i })
-
-    await user.click(buttons[0])
-    await waitFor(() => {
-      expect(screen.getByLabelText(/membership type/i)).toHaveValue('essential')
-    })
-
-    await user.keyboard('{Escape}')
+    await user.click(screen.getByRole('button', { name: /day pass/i }))
 
     await waitFor(() => {
-      expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
-    })
-
-    await user.click(buttons[2])
-    await waitFor(() => {
-      expect(screen.getByLabelText(/membership type/i)).toHaveValue('elite')
+      expect(screen.getByLabelText(/membership type/i)).toHaveValue('day_pass')
     })
   })
 })

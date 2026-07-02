@@ -7,62 +7,82 @@ import {
   StaggerItem,
 } from '@/components/motion'
 import { useModal } from '@/context/modal-context'
-import { PRICING_TIERS } from '@/lib/pricing'
+import {
+  PRICING_DISCOUNT_NOTE,
+  PRICING_FOOTER_NOTE,
+  RECURRING_MEMBERSHIP_OPTIONS,
+  SINGLE_PAYMENT_MEMBERSHIP_OPTIONS,
+  type MembershipOption,
+} from '@/lib/membership-options'
 import { SECTION_IDS } from '@/lib/sections'
 import { cn } from '@/lib/utils'
 
-function PopularRibbon() {
+function CategoryHeader({ label }: { label: string }) {
   return (
-    <span className="inline-block bg-neon px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.22em] text-carbon [clip-path:polygon(0_0,100%_0,92%_100%,0_100%)]">
-      Most Popular
-    </span>
+    <div className="mb-6 inline-flex items-center">
+      <span className="rounded-full border border-neon/40 bg-neon/10 px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.24em] text-neon">
+        {label}
+      </span>
+    </div>
   )
 }
 
-function FeatureList({ features }: { features: readonly string[] }) {
-  return (
-    <ul className="mt-6 flex flex-col">
-      {features.map((feature, index) => (
-        <li
-          key={feature}
-          className={cn(
-            'py-3 text-sm leading-snug text-white/65',
-            index > 0 && 'border-t border-neon/15'
-          )}
-        >
-          {feature}
-        </li>
-      ))}
-    </ul>
-  )
-}
-
-function GetStartedButton({
-  tierSlug,
-  popular,
-}: {
-  tierSlug: string
-  popular: boolean
-}) {
+function PricingRow({ option }: { option: MembershipOption }) {
   const { openMembershipModal } = useModal()
-
-  const handleClick = () => {
-    openMembershipModal(tierSlug)
-  }
 
   return (
     <button
       type="button"
-      onClick={handleClick}
+      onClick={() => openMembershipModal(option.slug)}
       className={cn(
-        'inline-flex w-full items-center justify-center px-4 py-3 text-sm font-semibold uppercase tracking-wider transition-all duration-300',
-        popular
-          ? 'bg-neon text-carbon hover:scale-[1.02] hover:shadow-neon'
-          : 'border border-neon bg-transparent text-white hover:bg-neon/10 hover:shadow-neon-sm'
+        'group flex w-full items-center justify-between gap-4 border-t border-white/10 py-5 text-left transition-colors',
+        'hover:bg-white/[0.03] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neon/60'
       )}
     >
-      Get Started
+      <div className="min-w-0 flex-1">
+        <span className="block font-medium text-white transition-colors group-hover:text-neon">
+          {option.name}
+        </span>
+        {option.subLabel ? (
+          <span className="mt-1 block text-xs uppercase tracking-[0.14em] text-white/45">
+            {option.subLabel}
+          </span>
+        ) : null}
+      </div>
+
+      <div className="shrink-0 text-right">
+        <span className="font-heading text-xl font-bold tracking-tight text-neon sm:text-2xl">
+          {option.price}
+        </span>
+        {option.priceNote ? (
+          <span className="ml-1 text-xs font-medium text-white/50">
+            {option.priceNote}
+          </span>
+        ) : null}
+        <span className="mt-1 block text-[10px] font-semibold uppercase tracking-[0.18em] text-white/35 transition-colors group-hover:text-neon/70">
+          Select
+        </span>
+      </div>
     </button>
+  )
+}
+
+function PricingColumn({
+  label,
+  options,
+}: {
+  label: string
+  options: MembershipOption[]
+}) {
+  return (
+    <div className="flex h-full flex-col border-t border-white/15 pt-2">
+      <CategoryHeader label={label} />
+      <div className="flex flex-col">
+        {options.map((option) => (
+          <PricingRow key={option.slug} option={option} />
+        ))}
+      </div>
+    </div>
   )
 }
 
@@ -75,65 +95,47 @@ export function Pricing() {
       <GrainOverlay />
 
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <SectionReveal className="mb-12 flex flex-col gap-4 md:mb-16 md:flex-row md:items-end md:justify-between">
-          <div>
-            <p className="text-sm uppercase tracking-[0.22em] text-neon">
-              Join The Floor
-            </p>
-            <h2
-              id="pricing-heading"
-              className="mt-3 font-heading text-4xl uppercase tracking-tight text-white sm:text-5xl"
-            >
-              Membership Options
-            </h2>
-          </div>
-          <p className="max-w-sm text-sm text-white/55">
-            {/* PLACEHOLDER: Client will confirm real membership pricing before launch. */}
-            Placeholder tiers below — final pricing TBD with gym owner.
+        <SectionReveal className="mb-12 md:mb-16">
+          <p className="text-sm uppercase tracking-[0.22em] text-neon">
+            Join The Floor
+          </p>
+          <h2
+            id="pricing-heading"
+            className="mt-3 max-w-3xl font-heading text-4xl uppercase tracking-tight text-white sm:text-5xl"
+          >
+            Membership Options
+          </h2>
+        </SectionReveal>
+
+        <StaggerContainer className="grid gap-10 lg:grid-cols-2 lg:gap-12">
+          <StaggerItem>
+            <PricingColumn
+              label="Recurring"
+              options={RECURRING_MEMBERSHIP_OPTIONS}
+            />
+          </StaggerItem>
+          <StaggerItem>
+            <PricingColumn
+              label="Single Payment"
+              options={SINGLE_PAYMENT_MEMBERSHIP_OPTIONS}
+            />
+          </StaggerItem>
+        </StaggerContainer>
+
+        <SectionReveal className="mt-10 border border-neon/20 bg-carbon/70 px-5 py-4 sm:px-6">
+          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-neon">
+            Discounts Available
+          </p>
+          <p className="mt-2 text-sm leading-relaxed text-white/70">
+            {PRICING_DISCOUNT_NOTE}
           </p>
         </SectionReveal>
 
-        <StaggerContainer className="grid items-end gap-8 lg:grid-cols-3 lg:gap-6">
-          {PRICING_TIERS.map((tier) => (
-            <StaggerItem key={tier.name}>
-              <article
-                data-popular={tier.popular ? 'true' : 'false'}
-                className={cn(
-                  'flex h-full flex-col px-1 pb-2 pt-0',
-                  tier.popular
-                    ? 'relative z-10 -translate-y-4 border border-neon bg-carbon/90 px-5 pb-6 pt-5 shadow-[0_-12px_48px_rgba(57,255,20,0.14)] md:-translate-y-6'
-                    : 'rounded-none border-t border-white/20 bg-transparent'
-                )}
-              >
-                {tier.popular && (
-                  <div className="mb-4">
-                    <PopularRibbon />
-                  </div>
-                )}
-
-                <h3 className="font-heading text-2xl uppercase tracking-tight text-white">
-                  {tier.name}
-                </h3>
-
-                <div className="mt-3 flex items-baseline gap-1">
-                  <span className="font-heading text-5xl tracking-tight text-white">
-                    {tier.price}
-                  </span>
-                  <span className="text-sm text-white/50">{tier.period}</span>
-                </div>
-
-                <FeatureList features={tier.features} />
-
-                <div className="mt-auto pt-8">
-                  <GetStartedButton
-                    tierSlug={tier.slug}
-                    popular={tier.popular}
-                  />
-                </div>
-              </article>
-            </StaggerItem>
-          ))}
-        </StaggerContainer>
+        <SectionReveal className="mt-6">
+          <p className="text-xs leading-relaxed text-white/45">
+            {PRICING_FOOTER_NOTE}
+          </p>
+        </SectionReveal>
       </div>
     </section>
   )

@@ -8,7 +8,7 @@ const validPayload = {
   email: 'marcus@example.com',
   phone: '(956) 244-6692',
   age: 28,
-  membership_type: 'performance',
+  membership_type: '12_month_contract',
 }
 
 const mockInsert = vi.fn()

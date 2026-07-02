@@ -55,10 +55,10 @@ describe('MembershipRequestModal', () => {
   })
 
   it('pre-selects tier when selectedTier is set', async () => {
-    renderModal({}, 'performance')
+    renderModal({}, 'month_to_month')
 
     await waitFor(() => {
-      expect(screen.getByLabelText(/membership type/i)).toHaveValue('performance')
+      expect(screen.getByLabelText(/membership type/i)).toHaveValue('month_to_month')
     })
   })
 
@@ -92,10 +92,10 @@ describe('MembershipRequestModal', () => {
       return new Response(JSON.stringify({ success: true }), { status: 200 })
     })
 
-    renderModal({}, 'elite')
+    renderModal({}, 'week_pass')
 
     await waitFor(() => {
-      expect(screen.getByLabelText(/membership type/i)).toHaveValue('elite')
+      expect(screen.getByLabelText(/membership type/i)).toHaveValue('week_pass')
     })
 
     await user.type(screen.getByLabelText(/first name/i), 'Marcus')
@@ -115,7 +115,7 @@ describe('MembershipRequestModal', () => {
       email: 'marcus@example.com',
       phone: '956-244-6692',
       age: 28,
-      membership_type: 'elite',
+      membership_type: 'week_pass',
     })
   })
 
@@ -126,10 +126,12 @@ describe('MembershipRequestModal', () => {
       new Response(JSON.stringify({ error: 'fail' }), { status: 500 })
     )
 
-    renderModal({}, 'essential')
+    renderModal({}, '12_month_contract')
 
     await waitFor(() => {
-      expect(screen.getByLabelText(/membership type/i)).toHaveValue('essential')
+      expect(screen.getByLabelText(/membership type/i)).toHaveValue(
+        '12_month_contract'
+      )
     })
 
     await user.type(screen.getByLabelText(/first name/i), 'Marcus')
@@ -152,10 +154,12 @@ describe('MembershipRequestModal', () => {
       () => new Promise(() => {})
     )
 
-    renderModal({}, 'essential')
+    renderModal({}, '12_month_contract')
 
     await waitFor(() => {
-      expect(screen.getByLabelText(/membership type/i)).toHaveValue('essential')
+      expect(screen.getByLabelText(/membership type/i)).toHaveValue(
+        '12_month_contract'
+      )
     })
 
     await user.type(screen.getByLabelText(/first name/i), 'Marcus')

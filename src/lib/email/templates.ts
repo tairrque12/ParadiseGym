@@ -1,3 +1,5 @@
+import { getMembershipTypeLabel } from '@/lib/membership-options'
+
 type FieldMap = Record<string, string | number | null | undefined>
 
 type EmailTemplateOptions = {
@@ -39,7 +41,7 @@ function formatLabel(key: string): string {
 
 function formatDisplayValue(key: string, value: string | number): string {
   if (key === 'membership_type' && typeof value === 'string') {
-    return value.charAt(0).toUpperCase() + value.slice(1)
+    return getMembershipTypeLabel(value)
   }
   return String(value)
 }

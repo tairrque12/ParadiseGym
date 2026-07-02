@@ -1,42 +1,12 @@
-// PLACEHOLDER: Client will confirm real membership pricing before launch.
-export const PRICING_TIERS = [
-  {
-    name: 'Essential',
-    slug: 'essential',
-    price: '$49',
-    period: '/mo',
-    features: [
-      'Full gym floor access',
-      'Locker room & showers',
-      'Member app check-in',
-      'Guest pass — 1/mo',
-    ],
-    popular: false,
-  },
-  {
-    name: 'Performance',
-    slug: 'performance',
-    price: '$79',
-    period: '/mo',
-    features: [
-      'Everything in Essential',
-      'Infrared sauna access',
-      'Posing room priority',
-      'Unlimited guest passes',
-    ],
-    popular: true,
-  },
-  {
-    name: 'Elite',
-    slug: 'elite',
-    price: '$119',
-    period: '/mo',
-    features: [
-      'Everything in Performance',
-      'Dedicated storage locker',
-      'Recovery zone access',
-      'Priority tour scheduling',
-    ],
-    popular: false,
-  },
-] as const
+export {
+  MEMBERSHIP_OPTIONS,
+  RECURRING_MEMBERSHIP_OPTIONS,
+  SINGLE_PAYMENT_MEMBERSHIP_OPTIONS,
+  PRICING_DISCOUNT_NOTE,
+  PRICING_FOOTER_NOTE,
+  getMembershipSelectLabel,
+  getMembershipTypeLabel,
+} from '@/lib/membership-options'
+
+// Backward-compatible alias for older imports.
+export { MEMBERSHIP_OPTIONS as PRICING_TIERS } from '@/lib/membership-options'

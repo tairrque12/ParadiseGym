@@ -7,7 +7,7 @@ const validPayload = {
   email: 'marcus@example.com',
   phone: '(956) 244-6692',
   age: 28,
-  membership_type: 'performance' as const,
+  membership_type: '12_month_contract' as const,
 }
 
 describe('membershipRequestSchema', () => {
@@ -56,14 +56,22 @@ describe('membershipRequestSchema', () => {
     ).toBe(true)
   })
 
-  it('requires membership_type to be essential, performance, or elite', () => {
+  it('requires membership_type to be a valid gym membership option', () => {
     expect(
       membershipRequestSchema.safeParse({
         ...validPayload,
         membership_type: 'premium',
       }).success
     ).toBe(false)
-    for (const tier of ['essential', 'performance', 'elite'] as const) {
+    for (const tier of [
+      '12_month_contract',
+      'month_to_month',
+      '1_year_paid_in_full',
+      '6_months_paid_in_full',
+      'one_month',
+      'week_pass',
+      'day_pass',
+    ] as const) {
       expect(
         membershipRequestSchema.safeParse({
           ...validPayload,

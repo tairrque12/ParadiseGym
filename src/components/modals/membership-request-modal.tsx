@@ -16,10 +16,11 @@ import { Label } from '@/components/ui/label'
 import { cn } from '@/lib/utils'
 import { useMembershipForm } from '@/context/membership-form-context'
 import {
+  MEMBERSHIP_OPTIONS,
   MEMBERSHIP_TYPES,
-  membershipRequestSchema,
-} from '@/lib/validations/membership'
-import { PRICING_TIERS } from '@/lib/pricing'
+  getMembershipSelectLabel,
+} from '@/lib/membership-options'
+import { membershipRequestSchema } from '@/lib/validations/membership'
 
 type MembershipRequestModalProps = {
   open: boolean
@@ -237,9 +238,9 @@ export function MembershipRequestModal({
                   {...register('membership_type')}
                 >
                   <option value="">Select a plan</option>
-                  {PRICING_TIERS.map((tier) => (
-                    <option key={tier.slug} value={tier.slug}>
-                      {tier.name}
+                  {MEMBERSHIP_OPTIONS.map((option) => (
+                    <option key={option.slug} value={option.slug}>
+                      {getMembershipSelectLabel(option.slug)}
                     </option>
                   ))}
                 </select>

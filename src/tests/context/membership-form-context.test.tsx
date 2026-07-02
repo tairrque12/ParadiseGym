@@ -12,21 +12,21 @@ function TierTester() {
   return (
     <div>
       <span data-testid="selected-tier">{selectedTier ?? 'none'}</span>
-      <button type="button" onClick={() => setSelectedTier('essential')}>
-        Select Essential
+      <button type="button" onClick={() => setSelectedTier('12_month_contract')}>
+        Select 12 Month
       </button>
-      <button type="button" onClick={() => setSelectedTier('performance')}>
-        Select Performance
+      <button type="button" onClick={() => setSelectedTier('month_to_month')}>
+        Select Month to Month
       </button>
-      <button type="button" onClick={() => setSelectedTier('elite')}>
-        Select Elite
+      <button type="button" onClick={() => setSelectedTier('day_pass')}>
+        Select Day Pass
       </button>
     </div>
   )
 }
 
 describe('MembershipFormProvider', () => {
-  it('updates selectedTier for all three tier values', async () => {
+  it('updates selectedTier for membership option slugs', async () => {
     const user = userEvent.setup()
     render(
       <MembershipFormProvider>
@@ -36,13 +36,15 @@ describe('MembershipFormProvider', () => {
 
     expect(screen.getByTestId('selected-tier')).toHaveTextContent('none')
 
-    await user.click(screen.getByRole('button', { name: 'Select Essential' }))
-    expect(screen.getByTestId('selected-tier')).toHaveTextContent('essential')
+    await user.click(screen.getByRole('button', { name: 'Select 12 Month' }))
+    expect(screen.getByTestId('selected-tier')).toHaveTextContent(
+      '12_month_contract'
+    )
 
-    await user.click(screen.getByRole('button', { name: 'Select Performance' }))
-    expect(screen.getByTestId('selected-tier')).toHaveTextContent('performance')
+    await user.click(screen.getByRole('button', { name: 'Select Month to Month' }))
+    expect(screen.getByTestId('selected-tier')).toHaveTextContent('month_to_month')
 
-    await user.click(screen.getByRole('button', { name: 'Select Elite' }))
-    expect(screen.getByTestId('selected-tier')).toHaveTextContent('elite')
+    await user.click(screen.getByRole('button', { name: 'Select Day Pass' }))
+    expect(screen.getByTestId('selected-tier')).toHaveTextContent('day_pass')
   })
 })

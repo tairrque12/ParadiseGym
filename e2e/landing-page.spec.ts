@@ -81,20 +81,21 @@ test.describe('Landing page', () => {
     await expect(page.getByText('70+')).toBeVisible()
   })
 
-  test('membership flow from Performance tier opens modal, submits, and closes', async ({
+  test('membership flow from 12 month contract opens modal, submits, and closes', async ({
     page,
   }) => {
     await page.setViewportSize({ width: 1280, height: 800 })
     await page.goto('/')
 
     await page
-      .locator('[data-popular="true"]')
-      .getByRole('button', { name: /get started/i })
+      .getByRole('button', { name: /12 month contract/i })
       .click()
 
     const dialog = page.getByRole('dialog')
     await expect(dialog).toBeVisible()
-    await expect(dialog.getByLabel(/membership type/i)).toHaveValue('performance')
+    await expect(dialog.getByLabel(/membership type/i)).toHaveValue(
+      '12_month_contract'
+    )
 
     await dialog.getByLabel(/first name/i).fill('Marcus')
     await dialog.getByLabel(/last name/i).fill('Torres')
@@ -105,6 +106,19 @@ test.describe('Landing page', () => {
 
     await expect(dialog.getByText(/request received/i)).toBeVisible()
     await expect(dialog).toBeHidden({ timeout: 5000 })
+  })
+
+  test('pricing section stacks cleanly on mobile viewport', async ({ page }) => {
+    await page.setViewportSize({ width: 375, height: 812 })
+    await page.goto('/')
+
+    await page.locator('#pricing').scrollIntoViewIfNeeded()
+
+    await expect(page.getByText('Recurring', { exact: true })).toBeVisible()
+    await expect(page.getByText('Single Payment', { exact: true })).toBeVisible()
+    await expect(page.getByText('12 Month Contract')).toBeVisible()
+    await expect(page.getByText('Day Pass')).toBeVisible()
+    await expect(page.getByText(/discounts available/i)).toBeVisible()
   })
 
   test('tour flow from navbar opens modal, submits, and closes', async ({

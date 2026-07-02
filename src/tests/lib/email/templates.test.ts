@@ -10,7 +10,7 @@ const membershipFields = {
   email: 'marcus@example.com',
   phone: '956-244-6692',
   age: 28,
-  membership_type: 'performance',
+  membership_type: '12_month_contract',
 }
 
 const tourFields = {
@@ -35,14 +35,14 @@ describe('email templates', () => {
     expect(html).toContain('New Membership Request')
     expect(html).toContain('background-color:#0A0A0A')
     expect(html).toContain('color:#39FF14')
-    expect(html).toContain('Performance')
+    expect(html).toContain('12 Month Contract')
     expect(html).toContain('border-radius:999px')
     expect(html).toContain('paradisegymofficial.com')
     expect(html).toContain('max-width:600px')
     expect(html).toContain('background-color:#ffffff')
 
     expect(text).toContain('New Membership Request')
-    expect(text).toContain('membership type: Performance')
+    expect(text).toContain('membership type: 12 Month Contract')
     expect(text).toContain('paradisegymofficial.com')
   })
 
