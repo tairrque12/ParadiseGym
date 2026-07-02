@@ -1,21 +1,70 @@
-import Link from 'next/link'
-import { Badge } from '@/components/ui/badge'
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card'
+'use client'
+
 import {
   GrainOverlay,
   SectionReveal,
   StaggerContainer,
   StaggerItem,
 } from '@/components/motion'
+import { useModal } from '@/context/modal-context'
 import { PRICING_TIERS } from '@/lib/pricing'
 import { SECTION_IDS } from '@/lib/sections'
 import { cn } from '@/lib/utils'
+
+function PopularRibbon() {
+  return (
+    <span className="inline-block bg-neon px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.22em] text-carbon [clip-path:polygon(0_0,100%_0,92%_100%,0_100%)]">
+      Most Popular
+    </span>
+  )
+}
+
+function FeatureList({ features }: { features: readonly string[] }) {
+  return (
+    <ul className="mt-6 flex flex-col">
+      {features.map((feature, index) => (
+        <li
+          key={feature}
+          className={cn(
+            'py-3 text-sm leading-snug text-white/65',
+            index > 0 && 'border-t border-neon/15'
+          )}
+        >
+          {feature}
+        </li>
+      ))}
+    </ul>
+  )
+}
+
+function GetStartedButton({
+  tierSlug,
+  popular,
+}: {
+  tierSlug: string
+  popular: boolean
+}) {
+  const { openMembershipModal } = useModal()
+
+  const handleClick = () => {
+    openMembershipModal(tierSlug)
+  }
+
+  return (
+    <button
+      type="button"
+      onClick={handleClick}
+      className={cn(
+        'inline-flex w-full items-center justify-center px-4 py-3 text-sm font-semibold uppercase tracking-wider transition-all duration-300',
+        popular
+          ? 'bg-neon text-carbon hover:scale-[1.02] hover:shadow-neon'
+          : 'border border-neon bg-transparent text-white hover:bg-neon/10 hover:shadow-neon-sm'
+      )}
+    >
+      Get Started
+    </button>
+  )
+}
 
 export function Pricing() {
   return (
@@ -23,7 +72,6 @@ export function Pricing() {
       id={SECTION_IDS.pricing}
       className="relative scroll-mt-24 bg-[#0d0d0d] py-20 sm:py-28"
     >
-      <div id={SECTION_IDS.membership} className="scroll-mt-24" aria-hidden />
       <GrainOverlay />
 
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -45,59 +93,44 @@ export function Pricing() {
           </p>
         </SectionReveal>
 
-        <StaggerContainer className="grid gap-6 lg:grid-cols-3 lg:gap-5">
+        <StaggerContainer className="grid items-end gap-8 lg:grid-cols-3 lg:gap-6">
           {PRICING_TIERS.map((tier) => (
             <StaggerItem key={tier.name}>
-              <Card
+              <article
                 data-popular={tier.popular ? 'true' : 'false'}
                 className={cn(
-                  'h-full rounded-sm border-white/10 bg-carbon/80 text-white ring-0',
-                  tier.popular &&
-                    'border-neon shadow-neon-sm lg:-translate-y-3'
+                  'flex h-full flex-col px-1 pb-2 pt-0',
+                  tier.popular
+                    ? 'relative z-10 -translate-y-4 border border-neon bg-carbon/90 px-5 pb-6 pt-5 shadow-[0_-12px_48px_rgba(57,255,20,0.14)] md:-translate-y-6'
+                    : 'rounded-none border-t border-white/20 bg-transparent'
                 )}
               >
-                <CardHeader className="space-y-3">
-                  {tier.popular && (
-                    <Badge className="w-fit rounded-sm bg-neon px-2 py-0.5 text-[10px] uppercase tracking-[0.18em] text-carbon hover:bg-neon">
-                      Most Popular
-                    </Badge>
-                  )}
-                  <CardTitle className="font-heading text-2xl uppercase tracking-tight">
-                    {tier.name}
-                  </CardTitle>
-                  <div className="flex items-baseline gap-1">
-                    <span className="font-heading text-5xl tracking-tight text-white">
-                      {tier.price}
-                    </span>
-                    <span className="text-sm text-white/50">{tier.period}</span>
+                {tier.popular && (
+                  <div className="mb-4">
+                    <PopularRibbon />
                   </div>
-                </CardHeader>
-                <CardContent>
-                  <ul className="space-y-3 text-sm text-white/70">
-                    {tier.features.map((feature) => (
-                      <li key={feature} className="flex gap-2">
-                        <span className="text-neon" aria-hidden>
-                          —
-                        </span>
-                        {feature}
-                      </li>
-                    ))}
-                  </ul>
-                </CardContent>
-                <CardFooter>
-                  <Link
-                    href={`#${SECTION_IDS.membership}`}
-                    className={cn(
-                      'inline-flex w-full items-center justify-center rounded-sm px-4 py-3 text-sm font-semibold uppercase tracking-wider transition-all duration-300',
-                      tier.popular
-                        ? 'bg-neon text-carbon hover:scale-[1.02] hover:shadow-neon'
-                        : 'border border-white/20 text-white hover:border-neon hover:text-neon hover:shadow-neon-sm'
-                    )}
-                  >
-                    Get Started
-                  </Link>
-                </CardFooter>
-              </Card>
+                )}
+
+                <h3 className="font-heading text-2xl uppercase tracking-tight text-white">
+                  {tier.name}
+                </h3>
+
+                <div className="mt-3 flex items-baseline gap-1">
+                  <span className="font-heading text-5xl tracking-tight text-white">
+                    {tier.price}
+                  </span>
+                  <span className="text-sm text-white/50">{tier.period}</span>
+                </div>
+
+                <FeatureList features={tier.features} />
+
+                <div className="mt-auto pt-8">
+                  <GetStartedButton
+                    tierSlug={tier.slug}
+                    popular={tier.popular}
+                  />
+                </div>
+              </article>
             </StaggerItem>
           ))}
         </StaggerContainer>

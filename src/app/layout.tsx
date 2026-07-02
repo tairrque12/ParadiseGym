@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { Anton, Space_Grotesk } from 'next/font/google'
 import './globals.css'
 import { cn } from '@/lib/utils'
+import { Providers } from '@/components/providers'
 
 const anton = Anton({
   subsets: ['latin'],
@@ -34,7 +35,7 @@ export default function RootLayout({
           spaceGrotesk.variable
         )}
       >
-        {children}
+        <Providers>{children}</Providers>
       </body>
     </html>
   )

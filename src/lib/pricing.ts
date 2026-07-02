@@ -2,6 +2,7 @@
 export const PRICING_TIERS = [
   {
     name: 'Essential',
+    slug: 'essential',
     price: '$49',
     period: '/mo',
     features: [
@@ -14,6 +15,7 @@ export const PRICING_TIERS = [
   },
   {
     name: 'Performance',
+    slug: 'performance',
     price: '$79',
     period: '/mo',
     features: [
@@ -26,6 +28,7 @@ export const PRICING_TIERS = [
   },
   {
     name: 'Elite',
+    slug: 'elite',
     price: '$119',
     period: '/mo',
     features: [

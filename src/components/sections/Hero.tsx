@@ -5,9 +5,11 @@ import { motion, useScroll, useTransform } from 'framer-motion'
 import { Wordmark } from '@/components/Logo'
 import { NeonButton } from '@/components/NeonButton'
 import { GrainOverlay } from '@/components/motion'
+import { useModal } from '@/context/modal-context'
 import { usePrefersReducedMotion } from '@/hooks/use-prefers-reduced-motion'
 
 export function Hero() {
+  const { openMembershipModal, openTourModal } = useModal()
   const reducedMotion = usePrefersReducedMotion()
   const { scrollY } = useScroll()
   const y = useTransform(scrollY, [0, 600], ['0%', reducedMotion ? '0%' : '18%'])
@@ -35,8 +37,10 @@ export function Hero() {
             Where Strength Meets Aesthetics
           </p>
           <div className="mt-8 flex flex-col gap-4 sm:mt-10 sm:flex-row sm:items-center">
-            <NeonButton href="#membership">Request Membership</NeonButton>
-            <NeonButton href="#tour" variant="outline">
+            <NeonButton onClick={() => openMembershipModal(null)}>
+              Request Membership
+            </NeonButton>
+            <NeonButton onClick={openTourModal} variant="outline">
               Free Gym Tour
             </NeonButton>
           </div>

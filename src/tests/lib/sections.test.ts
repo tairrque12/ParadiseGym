@@ -8,7 +8,6 @@ describe('section navigation', () => {
       pricing: 'pricing',
       reviews: 'reviews',
       hours: 'hours',
-      membership: 'membership',
       tour: 'tour',
     })
   })

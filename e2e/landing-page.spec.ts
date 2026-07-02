@@ -8,6 +8,23 @@ const NAV_SECTIONS = [
 ] as const
 
 test.describe('Landing page', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.route('**/api/membership-request', async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ success: true }),
+      })
+    })
+    await page.route('**/api/tour-request', async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ success: true }),
+      })
+    })
+  })
+
   test('renders at 375px mobile viewport without console errors', async ({
     page,
   }) => {
@@ -62,5 +79,73 @@ test.describe('Landing page', () => {
 
     await expect(page.getByText('7,500')).toBeVisible()
     await expect(page.getByText('70+')).toBeVisible()
+  })
+
+  test('membership flow from Performance tier opens modal, submits, and closes', async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 1280, height: 800 })
+    await page.goto('/')
+
+    await page
+      .locator('[data-popular="true"]')
+      .getByRole('button', { name: /get started/i })
+      .click()
+
+    const dialog = page.getByRole('dialog')
+    await expect(dialog).toBeVisible()
+    await expect(dialog.getByLabel(/membership type/i)).toHaveValue('performance')
+
+    await dialog.getByLabel(/first name/i).fill('Marcus')
+    await dialog.getByLabel(/last name/i).fill('Torres')
+    await dialog.getByLabel(/email/i).fill('marcus@example.com')
+    await dialog.getByLabel(/phone/i).fill('956-244-6692')
+    await dialog.getByLabel(/age/i).fill('28')
+    await dialog.getByRole('button', { name: /submit request/i }).click()
+
+    await expect(dialog.getByText(/request received/i)).toBeVisible()
+    await expect(dialog).toBeHidden({ timeout: 5000 })
+  })
+
+  test('tour flow from navbar opens modal, submits, and closes', async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 1280, height: 800 })
+    await page.goto('/')
+
+    await page.getByRole('button', { name: /free tour/i }).first().click()
+
+    const dialog = page.getByRole('dialog')
+    await expect(dialog).toBeVisible()
+
+    await dialog.getByLabel(/first name/i).fill('Elena')
+    await dialog.getByLabel(/last name/i).fill('Rivera')
+    await dialog.getByLabel(/email/i).fill('elena@example.com')
+    await dialog.getByLabel(/phone/i).fill('956-244-6692')
+    await dialog.getByRole('button', { name: /request tour/i }).click()
+
+    await expect(dialog.getByText(/tour requested/i)).toBeVisible()
+    await expect(dialog).toBeHidden({ timeout: 5000 })
+  })
+
+  test('escape closes an open modal', async ({ page }) => {
+    await page.goto('/')
+    await page.getByRole('button', { name: /request membership/i }).click()
+    await expect(page.getByRole('dialog')).toBeVisible()
+
+    await page.keyboard.press('Escape')
+    await expect(page.getByRole('dialog')).toBeHidden()
+  })
+
+  test('membership modal is usable on mobile viewport', async ({ page }) => {
+    await page.setViewportSize({ width: 375, height: 812 })
+    await page.goto('/')
+
+    await page.getByRole('button', { name: /request membership/i }).click()
+
+    const dialog = page.getByRole('dialog')
+    await expect(dialog).toBeVisible()
+    await expect(dialog.getByLabel(/first name/i)).toBeVisible()
+    await expect(dialog.getByRole('button', { name: /submit request/i })).toBeVisible()
   })
 })

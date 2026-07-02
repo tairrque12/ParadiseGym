@@ -1,0 +1,67 @@
+import { NextResponse } from 'next/server'
+import { membershipRequestSchema } from '@/lib/validations/membership'
+import { getSupabaseServerClient } from '@/lib/supabase/server'
+import {
+  formatFieldsHtml,
+  formatFieldsText,
+  sendOwnerNotificationEmail,
+} from '@/lib/email/resend'
+
+export async function handleMembershipRequest(request: Request) {
+  let body: unknown
+
+  try {
+    body = await request.json()
+  } catch {
+    return NextResponse.json({ error: 'Invalid JSON body' }, { status: 400 })
+  }
+
+  const parsed = membershipRequestSchema.safeParse(body)
+  if (!parsed.success) {
+    return NextResponse.json(
+      { error: 'Validation failed', issues: parsed.error.flatten() },
+      { status: 400 }
+    )
+  }
+
+  const data = parsed.data
+
+  const supabase = getSupabaseServerClient()
+  const { error: insertError } = await supabase
+    .from('membership_requests')
+    .insert({
+      first_name: data.first_name,
+      last_name: data.last_name,
+      email: data.email,
+      phone: data.phone,
+      age: data.age,
+      membership_type: data.membership_type,
+      status: 'new',
+    })
+
+  if (insertError) {
+    console.error('Membership insert failed:', insertError)
+    return NextResponse.json({ error: 'Failed to save request' }, { status: 500 })
+  }
+
+  const fields = {
+    first_name: data.first_name,
+    last_name: data.last_name,
+    email: data.email,
+    phone: data.phone,
+    age: data.age,
+    membership_type: data.membership_type,
+  }
+
+  const emailResult = await sendOwnerNotificationEmail({
+    subject: 'New Paradise Gym Membership Request',
+    html: formatFieldsHtml('Membership Request', fields),
+    text: formatFieldsText('Membership Request', fields),
+  })
+
+  if (emailResult.error) {
+    console.error('Membership email failed:', emailResult.error)
+  }
+
+  return NextResponse.json({ success: true })
+}

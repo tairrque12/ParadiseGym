@@ -3,7 +3,6 @@ export const SECTION_IDS = {
   pricing: 'pricing',
   reviews: 'reviews',
   hours: 'hours',
-  membership: 'membership',
   tour: 'tour',
 } as const
 

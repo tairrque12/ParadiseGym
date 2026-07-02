@@ -5,9 +5,11 @@ import Link from 'next/link'
 import { Menu, X } from 'lucide-react'
 import { Logo } from '@/components/Logo'
 import { NAV_LINKS } from '@/lib/sections'
+import { useModal } from '@/context/modal-context'
 import { cn } from '@/lib/utils'
 
 export function Navbar() {
+  const { openTourModal } = useModal()
   const [scrolled, setScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
 
@@ -57,12 +59,13 @@ export function Navbar() {
         </nav>
 
         <div className="hidden md:block">
-          <Link
-            href="#tour"
+          <button
+            type="button"
+            onClick={openTourModal}
             className="inline-flex items-center justify-center rounded-sm bg-neon px-5 py-2.5 text-sm font-semibold uppercase tracking-wider text-carbon transition-all duration-300 hover:scale-[1.03] hover:shadow-neon"
           >
             Free Tour
-          </Link>
+          </button>
         </div>
 
         <button
@@ -97,13 +100,16 @@ export function Navbar() {
               </li>
             ))}
             <li>
-              <Link
-                href="#tour"
+              <button
+                type="button"
                 className="mt-2 inline-flex w-full items-center justify-center rounded-sm bg-neon px-5 py-3 text-sm font-semibold uppercase tracking-wider text-carbon"
-                onClick={() => setMenuOpen(false)}
+                onClick={() => {
+                  setMenuOpen(false)
+                  openTourModal()
+                }}
               >
                 Free Tour
-              </Link>
+              </button>
             </li>
           </ul>
         </nav>
