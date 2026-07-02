@@ -2,6 +2,7 @@ import { test, expect } from '@playwright/test'
 
 const NAV_SECTIONS = [
   { link: 'Amenities', id: 'amenities' },
+  { link: 'Gallery', id: 'gallery' },
   { link: 'Pricing', id: 'pricing' },
   { link: 'Reviews', id: 'reviews' },
   { link: 'Hours', id: 'hours' },

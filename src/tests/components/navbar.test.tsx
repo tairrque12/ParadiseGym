@@ -47,6 +47,10 @@ describe('Navbar', () => {
       'href',
       '#amenities'
     )
+    expect(within(mobileNav).getByRole('link', { name: 'Gallery' })).toHaveAttribute(
+      'href',
+      '#gallery'
+    )
     expect(within(mobileNav).getByRole('link', { name: 'Pricing' })).toHaveAttribute(
       'href',
       '#pricing'

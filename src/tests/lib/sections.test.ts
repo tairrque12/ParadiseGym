@@ -5,6 +5,7 @@ describe('section navigation', () => {
   it('defines all required section ids', () => {
     expect(SECTION_IDS).toEqual({
       amenities: 'amenities',
+      gallery: 'gallery',
       pricing: 'pricing',
       reviews: 'reviews',
       hours: 'hours',
@@ -20,8 +21,8 @@ describe('section navigation', () => {
     }
   })
 
-  it('includes amenities, pricing, reviews, and hours nav links', () => {
+  it('includes amenities, gallery, pricing, reviews, and hours nav links', () => {
     const labels = NAV_LINKS.map((link) => link.label)
-    expect(labels).toEqual(['Amenities', 'Pricing', 'Reviews', 'Hours'])
+    expect(labels).toEqual(['Amenities', 'Gallery', 'Pricing', 'Reviews', 'Hours'])
   })
 })
