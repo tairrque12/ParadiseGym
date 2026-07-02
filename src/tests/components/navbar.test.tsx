@@ -59,6 +59,10 @@ describe('Navbar', () => {
       'href',
       '#hours'
     )
+    expect(within(mobileNav).getByRole('link', { name: 'Admin' })).toHaveAttribute(
+      'href',
+      '/admin/login'
+    )
   })
 
   it('opens tour modal from Free Tour CTA', async () => {

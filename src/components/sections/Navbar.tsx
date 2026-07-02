@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { Menu, X } from 'lucide-react'
 import { Logo } from '@/components/Logo'
-import { NAV_LINKS } from '@/lib/sections'
+import { NAV_LINKS, ADMIN_LOGIN_PATH } from '@/lib/sections'
 import { useModal } from '@/context/modal-context'
 import { cn } from '@/lib/utils'
 
@@ -56,6 +56,12 @@ export function Navbar() {
               {link.label}
             </Link>
           ))}
+          <Link
+            href={ADMIN_LOGIN_PATH}
+            className="text-sm uppercase tracking-[0.14em] text-white/70 transition-colors hover:text-neon"
+          >
+            Admin
+          </Link>
         </nav>
 
         <div className="hidden md:block">
@@ -99,6 +105,15 @@ export function Navbar() {
                 </Link>
               </li>
             ))}
+            <li>
+              <Link
+                href={ADMIN_LOGIN_PATH}
+                className="block text-lg uppercase tracking-[0.12em] text-white/80"
+                onClick={() => setMenuOpen(false)}
+              >
+                Admin
+              </Link>
+            </li>
             <li>
               <button
                 type="button"
