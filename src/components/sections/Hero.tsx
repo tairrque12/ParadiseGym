@@ -18,16 +18,16 @@ export function Hero() {
     <section className="relative isolate z-0 min-h-[100svh] overflow-hidden bg-carbon">
       <motion.div className="absolute inset-0 will-change-transform" style={{ y }}>
         <Image
-          src="/images/paradise-gym-logo.png"
-          alt="Paradise Gym"
+          src="/images/hero-gym-floor.png"
+          alt="Paradise Gym training floor with neon green equipment and lighting"
           fill
           priority
-          className="object-cover object-center"
+          className="object-cover object-[center_30%]"
           sizes="100vw"
         />
       </motion.div>
 
-      <div className="absolute inset-0 bg-gradient-to-b from-carbon/20 via-transparent to-carbon/90" />
+      <div className="absolute inset-0 bg-gradient-to-b from-carbon/50 via-carbon/25 to-carbon/95" />
       <GrainOverlay />
 
       <div className="relative mx-auto flex min-h-[100svh] max-w-7xl flex-col justify-end px-4 pb-20 pt-28 sm:px-6 sm:pb-28 lg:px-8">
