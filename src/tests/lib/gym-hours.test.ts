@@ -1,11 +1,18 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, vi, afterEach } from 'vitest'
 import {
+  filterFutureTimeSlotsForDate,
   generateTimeSlotsForDate,
+  getAvailableTimeSlotsForDate,
   getGymHoursForDate,
+  groupTimeSlots,
   isValidTimeSlotForDate,
 } from '@/lib/gym-hours'
 
 describe('gym-hours', () => {
+  afterEach(() => {
+    vi.useRealTimers()
+  })
+
   it('returns weekday hours for a Monday date', () => {
     const hours = getGymHoursForDate('2026-07-06')
 
@@ -48,10 +55,50 @@ describe('gym-hours', () => {
     expect(sundaySlots.at(-1)).toBe('4:30 PM')
   })
 
+  it('groups weekday slots with morning times first', () => {
+    const groups = groupTimeSlots(generateTimeSlotsForDate('2026-07-06'))
+
+    expect(groups[0]).toEqual({
+      label: 'Morning',
+      slots: expect.arrayContaining(['5:00 AM', '7:00 AM', '11:30 AM']),
+    })
+    expect(groups[0]?.slots[0]).toBe('5:00 AM')
+  })
+
+  it('filters out past slots when the selected date is today', () => {
+    vi.useFakeTimers()
+    vi.setSystemTime(new Date('2026-07-06T18:00:00-05:00'))
+
+    const available = getAvailableTimeSlotsForDate('2026-07-06')
+
+    expect(available).not.toContain('5:00 AM')
+    expect(available).not.toContain('12:00 PM')
+    expect(available).toContain('6:30 PM')
+    expect(available).toContain('11:30 PM')
+  })
+
+  it('keeps all slots for a future date', () => {
+    vi.useFakeTimers()
+    vi.setSystemTime(new Date('2026-07-06T18:00:00-05:00'))
+
+    const available = getAvailableTimeSlotsForDate('2026-07-07')
+
+    expect(available[0]).toBe('5:00 AM')
+    expect(available).toContain('10:00 AM')
+  })
+
   it('validates whether a time is in the generated slot list for a date', () => {
     expect(isValidTimeSlotForDate('2026-07-06', '10:00 AM')).toBe(true)
     expect(isValidTimeSlotForDate('2026-07-12', '10:00 AM')).toBe(true)
     expect(isValidTimeSlotForDate('2026-07-12', '8:00 AM')).toBe(false)
     expect(isValidTimeSlotForDate('2026-07-06', 'not-a-time')).toBe(false)
+  })
+
+  it('rejects past times for today', () => {
+    vi.useFakeTimers()
+    vi.setSystemTime(new Date('2026-07-06T18:00:00-05:00'))
+
+    expect(isValidTimeSlotForDate('2026-07-06', '10:00 AM')).toBe(false)
+    expect(isValidTimeSlotForDate('2026-07-06', '7:00 PM')).toBe(true)
   })
 })

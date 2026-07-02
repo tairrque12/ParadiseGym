@@ -1,6 +1,6 @@
 import '@/tests/mocks/react'
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import { render, screen, waitFor } from '@testing-library/react'
+import { render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { TourRequestModal } from '@/components/modals/tour-request-modal'
 
@@ -57,24 +57,21 @@ describe('TourRequestModal', () => {
   it('keeps preferred time disabled until a date is selected', () => {
     render(<TourRequestModal open onOpenChange={vi.fn()} />)
 
-    expect(screen.getByRole('combobox', { name: /preferred time/i })).toBeDisabled()
+    expect(screen.getByLabelText(/preferred time/i)).toBeDisabled()
     expect(screen.getByText(/select a date first/i)).toBeInTheDocument()
   })
 
-  it('populates time options after a preferred date is selected', async () => {
+  it('populates morning time options after a weekday date is selected', async () => {
     const user = userEvent.setup()
 
     render(<TourRequestModal open onOpenChange={vi.fn()} />)
 
-    await user.type(screen.getByLabelText(/preferred date/i), '2026-07-12')
+    await user.type(screen.getByLabelText(/preferred date/i), '2026-07-06')
 
-    const timeSelect = screen.getByRole('combobox', { name: /preferred time/i })
+    const timeSelect = screen.getByLabelText(/preferred time/i)
     expect(timeSelect).toBeEnabled()
-
-    await user.click(timeSelect)
-    expect(await screen.findByRole('option', { name: '9:00 AM' })).toBeInTheDocument()
-    expect(screen.getByRole('option', { name: '4:30 PM' })).toBeInTheDocument()
-    expect(screen.queryByRole('option', { name: '8:00 AM' })).not.toBeInTheDocument()
+    expect(within(timeSelect).getByRole('option', { name: '5:00 AM' })).toBeInTheDocument()
+    expect(within(timeSelect).getByRole('option', { name: '10:00 AM' })).toBeInTheDocument()
   })
 
   it('clears an incompatible preferred time when the date changes', async () => {
@@ -83,20 +80,14 @@ describe('TourRequestModal', () => {
     render(<TourRequestModal open onOpenChange={vi.fn()} />)
 
     await user.type(screen.getByLabelText(/preferred date/i), '2026-07-12')
-    await user.click(screen.getByRole('combobox', { name: /preferred time/i }))
-    await user.click(await screen.findByRole('option', { name: '10:00 AM' }))
+    await user.selectOptions(screen.getByLabelText(/preferred time/i), '10:00 AM')
 
-    expect(screen.getByRole('combobox', { name: /preferred time/i })).toHaveTextContent(
-      '10:00 AM'
-    )
+    expect(screen.getByLabelText(/preferred time/i)).toHaveValue('10:00 AM')
 
     await user.clear(screen.getByLabelText(/preferred date/i))
     await user.type(screen.getByLabelText(/preferred date/i), '2026-07-11')
-    await user.click(screen.getByRole('combobox', { name: /preferred time/i }))
-    await user.click(await screen.findByRole('option', { name: '8:00 AM' }))
+    await user.selectOptions(screen.getByLabelText(/preferred time/i), '8:00 AM')
 
-    expect(screen.getByRole('combobox', { name: /preferred time/i })).toHaveTextContent(
-      '8:00 AM'
-    )
+    expect(screen.getByLabelText(/preferred time/i)).toHaveValue('8:00 AM')
   })
 })

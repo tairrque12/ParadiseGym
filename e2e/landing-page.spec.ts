@@ -191,9 +191,8 @@ test.describe('Landing page', () => {
     await dialog.getByLabel(/preferred date/i).fill('2026-07-12')
     await expect(dialog.getByLabel(/preferred time/i)).toBeEnabled()
 
-    await dialog.getByLabel(/preferred time/i).click()
-    await page.getByRole('option', { name: '10:00 AM' }).click()
+    await dialog.getByLabel(/preferred time/i).selectOption('10:00 AM')
 
-    await expect(dialog.getByLabel(/preferred time/i)).toContainText('10:00 AM')
+    await expect(dialog.getByLabel(/preferred time/i)).toHaveValue('10:00 AM')
   })
 })

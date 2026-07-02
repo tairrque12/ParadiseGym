@@ -32,6 +32,14 @@ export function Hero() {
 
       <div className="mx-auto flex min-h-[100svh] max-w-7xl flex-col justify-end px-4 pb-20 pt-28 sm:px-6 sm:pb-28 lg:px-8">
         <div className="max-w-4xl">
+          <Image
+            src="/images/paradise-gym-logo.png"
+            alt="Paradise Gym"
+            width={160}
+            height={160}
+            priority
+            className="mb-6 h-24 w-24 object-contain sm:mb-8 sm:h-32 sm:w-32"
+          />
           <Wordmark />
           <p className="mt-4 max-w-xl text-lg text-white/75 sm:mt-6 sm:text-xl">
             Where Strength Meets Aesthetics

@@ -12,15 +12,10 @@ import {
 } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { cn } from '@/lib/utils'
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
-import {
-  generateTimeSlotsForDate,
+  getAvailableTimeSlotsForDate,
+  groupTimeSlots,
   isValidTimeSlotForDate,
 } from '@/lib/gym-hours'
 import {
@@ -67,10 +62,14 @@ export function TourRequestModal({
   })
 
   const preferredDate = useWatch({ control, name: 'preferred_date' })
-  const timeSlots = useMemo(
-    () => (preferredDate ? generateTimeSlotsForDate(preferredDate) : []),
+  const timeSlotGroups = useMemo(
+    () =>
+      preferredDate
+        ? groupTimeSlots(getAvailableTimeSlotsForDate(preferredDate))
+        : [],
     [preferredDate]
   )
+  const hasTimeSlots = timeSlotGroups.some((group) => group.slots.length > 0)
 
   useEffect(() => {
     if (!open) {
@@ -257,30 +256,28 @@ export function TourRequestModal({
                     control={control}
                     name="preferred_time"
                     render={({ field }) => (
-                      <Select
-                        value={field.value ? field.value : null}
-                        onValueChange={(value) => field.onChange(value ?? '')}
-                        disabled={!preferredDate || timeSlots.length === 0}
+                      <select
+                        id="tour-preferred-time"
+                        aria-label="Preferred time"
+                        className={cn(fieldClassName, 'w-full px-3')}
+                        disabled={!preferredDate || !hasTimeSlots}
+                        aria-invalid={!!errors.preferred_time}
+                        value={field.value ?? ''}
+                        onChange={(event) => field.onChange(event.target.value)}
                       >
-                        <SelectTrigger
-                          id="tour-preferred-time"
-                          className={`h-11 w-full rounded-sm border-white/15 bg-[#141414] text-white focus-visible:border-neon focus-visible:ring-neon/40`}
-                          aria-invalid={!!errors.preferred_time}
-                        >
-                          <SelectValue
-                            placeholder={
-                              preferredDate ? 'Select a time' : 'Select a date first'
-                            }
-                          />
-                        </SelectTrigger>
-                        <SelectContent className="border-white/10 bg-[#141414] text-white">
-                          {timeSlots.map((slot) => (
-                            <SelectItem key={slot} value={slot}>
-                              {slot}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
+                        <option value="">
+                          {preferredDate ? 'Select a time' : 'Select a date first'}
+                        </option>
+                        {timeSlotGroups.map((group) => (
+                          <optgroup key={group.label} label={group.label}>
+                            {group.slots.map((slot) => (
+                              <option key={slot} value={slot}>
+                                {slot}
+                              </option>
+                            ))}
+                          </optgroup>
+                        ))}
+                      </select>
                     )}
                   />
                   {errors.preferred_time && (
