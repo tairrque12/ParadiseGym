@@ -43,20 +43,20 @@ function ReviewCard({
   return (
     <figure
       className={cn(
-        'relative px-1',
-        variant === 'accent-top' && 'border-t-2 border-neon/50 pt-6',
-        variant === 'borderless' && 'pt-2',
+        'relative px-1 pt-8',
+        variant === 'accent-top' && 'border-t-2 border-neon/50',
+        variant === 'borderless' && '',
         className
       )}
     >
       <span
         aria-hidden
-        className="pointer-events-none absolute -left-1 -top-4 select-none font-heading text-[clamp(3.5rem,10vw,5.5rem)] leading-none text-[#1a3d12]/70"
+        className="pointer-events-none absolute left-0 top-0 z-0 select-none font-heading text-4xl leading-none text-[#1a3d12]/50 sm:text-5xl"
       >
         &ldquo;
       </span>
 
-      <div className="relative">
+      <div className="relative z-10">
         <StarRating rating={rating} />
         <blockquote className="mt-5 text-lg font-medium leading-snug tracking-tight text-white/90 sm:text-xl">
           {quote}
@@ -88,18 +88,18 @@ export function Reviews() {
       <GrainOverlay />
 
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="grid gap-12 lg:grid-cols-12 lg:gap-10">
-          <SectionReveal className="lg:col-span-4">
+        <div className="grid gap-12 lg:grid-cols-12 lg:gap-16">
+          <SectionReveal className="relative z-20 lg:col-span-4">
             <p className="text-sm uppercase tracking-[0.22em] text-neon">
               Member Voices
             </p>
-            <h2 className="mt-3 font-heading text-4xl uppercase leading-[0.95] tracking-tight text-white sm:text-5xl lg:text-6xl">
+            <h2 className="relative mt-3 font-heading text-4xl uppercase leading-tight tracking-tight text-white sm:text-5xl lg:text-6xl">
               What Our Members Say
             </h2>
             {/* PLACEHOLDER: Demo testimonials — replace with real member reviews before launch. */}
           </SectionReveal>
 
-          <StaggerContainer className="grid gap-10 sm:grid-cols-2 lg:col-span-8 lg:gap-12">
+          <StaggerContainer className="relative z-10 grid gap-10 pt-2 sm:grid-cols-2 sm:pt-0 lg:col-span-8 lg:gap-12">
             <div className="flex flex-col gap-12 sm:gap-14">
               {LEFT_COLUMN.map(({ index, variant, offset }) => {
                 const review = TESTIMONIALS[index]

@@ -3,8 +3,6 @@
 import {
   GrainOverlay,
   SectionReveal,
-  StaggerContainer,
-  StaggerItem,
 } from '@/components/motion'
 import { useModal } from '@/context/modal-context'
 import {
@@ -75,7 +73,7 @@ function PricingColumn({
   options: MembershipOption[]
 }) {
   return (
-    <div className="flex h-full flex-col border-t border-white/15 pt-2">
+    <div className="flex flex-col border-t border-white/15 pt-6">
       <CategoryHeader label={label} />
       <div className="flex flex-col">
         {options.map((option) => (
@@ -90,12 +88,12 @@ export function Pricing() {
   return (
     <section
       id={SECTION_IDS.pricing}
-      className="relative scroll-mt-24 bg-[#0d0d0d] py-20 sm:py-28"
+      className="relative isolate scroll-mt-24 overflow-hidden bg-[#0d0d0d] py-20 sm:py-28"
     >
       <GrainOverlay />
 
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <SectionReveal className="mb-12 md:mb-16">
+        <SectionReveal className="relative z-20 mb-12 bg-[#0d0d0d] md:mb-16">
           <p className="text-sm uppercase tracking-[0.22em] text-neon">
             Join The Floor
           </p>
@@ -107,20 +105,16 @@ export function Pricing() {
           </h2>
         </SectionReveal>
 
-        <StaggerContainer className="grid gap-10 lg:grid-cols-2 lg:gap-12">
-          <StaggerItem>
-            <PricingColumn
-              label="Recurring"
-              options={RECURRING_MEMBERSHIP_OPTIONS}
-            />
-          </StaggerItem>
-          <StaggerItem>
-            <PricingColumn
-              label="Single Payment"
-              options={SINGLE_PAYMENT_MEMBERSHIP_OPTIONS}
-            />
-          </StaggerItem>
-        </StaggerContainer>
+        <div className="relative z-10 grid gap-10 lg:grid-cols-2 lg:gap-12">
+          <PricingColumn
+            label="Recurring"
+            options={RECURRING_MEMBERSHIP_OPTIONS}
+          />
+          <PricingColumn
+            label="Single Payment"
+            options={SINGLE_PAYMENT_MEMBERSHIP_OPTIONS}
+          />
+        </div>
 
         <SectionReveal className="mt-10 border border-neon/20 bg-carbon/70 px-5 py-4 sm:px-6">
           <p className="text-xs font-semibold uppercase tracking-[0.18em] text-neon">

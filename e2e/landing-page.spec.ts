@@ -121,6 +121,7 @@ test.describe('Landing page', () => {
   })
 
   test('pricing section stacks cleanly on mobile viewport', async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: 'reduce' })
     await page.setViewportSize({ width: 375, height: 812 })
     await page.goto('/')
 
@@ -132,6 +133,117 @@ test.describe('Landing page', () => {
     await expect(page.getByText('Day Pass')).toBeVisible()
     await expect(page.getByText(/discounts available/i)).toBeVisible()
   })
+
+  for (const width of [375, 768, 1440] as const) {
+    test(`pricing section has no overlapping layout at ${width}px`, async ({
+      page,
+    }) => {
+      await page.emulateMedia({ reducedMotion: 'reduce' })
+      await page.setViewportSize({ width, height: 900 })
+      await page.goto('/')
+
+      const pricing = page.locator('#pricing')
+      await expect(pricing).toBeVisible()
+      await pricing.scrollIntoViewIfNeeded()
+
+      const heading = page.getByRole('heading', { name: /membership options/i })
+      const recurringBadge = page.getByText('Recurring', { exact: true })
+      const singlePaymentBadge = page.getByText('Single Payment', { exact: true })
+      const firstRecurringPrice = page.getByText('$39.99/mo')
+      const firstSinglePaymentPrice = page.getByText('$430')
+
+      await expect(heading).toBeVisible()
+      await expect(recurringBadge).toBeVisible()
+      await expect(singlePaymentBadge).toBeVisible()
+
+      const headingBox = await heading.boundingBox()
+      const recurringBox = await recurringBadge.boundingBox()
+      const singlePaymentBox = await singlePaymentBadge.boundingBox()
+      const recurringPriceBox = await firstRecurringPrice.boundingBox()
+      const singlePaymentPriceBox = await firstSinglePaymentPrice.boundingBox()
+
+      expect(headingBox).toBeTruthy()
+      expect(recurringBox).toBeTruthy()
+      expect(singlePaymentBox).toBeTruthy()
+      expect(recurringPriceBox).toBeTruthy()
+      expect(singlePaymentPriceBox).toBeTruthy()
+
+      expect(headingBox!.y + headingBox!.height).toBeLessThanOrEqual(
+        recurringBox!.y + 2
+      )
+      expect(recurringBox!.y + recurringBox!.height).toBeLessThanOrEqual(
+        recurringPriceBox!.y + 2
+      )
+
+      if (width < 1024) {
+        expect(recurringPriceBox!.y + recurringPriceBox!.height).toBeLessThanOrEqual(
+          singlePaymentBox!.y + 2
+        )
+        expect(singlePaymentBox!.y + singlePaymentBox!.height).toBeLessThanOrEqual(
+          singlePaymentPriceBox!.y + 2
+        )
+      } else {
+        expect(Math.abs(recurringBox!.y - singlePaymentBox!.y)).toBeLessThanOrEqual(4)
+        expect(Math.abs(recurringPriceBox!.y - singlePaymentPriceBox!.y)).toBeLessThanOrEqual(
+          120
+        )
+      }
+    })
+  }
+
+  for (const width of [375, 768, 1440] as const) {
+    test(`hero and gym facts stay separated at ${width}px`, async ({ page }) => {
+      await page.emulateMedia({ reducedMotion: 'reduce' })
+      await page.setViewportSize({ width, height: 900 })
+      await page.goto('/')
+
+      const heroHeading = page.getByRole('heading', { name: /paradise gym/i }).first()
+      const gymFactsLabel = page.getByText('SQ FT', { exact: true })
+
+      await heroHeading.scrollIntoViewIfNeeded()
+      await gymFactsLabel.scrollIntoViewIfNeeded()
+
+      const heroBox = await heroHeading.boundingBox()
+      const gymFactsBox = await gymFactsLabel.boundingBox()
+
+      expect(heroBox).toBeTruthy()
+      expect(gymFactsBox).toBeTruthy()
+      expect(heroBox!.y + heroBox!.height).toBeLessThanOrEqual(gymFactsBox!.y + 2)
+    })
+  }
+
+  for (const width of [375, 768, 1440] as const) {
+    test(`reviews heading stays clear of quote accents at ${width}px`, async ({
+      page,
+    }) => {
+      await page.emulateMedia({ reducedMotion: 'reduce' })
+      await page.setViewportSize({ width, height: 900 })
+      await page.goto('/')
+
+      const reviews = page.locator('#reviews')
+      await reviews.scrollIntoViewIfNeeded()
+
+      const heading = page.getByRole('heading', { name: /what our members say/i })
+      const firstQuote = page.locator('#reviews blockquote').first()
+
+      await expect(heading).toBeVisible()
+      await expect(firstQuote).toBeVisible()
+
+      const headingBox = await heading.boundingBox()
+      const quoteBox = await firstQuote.boundingBox()
+
+      expect(headingBox).toBeTruthy()
+      expect(quoteBox).toBeTruthy()
+
+      if (width < 1024) {
+        expect(headingBox!.y + headingBox!.height).toBeLessThanOrEqual(
+          quoteBox!.y + 2
+        )
+      } else {
+        expect(headingBox!.x + headingBox!.width).toBeLessThanOrEqual(quoteBox!.x + 2)
+      }
+    })
+  }
 
   test('tour flow from navbar opens modal, submits, and closes', async ({
     page,

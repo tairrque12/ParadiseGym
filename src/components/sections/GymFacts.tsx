@@ -4,7 +4,7 @@ import { formatCountDisplay } from '@/lib/count-up'
 import { GYM_STATS } from '@/lib/contact'
 import { useCountUp } from '@/hooks/use-count-up'
 import { usePrefersReducedMotion } from '@/hooks/use-prefers-reduced-motion'
-import { GrainOverlay, SectionReveal } from '@/components/motion'
+import { GrainOverlay } from '@/components/motion'
 
 function CountStat({
   value,
@@ -39,10 +39,10 @@ function CountStat({
 
 export function GymFacts() {
   return (
-    <section className="relative border-y border-white/10 bg-carbon py-14 sm:py-16">
+    <section className="relative isolate z-10 -mt-px border-y border-white/10 bg-carbon py-14 sm:py-16">
       <GrainOverlay />
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <SectionReveal>
+        <div>
           <div className="grid gap-10 md:grid-cols-3 md:gap-8">
             {GYM_STATS.map((stat) =>
               stat.type === 'count' ? (
@@ -64,7 +64,7 @@ export function GymFacts() {
               )
             )}
           </div>
-        </SectionReveal>
+        </div>
       </div>
     </section>
   )

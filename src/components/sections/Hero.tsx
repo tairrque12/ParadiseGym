@@ -15,8 +15,8 @@ export function Hero() {
   const y = useTransform(scrollY, [0, 600], ['0%', reducedMotion ? '0%' : '18%'])
 
   return (
-    <section className="relative min-h-[100svh] overflow-hidden bg-carbon">
-      <motion.div className="absolute inset-0" style={{ y }}>
+    <section className="relative isolate z-0 min-h-[100svh] overflow-hidden bg-carbon">
+      <motion.div className="absolute inset-0 will-change-transform" style={{ y }}>
         <Image
           src="/images/paradise-gym-logo.png"
           alt="Paradise Gym"
