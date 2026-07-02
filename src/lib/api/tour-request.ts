@@ -26,7 +26,14 @@ export async function handleTourRequest(request: Request) {
 
   const data = parsed.data
 
-  const supabase = getSupabaseServerClient()
+  let supabase
+  try {
+    supabase = getSupabaseServerClient()
+  } catch (error) {
+    console.error('Supabase configuration error:', error)
+    return NextResponse.json({ error: 'Failed to save request' }, { status: 500 })
+  }
+
   const { error: insertError } = await supabase.from('tour_requests').insert({
     first_name: data.first_name,
     last_name: data.last_name,
@@ -51,14 +58,18 @@ export async function handleTourRequest(request: Request) {
     preferred_time: data.preferred_time ?? null,
   }
 
-  const emailResult = await sendOwnerNotificationEmail({
-    subject: 'New Paradise Gym Tour Request',
-    html: formatFieldsHtml('Tour Request', fields),
-    text: formatFieldsText('Tour Request', fields),
-  })
+  try {
+    const emailResult = await sendOwnerNotificationEmail({
+      subject: 'New Paradise Gym Tour Request',
+      html: formatFieldsHtml('Tour Request', fields),
+      text: formatFieldsText('Tour Request', fields),
+    })
 
-  if (emailResult.error) {
-    console.error('Tour email failed:', emailResult.error)
+    if (emailResult.error) {
+      console.error('Tour email failed:', emailResult.error)
+    }
+  } catch (error) {
+    console.error('Tour email failed:', error)
   }
 
   return NextResponse.json({ success: true })

@@ -12,7 +12,8 @@ export async function sendOwnerNotificationEmail(payload: EmailPayload) {
   const fromEmail = process.env.RESEND_FROM_EMAIL
 
   if (!apiKey || !fromEmail) {
-    throw new Error('Resend environment variables are not configured')
+    console.error('Resend environment variables are not configured')
+    return { error: new Error('Resend environment variables are not configured') }
   }
 
   const resend = new Resend(apiKey)

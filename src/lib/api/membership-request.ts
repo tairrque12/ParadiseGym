@@ -26,7 +26,14 @@ export async function handleMembershipRequest(request: Request) {
 
   const data = parsed.data
 
-  const supabase = getSupabaseServerClient()
+  let supabase
+  try {
+    supabase = getSupabaseServerClient()
+  } catch (error) {
+    console.error('Supabase configuration error:', error)
+    return NextResponse.json({ error: 'Failed to save request' }, { status: 500 })
+  }
+
   const { error: insertError } = await supabase
     .from('membership_requests')
     .insert({
@@ -53,14 +60,18 @@ export async function handleMembershipRequest(request: Request) {
     membership_type: data.membership_type,
   }
 
-  const emailResult = await sendOwnerNotificationEmail({
-    subject: 'New Paradise Gym Membership Request',
-    html: formatFieldsHtml('Membership Request', fields),
-    text: formatFieldsText('Membership Request', fields),
-  })
+  try {
+    const emailResult = await sendOwnerNotificationEmail({
+      subject: 'New Paradise Gym Membership Request',
+      html: formatFieldsHtml('Membership Request', fields),
+      text: formatFieldsText('Membership Request', fields),
+    })
 
-  if (emailResult.error) {
-    console.error('Membership email failed:', emailResult.error)
+    if (emailResult.error) {
+      console.error('Membership email failed:', emailResult.error)
+    }
+  } catch (error) {
+    console.error('Membership email failed:', error)
   }
 
   return NextResponse.json({ success: true })

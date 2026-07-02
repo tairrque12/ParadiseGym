@@ -90,4 +90,15 @@ describe('POST /api/membership-request', () => {
     expect(mockInsert).toHaveBeenCalledOnce()
     expect(console.error).toHaveBeenCalled()
   })
+
+  it('returns 200 when Resend is not configured after successful insert', async () => {
+    mockSendEmail.mockResolvedValue({
+      error: new Error('Resend environment variables are not configured'),
+    })
+
+    const response = await handleMembershipRequest(createRequest(validPayload))
+
+    expect(response.status).toBe(200)
+    expect(mockInsert).toHaveBeenCalledOnce()
+  })
 })
