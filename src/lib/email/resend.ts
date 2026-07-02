@@ -1,5 +1,14 @@
 import { Resend } from 'resend'
 
+export {
+  buildNotificationEmailHtml,
+  buildNotificationEmailText,
+  formatFieldsHtml,
+  formatFieldsText,
+  formatMembershipRequestEmail,
+  formatTourRequestEmail,
+} from '@/lib/email/templates'
+
 type EmailPayload = {
   subject: string
   html: string
@@ -29,33 +38,4 @@ export async function sendOwnerNotificationEmail(payload: EmailPayload) {
   })
 
   return { error }
-}
-
-export function formatFieldsHtml(
-  title: string,
-  fields: Record<string, string | number | null | undefined>
-) {
-  const rows = Object.entries(fields)
-    .map(
-      ([key, value]) =>
-        `<tr><td style="padding:8px 12px;font-weight:600;text-transform:capitalize;">${key.replaceAll('_', ' ')}</td><td style="padding:8px 12px;">${value ?? '—'}</td></tr>`
-    )
-    .join('')
-
-  return `
-    <h2 style="font-family:sans-serif;color:#39FF14;">${title}</h2>
-    <table style="border-collapse:collapse;font-family:sans-serif;color:#f5f5f5;background:#141414;">
-      ${rows}
-    </table>
-  `
-}
-
-export function formatFieldsText(
-  title: string,
-  fields: Record<string, string | number | null | undefined>
-) {
-  const lines = Object.entries(fields).map(
-    ([key, value]) => `${key.replaceAll('_', ' ')}: ${value ?? '—'}`
-  )
-  return `${title}\n\n${lines.join('\n')}`
 }

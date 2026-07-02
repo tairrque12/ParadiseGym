@@ -1,11 +1,8 @@
 import { NextResponse } from 'next/server'
 import { tourRequestSchema } from '@/lib/validations/tour'
 import { getSupabaseServerClient } from '@/lib/supabase/server'
-import {
-  formatFieldsHtml,
-  formatFieldsText,
-  sendOwnerNotificationEmail,
-} from '@/lib/email/resend'
+import { formatTourRequestEmail } from '@/lib/email/templates'
+import { sendOwnerNotificationEmail } from '@/lib/email/resend'
 
 export async function handleTourRequest(request: Request) {
   let body: unknown
@@ -59,10 +56,12 @@ export async function handleTourRequest(request: Request) {
   }
 
   try {
+    const { html, text } = formatTourRequestEmail(fields)
+
     const emailResult = await sendOwnerNotificationEmail({
       subject: 'New Paradise Gym Tour Request',
-      html: formatFieldsHtml('Tour Request', fields),
-      text: formatFieldsText('Tour Request', fields),
+      html,
+      text,
     })
 
     if (emailResult.error) {
