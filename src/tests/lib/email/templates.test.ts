@@ -84,4 +84,20 @@ describe('email templates', () => {
     expect(html).toContain('&lt;script&gt;alert(&quot;x&quot;)&lt;/script&gt;')
     expect(text).toContain('<script>alert("x")</script>')
   })
+
+  it('renders clickable mailto and tel links for customer contact fields', () => {
+    const { html } = formatMembershipRequestEmail(membershipFields, submittedAt)
+
+    expect(html).toContain('href="mailto:marcus@example.com"')
+    expect(html).toContain('marcus@example.com</a>')
+    expect(html).toContain('href="tel:+19562446692"')
+    expect(html).toContain('956-244-6692</a>')
+  })
+
+  it('renders clickable contact links in tour emails', () => {
+    const { html } = formatTourRequestEmail(tourFields, submittedAt)
+
+    expect(html).toContain('href="mailto:elena@example.com"')
+    expect(html).toContain('href="tel:+19562446692"')
+  })
 })

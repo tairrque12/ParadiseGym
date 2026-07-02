@@ -74,6 +74,34 @@ function renderHighlightedValue(
   return `<span style="display:inline-block;background-color:${BRAND.carbon};color:${BRAND.neon};font-family:Arial,Helvetica,sans-serif;font-size:13px;font-weight:600;line-height:1;padding:6px 14px;border-radius:6px;">${display}</span>`
 }
 
+function formatPhoneTelHref(phone: string): string {
+  const digits = phone.replace(/\D/g, '')
+
+  if (digits.length === 10) {
+    return `tel:+1${digits}`
+  }
+
+  if (digits.length === 11 && digits.startsWith('1')) {
+    return `tel:+${digits}`
+  }
+
+  return `tel:${digits}`
+}
+
+function renderClickableContactValue(key: string, value: string): string {
+  const display = escapeHtml(value)
+
+  if (key === 'email') {
+    return `<a href="mailto:${escapeHtml(value)}" style="color:${BRAND.neon};font-family:Arial,Helvetica,sans-serif;font-size:15px;font-weight:600;line-height:1.5;text-decoration:underline;">${display}</a>`
+  }
+
+  if (key === 'phone') {
+    return `<a href="${escapeHtml(formatPhoneTelHref(value))}" style="color:${BRAND.neon};font-family:Arial,Helvetica,sans-serif;font-size:15px;font-weight:600;line-height:1.5;text-decoration:underline;">${display}</a>`
+  }
+
+  return ''
+}
+
 function renderFieldValue(
   key: string,
   value: string | number | null | undefined,
@@ -85,6 +113,10 @@ function renderFieldValue(
 
   if (highlighted) {
     return renderHighlightedValue(key, value as string | number)
+  }
+
+  if ((key === 'email' || key === 'phone') && typeof value === 'string') {
+    return renderClickableContactValue(key, value)
   }
 
   return `<span style="color:${BRAND.value};font-family:Arial,Helvetica,sans-serif;font-size:15px;font-weight:400;line-height:1.5;">${escapeHtml(formatDisplayValue(key, value as string | number))}</span>`

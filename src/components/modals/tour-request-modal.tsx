@@ -1,7 +1,7 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-import { useForm } from 'react-hook-form'
+import { useEffect, useMemo, useState } from 'react'
+import { Controller, useForm, useWatch } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import {
   Dialog,
@@ -12,6 +12,17 @@ import {
 } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+import {
+  generateTimeSlotsForDate,
+  isValidTimeSlotForDate,
+} from '@/lib/gym-hours'
 import {
   tourRequestSchema,
   type TourRequestInput,
@@ -37,8 +48,11 @@ export function TourRequestModal({
 
   const {
     register,
+    control,
     handleSubmit,
     reset,
+    setValue,
+    getValues,
     formState: { errors },
   } = useForm<TourRequestInput>({
     resolver: zodResolver(tourRequestSchema),
@@ -51,6 +65,12 @@ export function TourRequestModal({
       preferred_time: '',
     },
   })
+
+  const preferredDate = useWatch({ control, name: 'preferred_date' })
+  const timeSlots = useMemo(
+    () => (preferredDate ? generateTimeSlotsForDate(preferredDate) : []),
+    [preferredDate]
+  )
 
   useEffect(() => {
     if (!open) {
@@ -67,6 +87,21 @@ export function TourRequestModal({
       preferred_time: '',
     })
   }, [open, reset])
+
+  useEffect(() => {
+    const currentTime = getValues('preferred_time')
+
+    if (!preferredDate) {
+      if (currentTime) {
+        setValue('preferred_time', '', { shouldValidate: true })
+      }
+      return
+    }
+
+    if (currentTime && !isValidTimeSlotForDate(preferredDate, currentTime)) {
+      setValue('preferred_time', '', { shouldValidate: true })
+    }
+  }, [preferredDate, getValues, setValue])
 
   useEffect(() => {
     if (status !== 'success') return
@@ -218,13 +253,41 @@ export function TourRequestModal({
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="tour-preferred-time">Preferred time (optional)</Label>
-                  <Input
-                    id="tour-preferred-time"
-                    className={fieldClassName}
-                    placeholder="e.g. 10:00 AM"
-                    aria-invalid={!!errors.preferred_time}
-                    {...register('preferred_time')}
+                  <Controller
+                    control={control}
+                    name="preferred_time"
+                    render={({ field }) => (
+                      <Select
+                        value={field.value ? field.value : null}
+                        onValueChange={(value) => field.onChange(value ?? '')}
+                        disabled={!preferredDate || timeSlots.length === 0}
+                      >
+                        <SelectTrigger
+                          id="tour-preferred-time"
+                          className={`h-11 w-full rounded-sm border-white/15 bg-[#141414] text-white focus-visible:border-neon focus-visible:ring-neon/40`}
+                          aria-invalid={!!errors.preferred_time}
+                        >
+                          <SelectValue
+                            placeholder={
+                              preferredDate ? 'Select a time' : 'Select a date first'
+                            }
+                          />
+                        </SelectTrigger>
+                        <SelectContent className="border-white/10 bg-[#141414] text-white">
+                          {timeSlots.map((slot) => (
+                            <SelectItem key={slot} value={slot}>
+                              {slot}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    )}
                   />
+                  {errors.preferred_time && (
+                    <p className="text-xs text-red-400">
+                      {errors.preferred_time.message}
+                    </p>
+                  )}
                 </div>
               </div>
 

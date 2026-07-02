@@ -75,4 +75,39 @@ describe('tourRequestSchema', () => {
     })
     expect(result.success).toBe(false)
   })
+
+  it('rejects preferred_time that is not a valid slot for the chosen date', () => {
+    vi.useFakeTimers()
+    vi.setSystemTime(new Date('2026-07-02T12:00:00Z'))
+
+    const result = tourRequestSchema.safeParse({
+      ...validPayload,
+      preferred_date: '2026-07-12',
+      preferred_time: '8:00 AM',
+    })
+
+    expect(result.success).toBe(false)
+  })
+
+  it('accepts preferred_time when it matches a valid slot for the chosen date', () => {
+    vi.useFakeTimers()
+    vi.setSystemTime(new Date('2026-07-02T12:00:00Z'))
+
+    const result = tourRequestSchema.safeParse({
+      ...validPayload,
+      preferred_date: '2026-07-10',
+      preferred_time: '10:00 AM',
+    })
+
+    expect(result.success).toBe(true)
+  })
+
+  it('rejects preferred_time without a preferred_date', () => {
+    const result = tourRequestSchema.safeParse({
+      ...validPayload,
+      preferred_time: '10:00 AM',
+    })
+
+    expect(result.success).toBe(false)
+  })
 })

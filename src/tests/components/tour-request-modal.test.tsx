@@ -53,4 +53,50 @@ describe('TourRequestModal', () => {
       phone: '956-244-6692',
     })
   })
+
+  it('keeps preferred time disabled until a date is selected', () => {
+    render(<TourRequestModal open onOpenChange={vi.fn()} />)
+
+    expect(screen.getByRole('combobox', { name: /preferred time/i })).toBeDisabled()
+    expect(screen.getByText(/select a date first/i)).toBeInTheDocument()
+  })
+
+  it('populates time options after a preferred date is selected', async () => {
+    const user = userEvent.setup()
+
+    render(<TourRequestModal open onOpenChange={vi.fn()} />)
+
+    await user.type(screen.getByLabelText(/preferred date/i), '2026-07-12')
+
+    const timeSelect = screen.getByRole('combobox', { name: /preferred time/i })
+    expect(timeSelect).toBeEnabled()
+
+    await user.click(timeSelect)
+    expect(await screen.findByRole('option', { name: '9:00 AM' })).toBeInTheDocument()
+    expect(screen.getByRole('option', { name: '4:30 PM' })).toBeInTheDocument()
+    expect(screen.queryByRole('option', { name: '8:00 AM' })).not.toBeInTheDocument()
+  })
+
+  it('clears an incompatible preferred time when the date changes', async () => {
+    const user = userEvent.setup()
+
+    render(<TourRequestModal open onOpenChange={vi.fn()} />)
+
+    await user.type(screen.getByLabelText(/preferred date/i), '2026-07-12')
+    await user.click(screen.getByRole('combobox', { name: /preferred time/i }))
+    await user.click(await screen.findByRole('option', { name: '10:00 AM' }))
+
+    expect(screen.getByRole('combobox', { name: /preferred time/i })).toHaveTextContent(
+      '10:00 AM'
+    )
+
+    await user.clear(screen.getByLabelText(/preferred date/i))
+    await user.type(screen.getByLabelText(/preferred date/i), '2026-07-11')
+    await user.click(screen.getByRole('combobox', { name: /preferred time/i }))
+    await user.click(await screen.findByRole('option', { name: '8:00 AM' }))
+
+    expect(screen.getByRole('combobox', { name: /preferred time/i })).toHaveTextContent(
+      '8:00 AM'
+    )
+  })
 })

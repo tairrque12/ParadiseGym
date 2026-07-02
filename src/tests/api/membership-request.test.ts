@@ -60,6 +60,7 @@ describe('POST /api/membership-request', () => {
     expect(mockInsert).toHaveBeenCalledOnce()
     expect(mockSendEmail).toHaveBeenCalledOnce()
     expect(mockSendEmail.mock.calls[0][0].subject).toMatch(/Membership Request/i)
+    expect(mockSendEmail.mock.calls[0][0].replyTo).toBe('marcus@example.com')
   })
 
   it('returns 400 on invalid payload without calling Supabase or Resend', async () => {

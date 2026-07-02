@@ -62,6 +62,7 @@ export async function handleTourRequest(request: Request) {
       subject: 'New Paradise Gym Tour Request',
       html,
       text,
+      replyTo: data.email,
     })
 
     if (emailResult.error) {

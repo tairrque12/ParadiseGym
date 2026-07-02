@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { Menu, X } from 'lucide-react'
 import { Logo } from '@/components/Logo'
 import { NAV_LINKS, ADMIN_LOGIN_PATH } from '@/lib/sections'
+import { handleSectionNavClick } from '@/lib/section-nav'
 import { useModal } from '@/context/modal-context'
 import { cn } from '@/lib/utils'
 
@@ -51,6 +52,7 @@ export function Navbar() {
             <Link
               key={link.href}
               href={link.href}
+              onClick={(event) => handleSectionNavClick(event, link.href)}
               className="text-sm uppercase tracking-[0.14em] text-white/70 transition-colors hover:text-neon"
             >
               {link.label}
@@ -99,7 +101,10 @@ export function Navbar() {
                 <Link
                   href={link.href}
                   className="block text-lg uppercase tracking-[0.12em] text-white/80"
-                  onClick={() => setMenuOpen(false)}
+                  onClick={(event) => {
+                    handleSectionNavClick(event, link.href)
+                    setMenuOpen(false)
+                  }}
                 >
                   {link.label}
                 </Link>

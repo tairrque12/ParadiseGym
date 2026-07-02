@@ -63,6 +63,7 @@ describe('POST /api/tour-request', () => {
     expect(mockInsert).toHaveBeenCalledOnce()
     expect(mockSendEmail).toHaveBeenCalledOnce()
     expect(mockSendEmail.mock.calls[0][0].subject).toMatch(/Tour Request/i)
+    expect(mockSendEmail.mock.calls[0][0].replyTo).toBe('elena@example.com')
   })
 
   it('returns 400 on invalid payload without calling Supabase or Resend', async () => {

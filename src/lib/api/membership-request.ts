@@ -66,6 +66,7 @@ export async function handleMembershipRequest(request: Request) {
       subject: 'New Paradise Gym Membership Request',
       html,
       text,
+      replyTo: data.email,
     })
 
     if (emailResult.error) {

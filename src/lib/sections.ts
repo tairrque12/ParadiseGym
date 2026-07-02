@@ -11,11 +11,11 @@ export type SectionId = (typeof SECTION_IDS)[keyof typeof SECTION_IDS]
 export const GALLERY_PATH = '/gallery' as const
 
 export const NAV_LINKS = [
-  { label: 'Amenities', href: `#${SECTION_IDS.amenities}` },
+  { label: 'Amenities', href: `/#${SECTION_IDS.amenities}` },
   { label: 'Gallery', href: GALLERY_PATH },
-  { label: 'Pricing', href: `#${SECTION_IDS.pricing}` },
-  { label: 'Reviews', href: `#${SECTION_IDS.reviews}` },
-  { label: 'Hours', href: `#${SECTION_IDS.hours}` },
+  { label: 'Pricing', href: `/#${SECTION_IDS.pricing}` },
+  { label: 'Reviews', href: `/#${SECTION_IDS.reviews}` },
+  { label: 'Hours', href: `/#${SECTION_IDS.hours}` },
 ] as const
 
 export const ADMIN_LOGIN_PATH = '/admin/login' as const

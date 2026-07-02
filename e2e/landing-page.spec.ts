@@ -174,4 +174,26 @@ test.describe('Landing page', () => {
     await expect(dialog.getByLabel(/first name/i)).toBeVisible()
     await expect(dialog.getByRole('button', { name: /submit request/i })).toBeVisible()
   })
+
+  test('tour modal date and time selection works on mobile viewport', async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 375, height: 812 })
+    await page.goto('/')
+
+    await page.getByTestId('mobile-menu-button').click()
+    await page.getByRole('button', { name: /free tour/i }).click()
+
+    const dialog = page.getByRole('dialog')
+    await expect(dialog).toBeVisible()
+    await expect(dialog.getByLabel(/preferred time/i)).toBeDisabled()
+
+    await dialog.getByLabel(/preferred date/i).fill('2026-07-12')
+    await expect(dialog.getByLabel(/preferred time/i)).toBeEnabled()
+
+    await dialog.getByLabel(/preferred time/i).click()
+    await page.getByRole('option', { name: '10:00 AM' }).click()
+
+    await expect(dialog.getByLabel(/preferred time/i)).toContainText('10:00 AM')
+  })
 })

@@ -15,8 +15,8 @@ describe('section navigation', () => {
   it('nav links with hash hrefs point to valid section anchor ids', () => {
     const validIds = new Set(Object.values(SECTION_IDS))
     for (const link of NAV_LINKS) {
-      if (!link.href.startsWith('#')) continue
-      const id = link.href.replace('#', '')
+      if (!link.href.startsWith('/#')) continue
+      const id = link.href.replace('/#', '')
       expect(validIds.has(id)).toBe(true)
     }
   })

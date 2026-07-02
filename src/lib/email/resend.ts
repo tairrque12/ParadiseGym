@@ -13,6 +13,7 @@ type EmailPayload = {
   subject: string
   html: string
   text: string
+  replyTo?: string
 }
 
 export async function sendOwnerNotificationEmail(payload: EmailPayload) {
@@ -35,6 +36,7 @@ export async function sendOwnerNotificationEmail(payload: EmailPayload) {
     subject: payload.subject,
     html: payload.html,
     text: payload.text,
+    replyTo: payload.replyTo,
   })
 
   return { error }

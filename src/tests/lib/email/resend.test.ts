@@ -60,4 +60,21 @@ describe('sendOwnerNotificationEmail', () => {
       })
     )
   })
+
+  it('sets reply_to to the customer email when provided', async () => {
+    const { sendOwnerNotificationEmail } = await import('@/lib/email/resend')
+
+    await sendOwnerNotificationEmail({
+      subject: 'Test',
+      html: '<p>Test</p>',
+      text: 'Test',
+      replyTo: 'customer@example.com',
+    })
+
+    expect(mockSend).toHaveBeenCalledWith(
+      expect.objectContaining({
+        replyTo: 'customer@example.com',
+      })
+    )
+  })
 })

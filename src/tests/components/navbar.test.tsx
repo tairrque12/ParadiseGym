@@ -45,7 +45,7 @@ describe('Navbar', () => {
 
     expect(within(mobileNav).getByRole('link', { name: 'Amenities' })).toHaveAttribute(
       'href',
-      '#amenities'
+      '/#amenities'
     )
     expect(within(mobileNav).getByRole('link', { name: 'Gallery' })).toHaveAttribute(
       'href',
@@ -53,15 +53,15 @@ describe('Navbar', () => {
     )
     expect(within(mobileNav).getByRole('link', { name: 'Pricing' })).toHaveAttribute(
       'href',
-      '#pricing'
+      '/#pricing'
     )
     expect(within(mobileNav).getByRole('link', { name: 'Reviews' })).toHaveAttribute(
       'href',
-      '#reviews'
+      '/#reviews'
     )
     expect(within(mobileNav).getByRole('link', { name: 'Hours' })).toHaveAttribute(
       'href',
-      '#hours'
+      '/#hours'
     )
     expect(within(mobileNav).getByRole('link', { name: 'Admin' })).toHaveAttribute(
       'href',
