@@ -2,7 +2,6 @@
 
 import Image from 'next/image'
 import { GALLERY_IMAGES } from '@/lib/gallery'
-import { SECTION_IDS } from '@/lib/sections'
 import { GrainOverlay, SectionReveal, StaggerContainer, StaggerItem } from '@/components/motion'
 import { cn } from '@/lib/utils'
 
@@ -44,10 +43,7 @@ function GalleryImage({
 
 export function Gallery() {
   return (
-    <section
-      id={SECTION_IDS.gallery}
-      className="relative scroll-mt-24 overflow-hidden bg-carbon py-20 sm:py-28"
-    >
+    <section className="relative scroll-mt-24 overflow-hidden bg-carbon py-20 sm:py-28">
       <GrainOverlay />
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <SectionReveal className="mb-10 max-w-2xl md:mb-14">

@@ -7,7 +7,7 @@ import { SECTION_IDS } from '@/lib/sections'
 import { Providers } from '@/components/providers'
 
 describe('Landing page', () => {
-  it('renders all section anchors referenced by navigation', () => {
+  it('renders all section anchors on the landing page', () => {
     render(
       <Providers>
         <Home />
@@ -17,6 +17,8 @@ describe('Landing page', () => {
     for (const id of Object.values(SECTION_IDS)) {
       expect(document.getElementById(id)).toBeInTheDocument()
     }
+
+    expect(document.getElementById('gallery')).not.toBeInTheDocument()
   })
 
   it('opens membership and tour modals from hero CTAs', async () => {

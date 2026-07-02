@@ -2,7 +2,6 @@ import { test, expect } from '@playwright/test'
 
 const NAV_SECTIONS = [
   { link: 'Amenities', id: 'amenities' },
-  { link: 'Gallery', id: 'gallery' },
   { link: 'Pricing', id: 'pricing' },
   { link: 'Reviews', id: 'reviews' },
   { link: 'Hours', id: 'hours' },
@@ -55,6 +54,20 @@ test.describe('Landing page', () => {
 
       await expect(page.locator(`#${id}`)).toBeInViewport()
     }
+  })
+
+  test('navbar gallery link opens the gallery page', async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 800 })
+    await page.goto('/')
+
+    await page
+      .getByRole('navigation', { name: 'Main' })
+      .getByRole('link', { name: 'Gallery', exact: true })
+      .click()
+
+    await expect(page).toHaveURL(/\/gallery$/)
+    await expect(page.getByRole('heading', { name: /the gym/i })).toBeVisible()
+    await expect(page.locator('#gallery')).toHaveCount(0)
   })
 
   test('all images have alt text', async ({ page }) => {
