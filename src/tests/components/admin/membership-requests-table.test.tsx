@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { MembershipRequestsTable } from '@/components/admin/membership-requests-table'
 
@@ -30,6 +30,7 @@ describe('MembershipRequestsTable', () => {
             status: 'contacted',
           },
         ]}
+        onStatusChange={vi.fn()}
       />
     )
 

@@ -1,6 +1,5 @@
-import { getMembershipTypeLabel } from '@/lib/membership-options'
 import { formatRelativeTime } from '@/lib/admin/format-relative-time'
-import type { MembershipRequestRecord } from '@/lib/admin/requests'
+import type { TourRequestRecord } from '@/lib/admin/requests'
 import { StatusBadge } from '@/components/admin/status-badge'
 import { StatusSelect } from '@/components/admin/status-select'
 import {
@@ -12,27 +11,21 @@ import {
   TableRow,
 } from '@/components/ui/table'
 
-export type { MembershipRequestRecord }
-
-export function formatMembershipTypeForDisplay(slug: string): string {
-  return getMembershipTypeLabel(slug)
-}
-
-type MembershipRequestsTableProps = {
-  requests: MembershipRequestRecord[]
+type TourRequestsTableProps = {
+  requests: TourRequestRecord[]
   updatingId?: string | null
   onStatusChange: (id: string, status: string) => void
 }
 
-export function MembershipRequestsTable({
+export function TourRequestsTable({
   requests,
   updatingId,
   onStatusChange,
-}: MembershipRequestsTableProps) {
+}: TourRequestsTableProps) {
   if (requests.length === 0) {
     return (
       <p className="rounded-sm border border-dashed border-white/15 px-4 py-10 text-center text-sm text-white/60">
-        No membership requests yet.
+        No tour requests yet.
       </p>
     )
   }
@@ -44,8 +37,8 @@ export function MembershipRequestsTable({
           <TableHead>Name</TableHead>
           <TableHead>Email</TableHead>
           <TableHead>Phone</TableHead>
-          <TableHead>Age</TableHead>
-          <TableHead>Membership Type</TableHead>
+          <TableHead>Preferred Date</TableHead>
+          <TableHead>Preferred Time</TableHead>
           <TableHead>Status</TableHead>
           <TableHead>Submitted</TableHead>
           <TableHead>Actions</TableHead>
@@ -59,12 +52,8 @@ export function MembershipRequestsTable({
             </TableCell>
             <TableCell>{request.email}</TableCell>
             <TableCell>{request.phone}</TableCell>
-            <TableCell>{request.age}</TableCell>
-            <TableCell>
-              <span className="inline-flex rounded-full border border-neon/30 bg-neon/10 px-2.5 py-1 text-xs font-semibold text-neon">
-                {formatMembershipTypeForDisplay(request.membership_type)}
-              </span>
-            </TableCell>
+            <TableCell>{request.preferred_date ?? '—'}</TableCell>
+            <TableCell>{request.preferred_time ?? '—'}</TableCell>
             <TableCell>
               <StatusBadge status={request.status} />
             </TableCell>

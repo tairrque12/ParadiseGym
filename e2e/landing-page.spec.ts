@@ -75,8 +75,6 @@ test.describe('Landing page', () => {
     await page.emulateMedia({ reducedMotion: 'reduce' })
     await page.goto('/')
 
-    await page.locator('#amenities').scrollIntoViewIfNeeded()
-
     await expect(page.getByText('7,500')).toBeVisible()
     await expect(page.getByText('70+')).toBeVisible()
   })
