@@ -1,5 +1,4 @@
 import { Resend } from 'resend'
-import { CONTACT } from '@/lib/contact'
 
 type EmailPayload = {
   subject: string
@@ -18,9 +17,12 @@ export async function sendOwnerNotificationEmail(payload: EmailPayload) {
 
   const resend = new Resend(apiKey)
 
+  const notificationEmail =
+    process.env.NOTIFICATION_EMAIL || 'Paradisegym2025@gmail.com'
+
   const { error } = await resend.emails.send({
     from: fromEmail,
-    to: CONTACT.email,
+    to: notificationEmail,
     subject: payload.subject,
     html: payload.html,
     text: payload.text,
