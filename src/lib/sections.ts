@@ -17,5 +17,3 @@ export const NAV_LINKS = [
   { label: 'Reviews', href: `/#${SECTION_IDS.reviews}` },
   { label: 'Hours', href: `/#${SECTION_IDS.hours}` },
 ] as const
-
-export const ADMIN_LOGIN_PATH = '/admin/login' as const
