@@ -1,6 +1,6 @@
 export const CONTACT = {
-  phone: '956-244-6692',
-  phoneHref: 'tel:+19562446692',
+  phone: '956-990-5277',
+  phoneHref: 'tel:+19569905277',
   email: 'Paradisegym2025@gmail.com',
   emailHref: 'mailto:Paradisegym2025@gmail.com',
   address: '6201 FM 106 UNIT 16A, Harlingen, TX 78550',
