@@ -2,7 +2,6 @@ export const MEMBERSHIP_TYPES = [
   '12_month_contract',
   'month_to_month',
   '1_year_paid_in_full',
-  '6_months_paid_in_full',
   'one_month',
   'week_pass',
   'day_pass',
@@ -40,13 +39,8 @@ export const MEMBERSHIP_OPTIONS: MembershipOption[] = [
   {
     slug: '1_year_paid_in_full',
     name: '1 Year Paid in Full',
-    price: '$430',
-    category: 'single_payment',
-  },
-  {
-    slug: '6_months_paid_in_full',
-    name: '6 Months Paid in Full',
-    price: '$325.44',
+    price: '$499.99',
+    priceNote: '+ tax',
     category: 'single_payment',
   },
   {
@@ -59,7 +53,7 @@ export const MEMBERSHIP_OPTIONS: MembershipOption[] = [
   {
     slug: 'week_pass',
     name: 'Week Pass',
-    price: '$44.99',
+    price: '$49.99',
     priceNote: '+ tax',
     category: 'single_payment',
   },

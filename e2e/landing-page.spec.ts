@@ -150,7 +150,7 @@ test.describe('Landing page', () => {
       const recurringBadge = page.getByText('Recurring', { exact: true })
       const singlePaymentBadge = page.getByText('Single Payment', { exact: true })
       const firstRecurringPrice = page.getByText('$39.99/mo')
-      const firstSinglePaymentPrice = page.getByText('$430')
+      const firstSinglePaymentPrice = page.getByText('$499.99')
 
       await expect(heading).toBeVisible()
       await expect(recurringBadge).toBeVisible()
