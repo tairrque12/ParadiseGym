@@ -1,4 +1,18 @@
-import { test, expect } from '@playwright/test'
+import { test, expect, type Locator, type Page } from '@playwright/test'
+
+async function scrollToSelector(page: Page, selector: string) {
+  await page.waitForSelector(selector)
+  await page.evaluate((target) => {
+    document.querySelector(target)?.scrollIntoView()
+  }, selector)
+}
+
+async function getBoundingRect(locator: Locator) {
+  return locator.evaluate((element) => {
+    const { x, y, width, height } = element.getBoundingClientRect()
+    return { x, y, width, height }
+  })
+}
 
 const NAV_SECTIONS = [
   { link: 'Amenities', id: 'amenities' },
@@ -125,7 +139,7 @@ test.describe('Landing page', () => {
     await page.setViewportSize({ width: 375, height: 812 })
     await page.goto('/')
 
-    await page.locator('#pricing').scrollIntoViewIfNeeded()
+    await scrollToSelector(page, '#pricing')
 
     await expect(page.getByText('Recurring', { exact: true })).toBeVisible()
     await expect(page.getByText('Single Payment', { exact: true })).toBeVisible()
@@ -144,23 +158,23 @@ test.describe('Landing page', () => {
 
       const pricing = page.locator('#pricing')
       await expect(pricing).toBeVisible()
-      await pricing.scrollIntoViewIfNeeded()
+      await scrollToSelector(page, '#pricing')
 
       const heading = page.getByRole('heading', { name: /membership options/i })
       const recurringBadge = page.getByText('Recurring', { exact: true })
       const singlePaymentBadge = page.getByText('Single Payment', { exact: true })
       const firstRecurringPrice = page.getByText('$39.99/mo')
-      const firstSinglePaymentPrice = page.getByText('$430')
+      const firstSinglePaymentPrice = page.getByText('$499.99')
 
       await expect(heading).toBeVisible()
       await expect(recurringBadge).toBeVisible()
       await expect(singlePaymentBadge).toBeVisible()
 
-      const headingBox = await heading.boundingBox()
-      const recurringBox = await recurringBadge.boundingBox()
-      const singlePaymentBox = await singlePaymentBadge.boundingBox()
-      const recurringPriceBox = await firstRecurringPrice.boundingBox()
-      const singlePaymentPriceBox = await firstSinglePaymentPrice.boundingBox()
+      const headingBox = await getBoundingRect(heading)
+      const recurringBox = await getBoundingRect(recurringBadge)
+      const singlePaymentBox = await getBoundingRect(singlePaymentBadge)
+      const recurringPriceBox = await getBoundingRect(firstRecurringPrice)
+      const singlePaymentPriceBox = await getBoundingRect(firstSinglePaymentPrice)
 
       expect(headingBox).toBeTruthy()
       expect(recurringBox).toBeTruthy()
@@ -200,11 +214,8 @@ test.describe('Landing page', () => {
       const heroHeading = page.getByRole('heading', { name: /paradise gym/i }).first()
       const gymFactsLabel = page.getByText('SQ FT', { exact: true })
 
-      await heroHeading.scrollIntoViewIfNeeded()
-      await gymFactsLabel.scrollIntoViewIfNeeded()
-
-      const heroBox = await heroHeading.boundingBox()
-      const gymFactsBox = await gymFactsLabel.boundingBox()
+      const heroBox = await getBoundingRect(heroHeading)
+      const gymFactsBox = await getBoundingRect(gymFactsLabel)
 
       expect(heroBox).toBeTruthy()
       expect(gymFactsBox).toBeTruthy()
@@ -221,7 +232,7 @@ test.describe('Landing page', () => {
       await page.goto('/')
 
       const reviews = page.locator('#reviews')
-      await reviews.scrollIntoViewIfNeeded()
+      await scrollToSelector(page, '#reviews')
 
       const heading = page.getByRole('heading', { name: /what our members say/i })
       const firstQuote = page.locator('#reviews blockquote').first()
@@ -229,8 +240,8 @@ test.describe('Landing page', () => {
       await expect(heading).toBeVisible()
       await expect(firstQuote).toBeVisible()
 
-      const headingBox = await heading.boundingBox()
-      const quoteBox = await firstQuote.boundingBox()
+      const headingBox = await getBoundingRect(heading)
+      const quoteBox = await getBoundingRect(firstQuote)
 
       expect(headingBox).toBeTruthy()
       expect(quoteBox).toBeTruthy()

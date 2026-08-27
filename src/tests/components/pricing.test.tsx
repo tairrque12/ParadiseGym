@@ -20,7 +20,12 @@ describe('Pricing', () => {
     expect(screen.getByText('Month to Month')).toBeInTheDocument()
     expect(screen.getByText('No contract')).toBeInTheDocument()
     expect(screen.getByText('1 Year Paid in Full')).toBeInTheDocument()
-    expect(screen.getByText('$430')).toBeInTheDocument()
+    expect(screen.getByText('$499.99')).toBeInTheDocument()
+    expect(screen.getByText('Week Pass')).toBeInTheDocument()
+    expect(screen.getByText('$49.99')).toBeInTheDocument()
+    expect(
+      screen.queryByText('6 Months Paid in Full')
+    ).not.toBeInTheDocument()
     expect(screen.getByText('Day Pass')).toBeInTheDocument()
     expect(screen.getByText('$17.99')).toBeInTheDocument()
     expect(screen.getByText(/discounts available/i)).toBeInTheDocument()

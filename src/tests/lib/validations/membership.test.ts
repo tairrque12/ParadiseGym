@@ -67,7 +67,6 @@ describe('membershipRequestSchema', () => {
       '12_month_contract',
       'month_to_month',
       '1_year_paid_in_full',
-      '6_months_paid_in_full',
       'one_month',
       'week_pass',
       'day_pass',
@@ -79,5 +78,12 @@ describe('membershipRequestSchema', () => {
         }).success
       ).toBe(true)
     }
+
+    expect(
+      membershipRequestSchema.safeParse({
+        ...validPayload,
+        membership_type: '6_months_paid_in_full',
+      }).success
+    ).toBe(false)
   })
 })
