@@ -1,4 +1,11 @@
-import { test, expect } from '@playwright/test'
+import { test, expect, type Page } from '@playwright/test'
+
+async function scrollToSelector(page: Page, selector: string) {
+  await page.waitForSelector(selector)
+  await page.evaluate((target) => {
+    document.querySelector(target)?.scrollIntoView()
+  }, selector)
+}
 
 const NAV_SECTIONS = [
   { link: 'Amenities', id: 'amenities' },
@@ -125,7 +132,7 @@ test.describe('Landing page', () => {
     await page.setViewportSize({ width: 375, height: 812 })
     await page.goto('/')
 
-    await page.locator('#pricing').scrollIntoViewIfNeeded()
+    await scrollToSelector(page, '#pricing')
 
     await expect(page.getByText('Recurring', { exact: true })).toBeVisible()
     await expect(page.getByText('Single Payment', { exact: true })).toBeVisible()
@@ -144,7 +151,7 @@ test.describe('Landing page', () => {
 
       const pricing = page.locator('#pricing')
       await expect(pricing).toBeVisible()
-      await pricing.scrollIntoViewIfNeeded()
+      await scrollToSelector(page, '#pricing')
 
       const heading = page.getByRole('heading', { name: /membership options/i })
       const recurringBadge = page.getByText('Recurring', { exact: true })
@@ -200,9 +207,6 @@ test.describe('Landing page', () => {
       const heroHeading = page.getByRole('heading', { name: /paradise gym/i }).first()
       const gymFactsLabel = page.getByText('SQ FT', { exact: true })
 
-      await heroHeading.scrollIntoViewIfNeeded()
-      await gymFactsLabel.scrollIntoViewIfNeeded()
-
       const heroBox = await heroHeading.boundingBox()
       const gymFactsBox = await gymFactsLabel.boundingBox()
 
@@ -221,7 +225,7 @@ test.describe('Landing page', () => {
       await page.goto('/')
 
       const reviews = page.locator('#reviews')
-      await reviews.scrollIntoViewIfNeeded()
+      await scrollToSelector(page, '#reviews')
 
       const heading = page.getByRole('heading', { name: /what our members say/i })
       const firstQuote = page.locator('#reviews blockquote').first()
