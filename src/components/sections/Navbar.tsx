@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { Menu, X } from 'lucide-react'
 import { Logo } from '@/components/Logo'
+import { LocationSwitcher } from '@/components/LocationSwitcher'
 import { NAV_LINKS } from '@/lib/sections'
 import { handleSectionNavClick } from '@/lib/section-nav'
 import { useModal } from '@/context/modal-context'
@@ -82,6 +83,8 @@ export function Navbar() {
           {menuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
         </button>
       </div>
+
+      <LocationSwitcher />
 
       {menuOpen && (
         <nav

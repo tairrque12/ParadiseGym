@@ -20,9 +20,6 @@ export type MembershipOption = {
   category: MembershipCategory
 }
 
-export const MEMBERSHIP_JOIN_URL =
-  'https://onlinejoin.abcfitness.com/signup/plan?club=32265'
-
 export const MEMBERSHIP_OPTIONS: MembershipOption[] = [
   {
     slug: '12_month_contract',
@@ -68,14 +65,6 @@ export const MEMBERSHIP_OPTIONS: MembershipOption[] = [
     category: 'single_payment',
   },
 ]
-
-export const RECURRING_MEMBERSHIP_OPTIONS = MEMBERSHIP_OPTIONS.filter(
-  (option) => option.category === 'recurring'
-)
-
-export const SINGLE_PAYMENT_MEMBERSHIP_OPTIONS = MEMBERSHIP_OPTIONS.filter(
-  (option) => option.category === 'single_payment'
-)
 
 const MEMBERSHIP_OPTION_BY_SLUG = Object.fromEntries(
   MEMBERSHIP_OPTIONS.map((option) => [option.slug, option])

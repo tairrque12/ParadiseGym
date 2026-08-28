@@ -123,6 +123,88 @@ test.describe('Landing page', () => {
     }
   })
 
+  test('switching to McAllen swaps location-aware content and back again', async ({
+    page,
+  }) => {
+    await page.emulateMedia({ reducedMotion: 'reduce' })
+    await page.setViewportSize({ width: 1280, height: 800 })
+    await page.goto('/')
+
+    await page.getByRole('button', { name: /mcallen/i }).click()
+
+    await expect(
+      page.getByRole('button', { name: /lock in founding member pricing/i })
+    ).toBeDisabled()
+    await expect(
+      page.getByRole('link', { name: /request membership/i })
+    ).toHaveCount(0)
+
+    await scrollToSelector(page, '#pricing')
+
+    await expect(page.getByText('Founding Member Pricing')).toBeVisible()
+    await expect(page.getByText('1 Year Paid in Full')).toBeVisible()
+    await expect(page.getByText('$499.99')).toBeVisible()
+    await expect(page.getByText('12 Month Contract')).toBeVisible()
+    await expect(page.getByText('$39.99/mo')).toBeVisible()
+    await expect(page.getByText('Month to Month')).toBeVisible()
+    await expect(page.getByText('$49.99/mo')).toBeVisible()
+    await expect(page.getByText('Week Pass')).toHaveCount(0)
+    await expect(page.getByText('Day Pass')).toHaveCount(0)
+    await expect(page.getByTestId('presale-countdown')).toBeVisible()
+    await expect(page.getByText(/opening in/i)).toBeVisible()
+
+    await scrollToSelector(page, '#hours')
+
+    await expect(page.getByText(/hours coming soon/i)).toBeVisible()
+    await expect(
+      page.getByText('1001 N. Jackson Road, McAllen, TX 78501')
+    ).toBeVisible()
+    await expect(page.getByText('Mon – Fri')).toHaveCount(0)
+
+    await page.getByRole('button', { name: /harlingen/i }).click()
+
+    await expect(
+      page.getByRole('link', { name: /request membership/i })
+    ).toHaveAttribute('href', MEMBERSHIP_JOIN_URL)
+    await expect(page.getByText('Recurring', { exact: true })).toBeVisible()
+    await expect(page.getByText('Week Pass')).toBeVisible()
+    await expect(page.getByTestId('presale-countdown')).toHaveCount(0)
+    await expect(page.getByText('Mon – Fri')).toBeVisible()
+  })
+
+  test('McAllen pre-sale content renders cleanly on mobile viewport', async ({
+    page,
+  }) => {
+    await page.emulateMedia({ reducedMotion: 'reduce' })
+    await page.setViewportSize({ width: 375, height: 812 })
+    await page.goto('/')
+
+    const mcallenTab = page.getByRole('button', { name: /mcallen/i })
+    await expect(mcallenTab).toBeVisible()
+    await mcallenTab.click()
+
+    await scrollToSelector(page, '#pricing')
+
+    const countdown = page.getByTestId('presale-countdown')
+    await expect(countdown).toBeVisible()
+    await expect(page.getByText('Founding Member Pricing')).toBeVisible()
+
+    const countdownBox = await getBoundingRect(countdown)
+    const firstOption = page.getByText('1 Year Paid in Full')
+    const optionBox = await getBoundingRect(firstOption)
+
+    expect(countdownBox.x).toBeGreaterThanOrEqual(0)
+    expect(countdownBox.x + countdownBox.width).toBeLessThanOrEqual(375)
+    expect(countdownBox.y + countdownBox.height).toBeLessThanOrEqual(
+      optionBox.y + 2
+    )
+
+    const documentWidth = await page.evaluate(
+      () => document.documentElement.scrollWidth
+    )
+    expect(documentWidth).toBeLessThanOrEqual(375)
+  })
+
   test('pricing section stacks cleanly on mobile viewport', async ({ page }) => {
     await page.emulateMedia({ reducedMotion: 'reduce' })
     await page.setViewportSize({ width: 375, height: 812 })

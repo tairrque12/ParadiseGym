@@ -5,12 +5,16 @@ import { motion, useScroll, useTransform } from 'framer-motion'
 import { Wordmark } from '@/components/Logo'
 import { NeonButton } from '@/components/NeonButton'
 import { GrainOverlay } from '@/components/motion'
+import { useLocation } from '@/context/location-context'
 import { useModal } from '@/context/modal-context'
-import { MEMBERSHIP_JOIN_URL } from '@/lib/membership-options'
+import { CONTACT } from '@/lib/contact'
+import { isJoinLinkReady } from '@/lib/locations'
 import { usePrefersReducedMotion } from '@/hooks/use-prefers-reduced-motion'
 
 export function Hero() {
   const { openTourModal } = useModal()
+  const { location } = useLocation()
+  const joinLinkReady = isJoinLinkReady(location.joinLink)
   const reducedMotion = usePrefersReducedMotion()
   const { scrollY } = useScroll()
   const y = useTransform(scrollY, [0, 600], ['0%', reducedMotion ? '0%' : '18%'])
@@ -38,17 +42,30 @@ export function Hero() {
             Where Strength Meets Aesthetics
           </p>
           <div className="mt-8 flex flex-col gap-4 sm:mt-10 sm:flex-row sm:items-center">
-            <NeonButton
-              href={MEMBERSHIP_JOIN_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Request Membership
-            </NeonButton>
+            {joinLinkReady ? (
+              <NeonButton
+                href={location.joinLink}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {location.ctaLabel}
+              </NeonButton>
+            ) : (
+              <NeonButton disabled>{location.ctaLabel}</NeonButton>
+            )}
             <NeonButton onClick={openTourModal} variant="outline">
               Free Gym Tour
             </NeonButton>
           </div>
+          {joinLinkReady ? null : (
+            <p className="mt-4 text-sm text-white/60">
+              Pre-sale signup opens soon — call{' '}
+              <a href={CONTACT.phoneHref} className="text-neon hover:underline">
+                {CONTACT.phone}
+              </a>{' '}
+              to reserve founding member pricing.
+            </p>
+          )}
         </div>
       </div>
     </section>

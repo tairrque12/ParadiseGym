@@ -59,6 +59,21 @@ const config: Config = {
         neon: '0 0 24px rgba(57, 255, 20, 0.35)',
         'neon-sm': '0 0 12px rgba(57, 255, 20, 0.25)',
       },
+      keyframes: {
+        'neon-pulse': {
+          '0%, 100%': {
+            opacity: '1',
+            textShadow: '0 0 14px rgba(57, 255, 20, 0.35)',
+          },
+          '50%': {
+            opacity: '0.82',
+            textShadow: '0 0 26px rgba(57, 255, 20, 0.75)',
+          },
+        },
+      },
+      animation: {
+        'neon-pulse': 'neon-pulse 2.8s ease-in-out infinite',
+      },
     },
   },
   plugins: [],
