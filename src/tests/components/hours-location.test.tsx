@@ -1,26 +1,12 @@
 import '@/tests/mocks/react'
-import { describe, it, expect, beforeEach } from 'vitest'
+import { describe, it, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { HoursLocation } from '@/components/sections/HoursLocation'
-import { LocationProvider } from '@/context/location-context'
 import { LOCATIONS } from '@/lib/locations'
-import type { LocationId } from '@/lib/locations'
-
-function renderFor(locationId: LocationId) {
-  return render(
-    <LocationProvider initialLocationId={locationId}>
-      <HoursLocation />
-    </LocationProvider>
-  )
-}
 
 describe('HoursLocation', () => {
-  beforeEach(() => {
-    window.sessionStorage.clear()
-  })
-
-  it('shows the Harlingen hours table and address', () => {
-    renderFor('harlingen')
+  it('defaults to the Harlingen hours table and address', () => {
+    render(<HoursLocation />)
 
     expect(screen.getByText('Mon – Fri')).toBeInTheDocument()
     expect(screen.getByText('5am – Midnight')).toBeInTheDocument()
@@ -32,10 +18,12 @@ describe('HoursLocation', () => {
   })
 
   it('shows a coming soon state and McAllen address for the pre-sale location', () => {
-    renderFor('mcallen')
+    render(<HoursLocation location={LOCATIONS.mcallen} />)
 
     expect(screen.getByText(/hours coming soon/i)).toBeInTheDocument()
-    expect(screen.getByText(/opening late 2026/i)).toBeInTheDocument()
+    expect(
+      screen.getByText(/full schedule announced closer to opening day/i)
+    ).toBeInTheDocument()
     expect(screen.queryByText('Mon – Fri')).not.toBeInTheDocument()
     expect(screen.getByText(LOCATIONS.mcallen.address)).toBeInTheDocument()
     expect(screen.getByText(/20,000 sq ft/i)).toBeInTheDocument()

@@ -1,14 +1,11 @@
 import { describe, it, expect } from 'vitest'
 import {
-  DEFAULT_LOCATION_ID,
   HARLINGEN_JOIN_URL,
   LOCATIONS,
   LOCATION_IDS,
   LOCATION_LIST,
   MCALLEN_JOIN_URL,
-  isJoinLinkReady,
-  isLocationId,
-  getLocation,
+  MCALLEN_PATH,
 } from '@/lib/locations'
 import { MEMBERSHIP_OPTIONS } from '@/lib/membership-options'
 
@@ -21,9 +18,10 @@ describe('locations data', () => {
     ])
   })
 
-  it('defaults to the open Harlingen location', () => {
-    expect(DEFAULT_LOCATION_ID).toBe('harlingen')
-    expect(getLocation(DEFAULT_LOCATION_ID).status).toBe('open')
+  it('gives each location its own page route', () => {
+    expect(LOCATIONS.harlingen.href).toBe('/')
+    expect(LOCATIONS.mcallen.href).toBe(MCALLEN_PATH)
+    expect(MCALLEN_PATH).toBe('/mcallen')
   })
 
   it('keeps Harlingen as the live source of truth', () => {
@@ -36,6 +34,7 @@ describe('locations data', () => {
       address: '6201 FM 106 UNIT 16A, Harlingen, TX 78550',
       sqft: 7500,
       joinLink: HARLINGEN_JOIN_URL,
+      ctaLabel: 'Request Membership',
     })
     expect(harlingen.membershipOptions).toEqual(MEMBERSHIP_OPTIONS)
     expect(harlingen.membershipOptions).toHaveLength(6)
@@ -44,9 +43,10 @@ describe('locations data', () => {
       { days: 'Saturday', time: '8am – 8pm' },
       { days: 'Sunday', time: '9am – 5pm' },
     ])
+    expect(harlingen.grandOpeningNote).toBeUndefined()
   })
 
-  it('describes McAllen as a pre-sale location with no hours yet', () => {
+  it('describes McAllen as a pre-sale location with no hours or opening date yet', () => {
     const mcallen = LOCATIONS.mcallen
 
     expect(mcallen).toMatchObject({
@@ -57,9 +57,9 @@ describe('locations data', () => {
       sqft: 20000,
       hours: null,
       joinLink: 'https://onlinejoin.abcfitness.com/signup/plan?club=32367',
+      ctaLabel: 'Lock In Founding Member Pricing',
+      grandOpeningNote: 'Official Grand Opening Date — Coming Soon',
     })
-    expect(mcallen.openingTimeframe).toBeTruthy()
-    expect(mcallen.openingTarget).toBeTruthy()
     expect(mcallen.presaleNote).toMatch(/founding member pricing/i)
   })
 
@@ -88,20 +88,10 @@ describe('locations data', () => {
     expect(MCALLEN_JOIN_URL).not.toBe(HARLINGEN_JOIN_URL)
 
     for (const location of LOCATION_LIST) {
-      expect(location.joinLink).toMatch(/^https:\/\/onlinejoin\.abcfitness\.com\//)
+      expect(location.joinLink).toMatch(
+        /^https:\/\/onlinejoin\.abcfitness\.com\//
+      )
       expect(location.joinLink).not.toMatch(/placeholder/i)
-      expect(isJoinLinkReady(location.joinLink)).toBe(true)
     }
-  })
-
-  it('still guards against a location whose signup link is not a real URL', () => {
-    expect(isJoinLinkReady('PLACEHOLDER_LINK')).toBe(false)
-    expect(isJoinLinkReady('')).toBe(false)
-  })
-
-  it('validates location ids', () => {
-    expect(isLocationId('harlingen')).toBe(true)
-    expect(isLocationId('mcallen')).toBe(true)
-    expect(isLocationId('brownsville')).toBe(false)
   })
 })

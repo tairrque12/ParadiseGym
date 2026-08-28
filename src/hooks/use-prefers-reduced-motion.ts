@@ -2,13 +2,9 @@
 
 import { useEffect, useState } from 'react'
 
-function getInitialReducedMotion(): boolean {
-  if (typeof window === 'undefined') return false
-  return window.matchMedia('(prefers-reduced-motion: reduce)').matches
-}
-
 export function usePrefersReducedMotion(): boolean {
-  const [reduced, setReduced] = useState(getInitialReducedMotion)
+  // Starts false so the first client render matches server HTML; resolved on mount.
+  const [reduced, setReduced] = useState(false)
 
   useEffect(() => {
     const media = window.matchMedia('(prefers-reduced-motion: reduce)')

@@ -1,9 +1,7 @@
-'use client'
-
 import Link from 'next/link'
 import { Logo } from '@/components/Logo'
-import { useLocation } from '@/context/location-context'
 import { CONTACT } from '@/lib/contact'
+import { LOCATIONS, type GymLocation } from '@/lib/locations'
 
 function InstagramIcon({ className }: { className?: string }) {
   return (
@@ -35,8 +33,11 @@ function TikTokIcon({ className }: { className?: string }) {
   )
 }
 
-export function Footer() {
-  const { location } = useLocation()
+export function Footer({
+  location = LOCATIONS.harlingen,
+}: {
+  location?: GymLocation
+}) {
   const year = new Date().getFullYear()
 
   return (
@@ -88,11 +89,7 @@ export function Footer() {
               </ul>
             ) : (
               <p className="mt-4 text-sm text-white/70">
-                Hours coming soon
-                {location.openingTimeframe
-                  ? ` — opening ${location.openingTimeframe.toLowerCase()}`
-                  : ''}
-                .
+                Hours coming soon.
               </p>
             )}
           </div>

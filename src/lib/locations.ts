@@ -20,15 +20,15 @@ export type GymLocation = {
   id: LocationId
   name: string
   status: LocationStatus
+  href: string
   address: string
   sqft: number
   hours: readonly LocationHours[] | null
   joinLink: string
   ctaLabel: string
   membershipOptions: readonly MembershipOption[]
-  openingTimeframe?: string
-  openingTarget?: string
   presaleNote?: string
+  grandOpeningNote?: string
 }
 
 export const HARLINGEN_JOIN_URL =
@@ -37,7 +37,7 @@ export const HARLINGEN_JOIN_URL =
 export const MCALLEN_JOIN_URL =
   'https://onlinejoin.abcfitness.com/signup/plan?club=32367'
 
-export const MCALLEN_OPENING_TARGET = '2026-11-26T09:00:00-06:00'
+export const MCALLEN_PATH = '/mcallen'
 
 function optionsForSlugs(
   slugs: readonly MembershipType[]
@@ -56,6 +56,7 @@ export const LOCATIONS: Record<LocationId, GymLocation> = {
     id: 'harlingen',
     name: 'Harlingen',
     status: 'open',
+    href: '/',
     address: CONTACT.address,
     sqft: 7500,
     hours: HOURS,
@@ -67,6 +68,7 @@ export const LOCATIONS: Record<LocationId, GymLocation> = {
     id: 'mcallen',
     name: 'McAllen',
     status: 'presale',
+    href: MCALLEN_PATH,
     address: '1001 N. Jackson Road, McAllen, TX 78501',
     sqft: 20000,
     hours: null,
@@ -77,10 +79,9 @@ export const LOCATIONS: Record<LocationId, GymLocation> = {
       '12_month_contract',
       'month_to_month',
     ]),
-    openingTimeframe: 'Late 2026',
-    openingTarget: MCALLEN_OPENING_TARGET,
     presaleNote:
       'Founding member pricing available now — location opening soon.',
+    grandOpeningNote: 'Official Grand Opening Date — Coming Soon',
   },
 }
 
@@ -88,16 +89,3 @@ export const LOCATION_LIST: readonly GymLocation[] = LOCATION_IDS.map(
   (id) => LOCATIONS[id]
 )
 
-export const DEFAULT_LOCATION_ID: LocationId = 'harlingen'
-
-export function isLocationId(value: string): value is LocationId {
-  return (LOCATION_IDS as readonly string[]).includes(value)
-}
-
-export function getLocation(id: LocationId): GymLocation {
-  return LOCATIONS[id]
-}
-
-export function isJoinLinkReady(joinLink: string): boolean {
-  return joinLink.startsWith('https://')
-}

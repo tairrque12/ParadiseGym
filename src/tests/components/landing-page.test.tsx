@@ -1,15 +1,13 @@
 import '@/tests/mocks/react'
-import { describe, it, expect, beforeEach } from 'vitest'
+import { describe, it, expect, vi } from 'vitest'
 import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import Home from '@/app/page'
 import { SECTION_IDS } from '@/lib/sections'
 import { Providers } from '@/components/providers'
-import {
-  HARLINGEN_JOIN_URL,
-  LOCATIONS,
-  MCALLEN_JOIN_URL,
-} from '@/lib/locations'
+import { HARLINGEN_JOIN_URL, LOCATIONS, MCALLEN_PATH } from '@/lib/locations'
+
+vi.mock('next/navigation', () => ({ usePathname: () => '/' }))
 
 function renderHome() {
   return render(
@@ -19,18 +17,7 @@ function renderHome() {
   )
 }
 
-// The "Get Directions" button also carries the city name, so scope to the switcher.
-function locationTab(name: RegExp) {
-  return within(
-    screen.getByRole('group', { name: /select gym location/i })
-  ).getByRole('button', { name })
-}
-
 describe('Landing page', () => {
-  beforeEach(() => {
-    window.sessionStorage.clear()
-  })
-
   it('renders all section anchors on the landing page', () => {
     renderHome()
 
@@ -54,74 +41,51 @@ describe('Landing page', () => {
 
     await user.click(screen.getByRole('button', { name: 'Free Gym Tour' }))
     expect(screen.getByRole('dialog')).toBeInTheDocument()
-    expect(screen.getByRole('heading', { name: /free gym tour/i })).toBeInTheDocument()
-  })
-
-  it('switches every location-aware section when McAllen is selected', async () => {
-    const user = userEvent.setup()
-    renderHome()
-
-    await user.click(locationTab(/mcallen/i))
-
     expect(
-      screen.getByRole('link', { name: /lock in founding member pricing/i })
-    ).toHaveAttribute('href', MCALLEN_JOIN_URL)
-    expect(
-      screen.queryByRole('link', { name: 'Request Membership' })
-    ).not.toBeInTheDocument()
-
-    expect(screen.getByText('Founding Member Pricing')).toBeInTheDocument()
-    expect(screen.queryByText('Week Pass')).not.toBeInTheDocument()
-    expect(screen.getByTestId('presale-countdown')).toBeInTheDocument()
-
-    const hoursSection = within(document.getElementById('hours') as HTMLElement)
-    expect(hoursSection.getByText(/hours coming soon/i)).toBeInTheDocument()
-    expect(
-      hoursSection.getByText(LOCATIONS.mcallen.address)
+      screen.getByRole('heading', { name: /free gym tour/i })
     ).toBeInTheDocument()
   })
 
-  it('announces McAllen on the default Harlingen view and jumps to its pricing', async () => {
-    const user = userEvent.setup()
+  it('routes to the McAllen page from the announcement and the switcher', () => {
     renderHome()
 
-    expect(locationTab(/harlingen/i)).toHaveAttribute(
-      'aria-pressed',
-      'true'
+    const announcement = within(
+      screen.getByTestId('new-location-announcement')
     )
-    expect(screen.getByTestId('new-location-announcement')).toBeInTheDocument()
+    expect(
+      announcement.getByRole('link', { name: /view pre-sale pricing/i })
+    ).toHaveAttribute('href', MCALLEN_PATH)
 
-    const pricing = document.getElementById('pricing') as HTMLElement
-    const scrollIntoView = vi.fn()
-    pricing.scrollIntoView = scrollIntoView
-
-    await user.click(
-      screen.getByRole('button', { name: /view pre-sale pricing/i })
+    const switcher = within(
+      screen.getByRole('navigation', { name: /gym locations/i })
     )
-
-    expect(scrollIntoView).toHaveBeenCalled()
-    expect(locationTab(/mcallen/i)).toHaveAttribute(
-      'aria-pressed',
-      'true'
+    expect(switcher.getByRole('link', { name: /mcallen/i })).toHaveAttribute(
+      'href',
+      MCALLEN_PATH
     )
-    expect(screen.getByText('Founding Member Pricing')).toBeInTheDocument()
-    expect(screen.getByTestId('presale-countdown')).toBeInTheDocument()
+    expect(switcher.getByRole('link', { name: /harlingen/i })).toHaveAttribute(
+      'aria-current',
+      'page'
+    )
   })
 
-  it('reverts to Harlingen content when switching back', async () => {
-    const user = userEvent.setup()
+  it('keeps the homepage scoped to Harlingen content', () => {
     renderHome()
 
-    await user.click(locationTab(/mcallen/i))
-    await user.click(locationTab(/harlingen/i))
-
-    expect(
-      screen.getByRole('link', { name: 'Request Membership' })
-    ).toHaveAttribute('href', HARLINGEN_JOIN_URL)
     expect(screen.getByText('Recurring')).toBeInTheDocument()
     expect(screen.getByText('Week Pass')).toBeInTheDocument()
-    expect(screen.queryByTestId('presale-countdown')).not.toBeInTheDocument()
-    expect(screen.queryByText(/hours coming soon/i)).not.toBeInTheDocument()
     expect(screen.getAllByText('Mon – Fri').length).toBeGreaterThan(0)
+    expect(
+      within(document.getElementById('hours') as HTMLElement).getByText(
+        LOCATIONS.harlingen.address
+      )
+    ).toBeInTheDocument()
+
+    expect(screen.queryByText(/hours coming soon/i)).not.toBeInTheDocument()
+    expect(screen.queryByTestId('grand-opening-note')).not.toBeInTheDocument()
+    expect(screen.queryByTestId('presale-countdown')).not.toBeInTheDocument()
+    expect(
+      screen.queryByText(/pre-sale membership options/i)
+    ).not.toBeInTheDocument()
   })
 })

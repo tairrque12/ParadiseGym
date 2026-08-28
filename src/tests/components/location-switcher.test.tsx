@@ -1,77 +1,63 @@
 import '@/tests/mocks/react'
-import { describe, it, expect, beforeEach } from 'vitest'
-import { render, screen, waitFor } from '@testing-library/react'
-import userEvent from '@testing-library/user-event'
+import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { render, screen } from '@testing-library/react'
 import { LocationSwitcher } from '@/components/LocationSwitcher'
-import {
-  LOCATION_STORAGE_KEY,
-  LocationProvider,
-} from '@/context/location-context'
 
-function renderSwitcher() {
-  return render(
-    <LocationProvider>
-      <LocationSwitcher />
-    </LocationProvider>
-  )
-}
+const usePathname = vi.hoisted(() => vi.fn(() => '/'))
+
+vi.mock('next/navigation', () => ({ usePathname }))
 
 describe('LocationSwitcher', () => {
   beforeEach(() => {
-    window.sessionStorage.clear()
+    usePathname.mockReturnValue('/')
   })
 
-  it('renders both locations with a pre-sale badge on McAllen', () => {
-    renderSwitcher()
+  it('renders both locations as links with a pre-sale badge on McAllen', () => {
+    render(<LocationSwitcher />)
 
-    const harlingen = screen.getByRole('button', { name: /harlingen/i })
-    const mcallen = screen.getByRole('button', { name: /mcallen/i })
+    const harlingen = screen.getByRole('link', { name: /harlingen/i })
+    const mcallen = screen.getByRole('link', { name: /mcallen/i })
 
-    expect(harlingen).toBeInTheDocument()
+    expect(harlingen).toHaveAttribute('href', '/')
+    expect(mcallen).toHaveAttribute('href', '/mcallen')
     expect(mcallen).toHaveTextContent(/pre-sale/i)
     expect(harlingen).not.toHaveTextContent(/pre-sale/i)
   })
 
-  it('marks Harlingen as the active selection by default', () => {
-    renderSwitcher()
+  it('marks Harlingen as the current page on the main site', () => {
+    render(<LocationSwitcher />)
 
-    expect(screen.getByRole('button', { name: /harlingen/i })).toHaveAttribute(
-      'aria-pressed',
-      'true'
+    expect(screen.getByRole('link', { name: /harlingen/i })).toHaveAttribute(
+      'aria-current',
+      'page'
     )
-    expect(screen.getByRole('button', { name: /mcallen/i })).toHaveAttribute(
-      'aria-pressed',
-      'false'
-    )
+    expect(
+      screen.getByRole('link', { name: /mcallen/i })
+    ).not.toHaveAttribute('aria-current')
   })
 
-  it('switches the active location and stores it for the session', async () => {
-    const user = userEvent.setup()
-    renderSwitcher()
+  it('marks McAllen as the current page on the McAllen route', () => {
+    usePathname.mockReturnValue('/mcallen')
 
-    await user.click(screen.getByRole('button', { name: /mcallen/i }))
+    render(<LocationSwitcher />)
 
-    expect(screen.getByRole('button', { name: /mcallen/i })).toHaveAttribute(
-      'aria-pressed',
-      'true'
+    expect(screen.getByRole('link', { name: /mcallen/i })).toHaveAttribute(
+      'aria-current',
+      'page'
     )
-    expect(screen.getByRole('button', { name: /harlingen/i })).toHaveAttribute(
-      'aria-pressed',
-      'false'
-    )
-    expect(window.sessionStorage.getItem(LOCATION_STORAGE_KEY)).toBe('mcallen')
+    expect(
+      screen.getByRole('link', { name: /harlingen/i })
+    ).not.toHaveAttribute('aria-current')
   })
 
-  it('restores the stored location after a refresh', async () => {
-    window.sessionStorage.setItem(LOCATION_STORAGE_KEY, 'mcallen')
+  it('keeps Harlingen current on other shared pages', () => {
+    usePathname.mockReturnValue('/gallery')
 
-    renderSwitcher()
+    render(<LocationSwitcher />)
 
-    await waitFor(() => {
-      expect(screen.getByRole('button', { name: /mcallen/i })).toHaveAttribute(
-        'aria-pressed',
-        'true'
-      )
-    })
+    expect(screen.getByRole('link', { name: /harlingen/i })).toHaveAttribute(
+      'aria-current',
+      'page'
+    )
   })
 })

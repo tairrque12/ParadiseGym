@@ -2,13 +2,16 @@
 
 import { useCallback } from 'react'
 import { MapPin } from 'lucide-react'
-import { useLocation } from '@/context/location-context'
+import { LOCATIONS, type GymLocation } from '@/lib/locations'
 import { detectMapsPlatform, getMapsUrl } from '@/lib/maps'
 import { SECTION_IDS } from '@/lib/sections'
 import { GrainOverlay, SectionReveal } from '@/components/motion'
 
-export function HoursLocation() {
-  const { location } = useLocation()
+export function HoursLocation({
+  location = LOCATIONS.harlingen,
+}: {
+  location?: GymLocation
+}) {
   const { address, hours } = location
 
   const openMaps = useCallback(() => {
@@ -70,9 +73,7 @@ export function HoursLocation() {
                   Hours coming soon
                 </p>
                 <p className="mt-2 text-sm leading-relaxed text-white/65">
-                  {location.openingTimeframe
-                    ? `Opening ${location.openingTimeframe}. Full schedule announced closer to opening day.`
-                    : 'Full schedule announced closer to opening day.'}
+                  Full schedule announced closer to opening day.
                 </p>
               </div>
             )}
