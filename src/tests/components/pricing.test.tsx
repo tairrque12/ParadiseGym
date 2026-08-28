@@ -27,8 +27,7 @@ describe('Pricing', () => {
       screen.queryByText('6 Months Paid in Full')
     ).not.toBeInTheDocument()
     expect(screen.getByText('Day Pass')).toBeInTheDocument()
-    expect(screen.getByText('$19.99')).toBeInTheDocument()
-    expect(screen.getByText('Purchase in person')).toBeInTheDocument()
+    expect(screen.getByText('$17.99')).toBeInTheDocument()
     expect(screen.getByText(/discounts available/i)).toBeInTheDocument()
     expect(
       screen.getByText(/teachers, veterans, and first responders/i)
@@ -51,13 +50,12 @@ describe('Pricing', () => {
       /1 year paid in full/i,
       /one month/i,
       /week pass/i,
+      /day pass/i,
     ]) {
       const link = screen.getByRole('link', { name })
       expect(link).toHaveAttribute('href', MEMBERSHIP_JOIN_URL)
       expect(link).toHaveAttribute('target', '_blank')
       expect(link).toHaveAttribute('rel', 'noopener noreferrer')
     }
-
-    expect(screen.queryByRole('link', { name: /day pass/i })).not.toBeInTheDocument()
   })
 })

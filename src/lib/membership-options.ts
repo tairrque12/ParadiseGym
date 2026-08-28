@@ -17,11 +17,11 @@ export type MembershipOption = {
   price: string
   priceNote?: string
   subLabel?: string
-  inPersonOnly?: boolean
   category: MembershipCategory
 }
 
-export const MEMBERSHIP_JOIN_URL = 'https://onlinejoin.abcfitness.com'
+export const MEMBERSHIP_JOIN_URL =
+  'https://onlinejoin.abcfitness.com/signup/plan?club=32265'
 
 export const MEMBERSHIP_OPTIONS: MembershipOption[] = [
   {
@@ -63,9 +63,8 @@ export const MEMBERSHIP_OPTIONS: MembershipOption[] = [
   {
     slug: 'day_pass',
     name: 'Day Pass',
-    price: '$19.99',
+    price: '$17.99',
     priceNote: '+ tax',
-    inPersonOnly: true,
     category: 'single_payment',
   },
 ]

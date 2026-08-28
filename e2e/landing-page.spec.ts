@@ -1,6 +1,7 @@
 import { test, expect, type Locator, type Page } from '@playwright/test'
 
-const MEMBERSHIP_JOIN_URL = 'https://onlinejoin.abcfitness.com'
+const MEMBERSHIP_JOIN_URL =
+  'https://onlinejoin.abcfitness.com/signup/plan?club=32265'
 
 async function scrollToSelector(page: Page, selector: string) {
   await page.waitForSelector(selector)
@@ -113,14 +114,13 @@ test.describe('Landing page', () => {
       /1 year paid in full/i,
       /one month/i,
       /week pass/i,
+      /day pass/i,
     ]) {
       const link = page.getByRole('link', { name })
       await expect(link).toHaveAttribute('href', MEMBERSHIP_JOIN_URL)
       await expect(link).toHaveAttribute('target', '_blank')
       await expect(link).toHaveAttribute('rel', 'noopener noreferrer')
     }
-
-    await expect(page.getByRole('link', { name: /day pass/i })).toHaveCount(0)
   })
 
   test('pricing section stacks cleanly on mobile viewport', async ({ page }) => {
@@ -134,8 +134,7 @@ test.describe('Landing page', () => {
     await expect(page.getByText('Single Payment', { exact: true })).toBeVisible()
     await expect(page.getByText('12 Month Contract')).toBeVisible()
     await expect(page.getByText('Day Pass')).toBeVisible()
-    await expect(page.getByText('$19.99')).toBeVisible()
-    await expect(page.getByText('Purchase in person')).toBeVisible()
+    await expect(page.getByText('$17.99')).toBeVisible()
     await expect(page.getByText(/discounts available/i)).toBeVisible()
   })
 

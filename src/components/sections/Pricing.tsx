@@ -49,7 +49,7 @@ function PricingRow({ option }: { option: MembershipOption }) {
           </span>
         ) : null}
         <span className="mt-1 block text-[10px] font-semibold uppercase tracking-[0.18em] text-white/35 transition-colors group-hover:text-neon/70">
-          {option.inPersonOnly ? 'Purchase in person' : 'Join online'}
+          Join Now
         </span>
       </div>
     </>
@@ -57,13 +57,8 @@ function PricingRow({ option }: { option: MembershipOption }) {
 
   const rowClasses = cn(
     'group flex w-full items-center justify-between gap-4 border-t border-white/10 py-5 text-left transition-colors',
-    !option.inPersonOnly &&
-      'hover:bg-white/[0.03] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neon/60'
+    'hover:bg-white/[0.03] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neon/60'
   )
-
-  if (option.inPersonOnly) {
-    return <div className={rowClasses}>{content}</div>
-  }
 
   return (
     <a
