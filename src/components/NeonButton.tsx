@@ -5,12 +5,16 @@ const base =
 
 export function NeonButton({
   href,
+  target,
+  rel,
   onClick,
   children,
   variant = 'primary',
   className,
 }: {
   href?: string
+  target?: React.HTMLAttributeAnchorTarget
+  rel?: string
   onClick?: () => void
   children: React.ReactNode
   variant?: 'primary' | 'outline'
@@ -34,7 +38,7 @@ export function NeonButton({
   }
 
   return (
-    <a href={href} className={classes}>
+    <a href={href} target={target} rel={rel} className={classes}>
       {children}
     </a>
   )

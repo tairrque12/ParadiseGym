@@ -5,6 +5,7 @@ import userEvent from '@testing-library/user-event'
 import Home from '@/app/page'
 import { SECTION_IDS } from '@/lib/sections'
 import { Providers } from '@/components/providers'
+import { MEMBERSHIP_JOIN_URL } from '@/lib/membership-options'
 
 describe('Landing page', () => {
   it('renders all section anchors on the landing page', () => {
@@ -21,7 +22,7 @@ describe('Landing page', () => {
     expect(document.getElementById('gallery')).not.toBeInTheDocument()
   })
 
-  it('opens membership and tour modals from hero CTAs', async () => {
+  it('links membership externally and opens the tour modal from hero CTAs', async () => {
     const user = userEvent.setup()
     render(
       <Providers>
@@ -29,13 +30,12 @@ describe('Landing page', () => {
       </Providers>
     )
 
-    await user.click(screen.getByRole('button', { name: 'Request Membership' }))
-    expect(screen.getByRole('dialog')).toBeInTheDocument()
-    expect(
-      screen.getByRole('heading', { name: /request membership/i })
-    ).toBeInTheDocument()
-
-    await user.keyboard('{Escape}')
+    const membershipLink = screen.getByRole('link', {
+      name: 'Request Membership',
+    })
+    expect(membershipLink).toHaveAttribute('href', MEMBERSHIP_JOIN_URL)
+    expect(membershipLink).toHaveAttribute('target', '_blank')
+    expect(membershipLink).toHaveAttribute('rel', 'noopener noreferrer')
 
     await user.click(screen.getByRole('button', { name: 'Free Gym Tour' }))
     expect(screen.getByRole('dialog')).toBeInTheDocument()

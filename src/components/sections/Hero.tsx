@@ -6,10 +6,11 @@ import { Wordmark } from '@/components/Logo'
 import { NeonButton } from '@/components/NeonButton'
 import { GrainOverlay } from '@/components/motion'
 import { useModal } from '@/context/modal-context'
+import { MEMBERSHIP_JOIN_URL } from '@/lib/membership-options'
 import { usePrefersReducedMotion } from '@/hooks/use-prefers-reduced-motion'
 
 export function Hero() {
-  const { openMembershipModal, openTourModal } = useModal()
+  const { openTourModal } = useModal()
   const reducedMotion = usePrefersReducedMotion()
   const { scrollY } = useScroll()
   const y = useTransform(scrollY, [0, 600], ['0%', reducedMotion ? '0%' : '18%'])
@@ -37,7 +38,11 @@ export function Hero() {
             Where Strength Meets Aesthetics
           </p>
           <div className="mt-8 flex flex-col gap-4 sm:mt-10 sm:flex-row sm:items-center">
-            <NeonButton onClick={() => openMembershipModal(null)}>
+            <NeonButton
+              href={MEMBERSHIP_JOIN_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               Request Membership
             </NeonButton>
             <NeonButton onClick={openTourModal} variant="outline">

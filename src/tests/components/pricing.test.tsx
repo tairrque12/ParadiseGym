@@ -1,9 +1,9 @@
 import '@/tests/mocks/react'
 import { describe, it, expect } from 'vitest'
-import { render, screen, waitFor } from '@testing-library/react'
-import userEvent from '@testing-library/user-event'
+import { render, screen } from '@testing-library/react'
 import { Providers } from '@/components/providers'
 import { Pricing } from '@/components/sections/Pricing'
+import { MEMBERSHIP_JOIN_URL } from '@/lib/membership-options'
 
 describe('Pricing', () => {
   it('renders recurring and single payment columns with real pricing data', () => {
@@ -27,7 +27,8 @@ describe('Pricing', () => {
       screen.queryByText('6 Months Paid in Full')
     ).not.toBeInTheDocument()
     expect(screen.getByText('Day Pass')).toBeInTheDocument()
-    expect(screen.getByText('$17.99')).toBeInTheDocument()
+    expect(screen.getByText('$19.99')).toBeInTheDocument()
+    expect(screen.getByText('Purchase in person')).toBeInTheDocument()
     expect(screen.getByText(/discounts available/i)).toBeInTheDocument()
     expect(
       screen.getByText(/teachers, veterans, and first responders/i)
@@ -37,36 +38,26 @@ describe('Pricing', () => {
     ).toBeInTheDocument()
   })
 
-  it('opens membership modal with 12 month contract pre-selected', async () => {
-    const user = userEvent.setup()
+  it('links every online membership option directly to ABC Fitness', () => {
     render(
       <Providers>
         <Pricing />
       </Providers>
     )
 
-    await user.click(screen.getByRole('button', { name: /12 month contract/i }))
+    for (const name of [
+      /12 month contract/i,
+      /month to month/i,
+      /1 year paid in full/i,
+      /one month/i,
+      /week pass/i,
+    ]) {
+      const link = screen.getByRole('link', { name })
+      expect(link).toHaveAttribute('href', MEMBERSHIP_JOIN_URL)
+      expect(link).toHaveAttribute('target', '_blank')
+      expect(link).toHaveAttribute('rel', 'noopener noreferrer')
+    }
 
-    expect(screen.getByRole('dialog')).toBeInTheDocument()
-    await waitFor(() => {
-      expect(screen.getByLabelText(/membership type/i)).toHaveValue(
-        '12_month_contract'
-      )
-    })
-  })
-
-  it('opens membership modal with day pass pre-selected', async () => {
-    const user = userEvent.setup()
-    render(
-      <Providers>
-        <Pricing />
-      </Providers>
-    )
-
-    await user.click(screen.getByRole('button', { name: /day pass/i }))
-
-    await waitFor(() => {
-      expect(screen.getByLabelText(/membership type/i)).toHaveValue('day_pass')
-    })
+    expect(screen.queryByRole('link', { name: /day pass/i })).not.toBeInTheDocument()
   })
 })

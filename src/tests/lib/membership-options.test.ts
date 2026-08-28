@@ -36,5 +36,8 @@ describe('membership options', () => {
     expect(getMembershipSelectLabel('week_pass')).toBe(
       'Week Pass — $49.99 + tax'
     )
+    expect(getMembershipSelectLabel('day_pass')).toBe(
+      'Day Pass — $19.99 + tax'
+    )
   })
 })

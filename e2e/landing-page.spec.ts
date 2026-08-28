@@ -1,5 +1,7 @@
 import { test, expect, type Locator, type Page } from '@playwright/test'
 
+const MEMBERSHIP_JOIN_URL = 'https://onlinejoin.abcfitness.com'
+
 async function scrollToSelector(page: Page, selector: string) {
   await page.waitForSelector(selector)
   await page.evaluate((target) => {
@@ -23,13 +25,6 @@ const NAV_SECTIONS = [
 
 test.describe('Landing page', () => {
   test.beforeEach(async ({ page }) => {
-    await page.route('**/api/membership-request', async (route) => {
-      await route.fulfill({
-        status: 200,
-        contentType: 'application/json',
-        body: JSON.stringify({ success: true }),
-      })
-    })
     await page.route('**/api/tour-request', async (route) => {
       await route.fulfill({
         status: 200,
@@ -107,31 +102,25 @@ test.describe('Landing page', () => {
     await expect(page.getByText('70+')).toBeVisible()
   })
 
-  test('membership flow from 12 month contract opens modal, submits, and closes', async ({
-    page,
-  }) => {
+  test('membership CTAs link directly to ABC Fitness', async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 800 })
     await page.goto('/')
 
-    await page
-      .getByRole('button', { name: /12 month contract/i })
-      .click()
+    for (const name of [
+      /request membership/i,
+      /12 month contract/i,
+      /month to month/i,
+      /1 year paid in full/i,
+      /one month/i,
+      /week pass/i,
+    ]) {
+      const link = page.getByRole('link', { name })
+      await expect(link).toHaveAttribute('href', MEMBERSHIP_JOIN_URL)
+      await expect(link).toHaveAttribute('target', '_blank')
+      await expect(link).toHaveAttribute('rel', 'noopener noreferrer')
+    }
 
-    const dialog = page.getByRole('dialog')
-    await expect(dialog).toBeVisible()
-    await expect(dialog.getByLabel(/membership type/i)).toHaveValue(
-      '12_month_contract'
-    )
-
-    await dialog.getByLabel(/first name/i).fill('Marcus')
-    await dialog.getByLabel(/last name/i).fill('Torres')
-    await dialog.getByLabel(/email/i).fill('marcus@example.com')
-    await dialog.getByLabel(/phone/i).fill('956-244-6692')
-    await dialog.getByLabel(/age/i).fill('28')
-    await dialog.getByRole('button', { name: /submit request/i }).click()
-
-    await expect(dialog.getByText(/request received/i)).toBeVisible()
-    await expect(dialog).toBeHidden({ timeout: 5000 })
+    await expect(page.getByRole('link', { name: /day pass/i })).toHaveCount(0)
   })
 
   test('pricing section stacks cleanly on mobile viewport', async ({ page }) => {
@@ -145,6 +134,8 @@ test.describe('Landing page', () => {
     await expect(page.getByText('Single Payment', { exact: true })).toBeVisible()
     await expect(page.getByText('12 Month Contract')).toBeVisible()
     await expect(page.getByText('Day Pass')).toBeVisible()
+    await expect(page.getByText('$19.99')).toBeVisible()
+    await expect(page.getByText('Purchase in person')).toBeVisible()
     await expect(page.getByText(/discounts available/i)).toBeVisible()
   })
 
@@ -279,23 +270,11 @@ test.describe('Landing page', () => {
 
   test('escape closes an open modal', async ({ page }) => {
     await page.goto('/')
-    await page.getByRole('button', { name: /request membership/i }).click()
+    await page.getByRole('button', { name: /free gym tour/i }).first().click()
     await expect(page.getByRole('dialog')).toBeVisible()
 
     await page.keyboard.press('Escape')
     await expect(page.getByRole('dialog')).toBeHidden()
-  })
-
-  test('membership modal is usable on mobile viewport', async ({ page }) => {
-    await page.setViewportSize({ width: 375, height: 812 })
-    await page.goto('/')
-
-    await page.getByRole('button', { name: /request membership/i }).click()
-
-    const dialog = page.getByRole('dialog')
-    await expect(dialog).toBeVisible()
-    await expect(dialog.getByLabel(/first name/i)).toBeVisible()
-    await expect(dialog.getByRole('button', { name: /submit request/i })).toBeVisible()
   })
 
   test('tour modal date and time selection works on mobile viewport', async ({

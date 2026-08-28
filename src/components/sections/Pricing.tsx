@@ -4,12 +4,12 @@ import {
   GrainOverlay,
   SectionReveal,
 } from '@/components/motion'
-import { useModal } from '@/context/modal-context'
 import {
   PRICING_DISCOUNT_NOTE,
   PRICING_FOOTER_NOTE,
   RECURRING_MEMBERSHIP_OPTIONS,
   SINGLE_PAYMENT_MEMBERSHIP_OPTIONS,
+  MEMBERSHIP_JOIN_URL,
   type MembershipOption,
 } from '@/lib/membership-options'
 import { SECTION_IDS } from '@/lib/sections'
@@ -26,17 +26,8 @@ function CategoryHeader({ label }: { label: string }) {
 }
 
 function PricingRow({ option }: { option: MembershipOption }) {
-  const { openMembershipModal } = useModal()
-
-  return (
-    <button
-      type="button"
-      onClick={() => openMembershipModal(option.slug)}
-      className={cn(
-        'group flex w-full items-center justify-between gap-4 border-t border-white/10 py-5 text-left transition-colors',
-        'hover:bg-white/[0.03] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neon/60'
-      )}
-    >
+  const content = (
+    <>
       <div className="min-w-0 flex-1">
         <span className="block font-medium text-white transition-colors group-hover:text-neon">
           {option.name}
@@ -58,10 +49,31 @@ function PricingRow({ option }: { option: MembershipOption }) {
           </span>
         ) : null}
         <span className="mt-1 block text-[10px] font-semibold uppercase tracking-[0.18em] text-white/35 transition-colors group-hover:text-neon/70">
-          Select
+          {option.inPersonOnly ? 'Purchase in person' : 'Join online'}
         </span>
       </div>
-    </button>
+    </>
+  )
+
+  const rowClasses = cn(
+    'group flex w-full items-center justify-between gap-4 border-t border-white/10 py-5 text-left transition-colors',
+    !option.inPersonOnly &&
+      'hover:bg-white/[0.03] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neon/60'
+  )
+
+  if (option.inPersonOnly) {
+    return <div className={rowClasses}>{content}</div>
+  }
+
+  return (
+    <a
+      href={MEMBERSHIP_JOIN_URL}
+      target="_blank"
+      rel="noopener noreferrer"
+      className={rowClasses}
+    >
+      {content}
+    </a>
   )
 }
 

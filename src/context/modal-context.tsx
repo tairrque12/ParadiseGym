@@ -8,13 +8,11 @@ import {
   useState,
   type ReactNode,
 } from 'react'
-import { useMembershipForm } from '@/context/membership-form-context'
 
-export type ActiveModal = 'membership' | 'tour' | null
+export type ActiveModal = 'tour' | null
 
 type ModalContextValue = {
   activeModal: ActiveModal
-  openMembershipModal: (tier?: string | null) => void
   openTourModal: () => void
   closeModal: () => void
 }
@@ -23,15 +21,6 @@ const ModalContext = createContext<ModalContextValue | null>(null)
 
 export function ModalProvider({ children }: { children: ReactNode }) {
   const [activeModal, setActiveModal] = useState<ActiveModal>(null)
-  const { setSelectedTier } = useMembershipForm()
-
-  const openMembershipModal = useCallback(
-    (tier?: string | null) => {
-      setSelectedTier(tier ?? null)
-      setActiveModal('membership')
-    },
-    [setSelectedTier]
-  )
 
   const openTourModal = useCallback(() => {
     setActiveModal('tour')
@@ -44,11 +33,10 @@ export function ModalProvider({ children }: { children: ReactNode }) {
   const value = useMemo(
     () => ({
       activeModal,
-      openMembershipModal,
       openTourModal,
       closeModal,
     }),
-    [activeModal, openMembershipModal, openTourModal, closeModal]
+    [activeModal, openTourModal, closeModal]
   )
 
   return (
