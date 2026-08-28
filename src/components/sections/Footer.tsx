@@ -1,6 +1,9 @@
+'use client'
+
 import Link from 'next/link'
 import { Logo } from '@/components/Logo'
-import { CONTACT, HOURS } from '@/lib/contact'
+import { useLocation } from '@/context/location-context'
+import { CONTACT } from '@/lib/contact'
 
 function InstagramIcon({ className }: { className?: string }) {
   return (
@@ -33,6 +36,7 @@ function TikTokIcon({ className }: { className?: string }) {
 }
 
 export function Footer() {
+  const { location } = useLocation()
   const year = new Date().getFullYear()
 
   return (
@@ -42,8 +46,8 @@ export function Footer() {
           <div className="lg:col-span-1">
             <Logo />
             <p className="mt-4 max-w-xs text-sm leading-relaxed text-white/55">
-              Harlingen&apos;s premium training floor — built for lifters who
-              demand more from their gym.
+              The Rio Grande Valley&apos;s premium training floor — built for
+              lifters who demand more from their gym.
             </p>
           </div>
 
@@ -62,7 +66,10 @@ export function Footer() {
                   {CONTACT.email}
                 </a>
               </li>
-              <li>{CONTACT.address}</li>
+              <li>
+                <span className="text-white/50">{location.name}: </span>
+                {location.address}
+              </li>
             </ul>
           </div>
 
@@ -70,14 +77,24 @@ export function Footer() {
             <h3 className="text-xs uppercase tracking-[0.2em] text-neon">
               Hours
             </h3>
-            <ul className="mt-4 space-y-2 text-sm text-white/70">
-              {HOURS.map((row) => (
-                <li key={row.days}>
-                  <span className="text-white/50">{row.days}: </span>
-                  {row.time}
-                </li>
-              ))}
-            </ul>
+            {location.hours ? (
+              <ul className="mt-4 space-y-2 text-sm text-white/70">
+                {location.hours.map((row) => (
+                  <li key={row.days}>
+                    <span className="text-white/50">{row.days}: </span>
+                    {row.time}
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="mt-4 text-sm text-white/70">
+                Hours coming soon
+                {location.openingTimeframe
+                  ? ` — opening ${location.openingTimeframe.toLowerCase()}`
+                  : ''}
+                .
+              </p>
+            )}
           </div>
 
           <div>

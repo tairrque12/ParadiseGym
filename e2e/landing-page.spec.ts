@@ -141,7 +141,9 @@ test.describe('Landing page', () => {
 
     await scrollToSelector(page, '#pricing')
 
-    await expect(page.getByText('Founding Member Pricing')).toBeVisible()
+    await expect(
+      page.getByText('Founding Member Pricing', { exact: true })
+    ).toBeVisible()
     await expect(page.getByText('1 Year Paid in Full')).toBeVisible()
     await expect(page.getByText('$499.99')).toBeVisible()
     await expect(page.getByText('12 Month Contract')).toBeVisible()
@@ -155,9 +157,10 @@ test.describe('Landing page', () => {
 
     await scrollToSelector(page, '#hours')
 
-    await expect(page.getByText(/hours coming soon/i)).toBeVisible()
+    const hoursSection = page.locator('#hours')
+    await expect(hoursSection.getByText(/hours coming soon/i)).toBeVisible()
     await expect(
-      page.getByText('1001 N. Jackson Road, McAllen, TX 78501')
+      hoursSection.getByText('1001 N. Jackson Road, McAllen, TX 78501')
     ).toBeVisible()
     await expect(page.getByText('Mon – Fri')).toHaveCount(0)
 
@@ -169,7 +172,8 @@ test.describe('Landing page', () => {
     await expect(page.getByText('Recurring', { exact: true })).toBeVisible()
     await expect(page.getByText('Week Pass')).toBeVisible()
     await expect(page.getByTestId('presale-countdown')).toHaveCount(0)
-    await expect(page.getByText('Mon – Fri')).toBeVisible()
+    await expect(page.getByText(/hours coming soon/i)).toHaveCount(0)
+    await expect(page.locator('#hours').getByText('Mon – Fri')).toBeVisible()
   })
 
   test('McAllen pre-sale content renders cleanly on mobile viewport', async ({
@@ -187,7 +191,9 @@ test.describe('Landing page', () => {
 
     const countdown = page.getByTestId('presale-countdown')
     await expect(countdown).toBeVisible()
-    await expect(page.getByText('Founding Member Pricing')).toBeVisible()
+    await expect(
+      page.getByText('Founding Member Pricing', { exact: true })
+    ).toBeVisible()
 
     const countdownBox = await getBoundingRect(countdown)
     const firstOption = page.getByText('1 Year Paid in Full')

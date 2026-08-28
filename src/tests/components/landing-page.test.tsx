@@ -1,6 +1,6 @@
 import '@/tests/mocks/react'
 import { describe, it, expect, beforeEach } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import Home from '@/app/page'
 import { SECTION_IDS } from '@/lib/sections'
@@ -63,8 +63,11 @@ describe('Landing page', () => {
     expect(screen.queryByText('Week Pass')).not.toBeInTheDocument()
     expect(screen.getByTestId('presale-countdown')).toBeInTheDocument()
 
-    expect(screen.getByText(/hours coming soon/i)).toBeInTheDocument()
-    expect(screen.getByText(LOCATIONS.mcallen.address)).toBeInTheDocument()
+    const hoursSection = within(document.getElementById('hours') as HTMLElement)
+    expect(hoursSection.getByText(/hours coming soon/i)).toBeInTheDocument()
+    expect(
+      hoursSection.getByText(LOCATIONS.mcallen.address)
+    ).toBeInTheDocument()
   })
 
   it('reverts to Harlingen content when switching back', async () => {
@@ -80,6 +83,7 @@ describe('Landing page', () => {
     expect(screen.getByText('Recurring')).toBeInTheDocument()
     expect(screen.getByText('Week Pass')).toBeInTheDocument()
     expect(screen.queryByTestId('presale-countdown')).not.toBeInTheDocument()
-    expect(screen.getByText('Mon – Fri')).toBeInTheDocument()
+    expect(screen.queryByText(/hours coming soon/i)).not.toBeInTheDocument()
+    expect(screen.getAllByText('Mon – Fri').length).toBeGreaterThan(0)
   })
 })
