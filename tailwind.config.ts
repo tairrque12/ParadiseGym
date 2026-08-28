@@ -70,9 +70,20 @@ const config: Config = {
             textShadow: '0 0 26px rgba(57, 255, 20, 0.75)',
           },
         },
+        'neon-halo': {
+          '0%, 100%': {
+            boxShadow: '0 0 0 rgba(57, 255, 20, 0)',
+            borderColor: 'rgba(57, 255, 20, 0.35)',
+          },
+          '50%': {
+            boxShadow: '0 0 20px rgba(57, 255, 20, 0.3)',
+            borderColor: 'rgba(57, 255, 20, 0.75)',
+          },
+        },
       },
       animation: {
         'neon-pulse': 'neon-pulse 2.8s ease-in-out infinite',
+        'neon-halo': 'neon-halo 3.2s ease-in-out infinite',
       },
     },
   },

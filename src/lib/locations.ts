@@ -34,8 +34,8 @@ export type GymLocation = {
 export const HARLINGEN_JOIN_URL =
   'https://onlinejoin.abcfitness.com/signup/plan?club=32265'
 
-// Swap for the real McAllen signup URL once ABC Fitness issues the club id.
-export const MCALLEN_JOIN_URL = 'PLACEHOLDER_MCALLEN_LINK'
+export const MCALLEN_JOIN_URL =
+  'https://onlinejoin.abcfitness.com/signup/plan?club=32367'
 
 export const MCALLEN_OPENING_TARGET = '2026-11-26T09:00:00-06:00'
 

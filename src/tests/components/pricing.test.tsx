@@ -3,7 +3,11 @@ import { describe, it, expect, beforeEach } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { Pricing } from '@/components/sections/Pricing'
 import { LocationProvider } from '@/context/location-context'
-import { HARLINGEN_JOIN_URL, type LocationId } from '@/lib/locations'
+import {
+  HARLINGEN_JOIN_URL,
+  MCALLEN_JOIN_URL,
+  type LocationId,
+} from '@/lib/locations'
 
 function renderFor(locationId: LocationId) {
   return render(
@@ -96,10 +100,20 @@ describe('Pricing', () => {
     ).not.toBeInTheDocument()
   })
 
-  it('does not link McAllen rows until the pre-sale signup URL is live', () => {
+  it('links McAllen pre-sale rows to the McAllen club signup', () => {
     renderFor('mcallen')
 
-    expect(screen.queryAllByRole('link')).toHaveLength(0)
-    expect(screen.getAllByText('Pre-Sale').length).toBeGreaterThan(0)
+    const links = screen.getAllByRole('link')
+    expect(links).toHaveLength(3)
+
+    for (const link of links) {
+      expect(link).toHaveAttribute('href', MCALLEN_JOIN_URL)
+      expect(link).toHaveAttribute('target', '_blank')
+      expect(link).toHaveAttribute('rel', 'noopener noreferrer')
+    }
+
+    expect(
+      screen.getByRole('link', { name: /1 year paid in full/i })
+    ).toHaveAttribute('href', MCALLEN_JOIN_URL)
   })
 })

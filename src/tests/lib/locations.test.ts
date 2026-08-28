@@ -56,7 +56,7 @@ describe('locations data', () => {
       address: '1001 N. Jackson Road, McAllen, TX 78501',
       sqft: 20000,
       hours: null,
-      joinLink: MCALLEN_JOIN_URL,
+      joinLink: 'https://onlinejoin.abcfitness.com/signup/plan?club=32367',
     })
     expect(mcallen.openingTimeframe).toBeTruthy()
     expect(mcallen.openingTarget).toBeTruthy()
@@ -78,12 +78,25 @@ describe('locations data', () => {
     ])
   })
 
-  it('treats the McAllen join link as not ready until it is a real URL', () => {
-    expect(isJoinLinkReady(HARLINGEN_JOIN_URL)).toBe(true)
-    expect(isJoinLinkReady(MCALLEN_JOIN_URL)).toBe(false)
-    expect(isJoinLinkReady('https://onlinejoin.abcfitness.com/signup/plan?club=1')).toBe(
-      true
+  it('points each location at its own live ABC Fitness club signup', () => {
+    expect(HARLINGEN_JOIN_URL).toBe(
+      'https://onlinejoin.abcfitness.com/signup/plan?club=32265'
     )
+    expect(MCALLEN_JOIN_URL).toBe(
+      'https://onlinejoin.abcfitness.com/signup/plan?club=32367'
+    )
+    expect(MCALLEN_JOIN_URL).not.toBe(HARLINGEN_JOIN_URL)
+
+    for (const location of LOCATION_LIST) {
+      expect(location.joinLink).toMatch(/^https:\/\/onlinejoin\.abcfitness\.com\//)
+      expect(location.joinLink).not.toMatch(/placeholder/i)
+      expect(isJoinLinkReady(location.joinLink)).toBe(true)
+    }
+  })
+
+  it('still guards against a location whose signup link is not a real URL', () => {
+    expect(isJoinLinkReady('PLACEHOLDER_LINK')).toBe(false)
+    expect(isJoinLinkReady('')).toBe(false)
   })
 
   it('validates location ids', () => {

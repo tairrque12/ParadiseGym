@@ -3,6 +3,16 @@ import { test, expect, type Locator, type Page } from '@playwright/test'
 const MEMBERSHIP_JOIN_URL =
   'https://onlinejoin.abcfitness.com/signup/plan?club=32265'
 
+const MCALLEN_JOIN_URL =
+  'https://onlinejoin.abcfitness.com/signup/plan?club=32367'
+
+// The "Get Directions" button also carries the city name, so scope to the switcher.
+function locationTab(page: Page, name: RegExp) {
+  return page
+    .getByRole('group', { name: /select gym location/i })
+    .getByRole('button', { name })
+}
+
 async function scrollToSelector(page: Page, selector: string) {
   await page.waitForSelector(selector)
   await page.evaluate((target) => {
@@ -130,11 +140,11 @@ test.describe('Landing page', () => {
     await page.setViewportSize({ width: 1280, height: 800 })
     await page.goto('/')
 
-    await page.getByRole('button', { name: /mcallen/i }).click()
+    await locationTab(page, /mcallen/i).click()
 
     await expect(
-      page.getByRole('button', { name: /lock in founding member pricing/i })
-    ).toBeDisabled()
+      page.getByRole('link', { name: /lock in founding member pricing/i })
+    ).toHaveAttribute('href', MCALLEN_JOIN_URL)
     await expect(
       page.getByRole('link', { name: /request membership/i })
     ).toHaveCount(0)
@@ -164,7 +174,7 @@ test.describe('Landing page', () => {
     ).toBeVisible()
     await expect(page.getByText('Mon – Fri')).toHaveCount(0)
 
-    await page.getByRole('button', { name: /harlingen/i }).click()
+    await locationTab(page, /harlingen/i).click()
 
     await expect(
       page.getByRole('link', { name: /request membership/i })
@@ -176,6 +186,41 @@ test.describe('Landing page', () => {
     await expect(page.locator('#hours').getByText('Mon – Fri')).toBeVisible()
   })
 
+  test('hero announcement sends Harlingen visitors to McAllen pre-sale pricing', async ({
+    page,
+  }) => {
+    await page.emulateMedia({ reducedMotion: 'reduce' })
+    await page.setViewportSize({ width: 1280, height: 800 })
+    await page.goto('/')
+
+    const announcement = page.getByTestId('new-location-announcement')
+    await expect(announcement).toBeVisible()
+    await expect(announcement).toContainText('New Location')
+    await expect(announcement).toContainText(/mcallen opens soon/i)
+    await expect(locationTab(page, /harlingen/i)).toHaveAttribute(
+      'aria-pressed',
+      'true'
+    )
+
+    await announcement
+      .getByRole('button', { name: /view pre-sale pricing/i })
+      .click()
+
+    await expect(locationTab(page, /mcallen/i)).toHaveAttribute(
+      'aria-pressed',
+      'true'
+    )
+    await expect(page.locator('#pricing')).toBeInViewport()
+    await expect(
+      page.getByText('Founding Member Pricing', { exact: true })
+    ).toBeVisible()
+    await expect(page.getByTestId('presale-countdown')).toBeVisible()
+
+    // The announcement stays put for visitors who switch back.
+    await locationTab(page, /harlingen/i).click()
+    await expect(announcement).toBeVisible()
+  })
+
   test('McAllen pre-sale content renders cleanly on mobile viewport', async ({
     page,
   }) => {
@@ -183,7 +228,7 @@ test.describe('Landing page', () => {
     await page.setViewportSize({ width: 375, height: 812 })
     await page.goto('/')
 
-    const mcallenTab = page.getByRole('button', { name: /mcallen/i })
+    const mcallenTab = locationTab(page, /mcallen/i)
     await expect(mcallenTab).toBeVisible()
     await mcallenTab.click()
 
@@ -204,6 +249,40 @@ test.describe('Landing page', () => {
     expect(countdownBox.y + countdownBox.height).toBeLessThanOrEqual(
       optionBox.y + 2
     )
+
+    const documentWidth = await page.evaluate(
+      () => document.documentElement.scrollWidth
+    )
+    expect(documentWidth).toBeLessThanOrEqual(375)
+  })
+
+  test('hero announcement stays compact above the hero CTAs at 375px', async ({
+    page,
+  }) => {
+    await page.emulateMedia({ reducedMotion: 'reduce' })
+    await page.setViewportSize({ width: 375, height: 812 })
+    await page.goto('/')
+
+    const announcement = page.getByTestId('new-location-announcement')
+    const heading = page.getByRole('heading', { name: /paradise gym/i }).first()
+    const joinCta = page.getByRole('link', { name: 'Request Membership' })
+    const tourCta = page.getByRole('button', { name: 'Free Gym Tour' })
+
+    await expect(announcement).toBeVisible()
+    await expect(joinCta).toBeInViewport()
+    await expect(tourCta).toBeInViewport()
+
+    const announcementBox = await getBoundingRect(announcement)
+    const headingBox = await getBoundingRect(heading)
+    const joinBox = await getBoundingRect(joinCta)
+
+    expect(announcementBox.x).toBeGreaterThanOrEqual(0)
+    expect(announcementBox.x + announcementBox.width).toBeLessThanOrEqual(375)
+    expect(announcementBox.height).toBeLessThanOrEqual(120)
+    expect(announcementBox.y + announcementBox.height).toBeLessThanOrEqual(
+      headingBox.y + 2
+    )
+    expect(joinBox.y + joinBox.height).toBeLessThanOrEqual(812)
 
     const documentWidth = await page.evaluate(
       () => document.documentElement.scrollWidth

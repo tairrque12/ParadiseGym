@@ -4,6 +4,7 @@ import Image from 'next/image'
 import { motion, useScroll, useTransform } from 'framer-motion'
 import { Wordmark } from '@/components/Logo'
 import { NeonButton } from '@/components/NeonButton'
+import { NewLocationAnnouncement } from '@/components/NewLocationAnnouncement'
 import { GrainOverlay } from '@/components/motion'
 import { useLocation } from '@/context/location-context'
 import { useModal } from '@/context/modal-context'
@@ -37,6 +38,7 @@ export function Hero() {
 
       <div className="relative mx-auto flex min-h-[100svh] max-w-7xl flex-col justify-end px-4 pb-20 pt-28 sm:px-6 sm:pb-28 lg:px-8">
         <div className="max-w-4xl">
+          <NewLocationAnnouncement className="mb-6 sm:mb-8" />
           <Wordmark />
           <p className="mt-4 max-w-xl text-lg text-white/75 sm:mt-6 sm:text-xl">
             Where Strength Meets Aesthetics
