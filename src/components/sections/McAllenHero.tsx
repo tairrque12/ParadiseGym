@@ -39,7 +39,7 @@ export function McAllenHero() {
 
           <p
             data-testid="grand-opening-note"
-            className="mt-6 font-heading text-2xl uppercase leading-tight tracking-tight text-neon sm:text-3xl lg:text-4xl"
+            className="mt-6 max-w-[17rem] font-heading text-lg uppercase leading-snug tracking-tight text-neon sm:max-w-none sm:text-3xl lg:text-4xl"
           >
             {mcallen.grandOpeningNote}
           </p>

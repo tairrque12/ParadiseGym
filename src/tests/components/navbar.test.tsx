@@ -1,11 +1,47 @@
 import '@/tests/mocks/react'
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen, within, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { Providers } from '@/components/providers'
 import { Navbar } from '@/components/sections/Navbar'
 
+const usePathname = vi.hoisted(() => vi.fn(() => '/'))
+
+vi.mock('next/navigation', () => ({ usePathname }))
+
 describe('Navbar', () => {
+  beforeEach(() => {
+    usePathname.mockReturnValue('/')
+  })
+
+  it('renders the McAllen marquee above the nav row on the main site', () => {
+    render(
+      <Providers>
+        <Navbar />
+      </Providers>
+    )
+
+    const header = screen.getByRole('banner')
+    const marquee = screen.getByTestId('new-location-marquee')
+
+    expect(header).toContainElement(marquee)
+    expect(header.firstElementChild).toBe(marquee)
+  })
+
+  it('hides the marquee on the McAllen page it promotes', () => {
+    usePathname.mockReturnValue('/mcallen')
+
+    render(
+      <Providers>
+        <Navbar />
+      </Providers>
+    )
+
+    expect(
+      screen.queryByTestId('new-location-marquee')
+    ).not.toBeInTheDocument()
+  })
+
   it('toggles mobile menu open and closed', async () => {
     const user = userEvent.setup()
     render(

@@ -130,38 +130,6 @@ test.describe('Landing page', () => {
     }
   })
 
-  test('hero announcement stays compact above the hero CTAs at 375px', async ({
-    page,
-  }) => {
-    await page.emulateMedia({ reducedMotion: 'reduce' })
-    await page.setViewportSize({ width: 375, height: 812 })
-    await page.goto('/')
-
-    const announcement = page.getByTestId('new-location-announcement')
-    const heading = page.getByRole('heading', { name: /paradise gym/i }).first()
-    const joinCta = page.getByRole('link', { name: 'Request Membership' })
-    const tourCta = page.getByRole('button', { name: 'Free Gym Tour' })
-
-    await expect(announcement).toBeVisible()
-    await expect(joinCta).toBeInViewport()
-    await expect(tourCta).toBeInViewport()
-
-    const announcementBox = await getBoundingRect(announcement)
-    const headingBox = await getBoundingRect(heading)
-
-    expect(announcementBox.x).toBeGreaterThanOrEqual(0)
-    expect(announcementBox.x + announcementBox.width).toBeLessThanOrEqual(375)
-    expect(announcementBox.height).toBeLessThanOrEqual(120)
-    expect(announcementBox.y + announcementBox.height).toBeLessThanOrEqual(
-      headingBox.y + 2
-    )
-
-    const documentWidth = await page.evaluate(
-      () => document.documentElement.scrollWidth
-    )
-    expect(documentWidth).toBeLessThanOrEqual(375)
-  })
-
   test('homepage stays scoped to Harlingen and links out to McAllen', async ({
     page,
   }) => {

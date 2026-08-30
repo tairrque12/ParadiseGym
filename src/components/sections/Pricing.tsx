@@ -99,7 +99,7 @@ export function Pricing() {
   return (
     <section
       id={SECTION_IDS.pricing}
-      className="relative isolate scroll-mt-32 overflow-hidden bg-[#0d0d0d] py-20 sm:py-28"
+      className="relative isolate scroll-mt-40 overflow-hidden bg-[#0d0d0d] py-20 sm:py-28"
     >
       <GrainOverlay />
 

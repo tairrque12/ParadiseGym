@@ -83,7 +83,7 @@ export function Reviews() {
   return (
     <section
       id={SECTION_IDS.reviews}
-      className="relative scroll-mt-32 overflow-hidden bg-carbon py-20 sm:py-28"
+      className="relative scroll-mt-40 overflow-hidden bg-carbon py-20 sm:py-28"
     >
       <GrainOverlay />
 

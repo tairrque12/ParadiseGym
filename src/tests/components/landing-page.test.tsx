@@ -46,15 +46,12 @@ describe('Landing page', () => {
     ).toBeInTheDocument()
   })
 
-  it('routes to the McAllen page from the announcement and the switcher', () => {
+  it('routes to the McAllen page from the marquee banner and the switcher', () => {
     renderHome()
 
-    const announcement = within(
-      screen.getByTestId('new-location-announcement')
-    )
-    expect(
-      announcement.getByRole('link', { name: /view pre-sale pricing/i })
-    ).toHaveAttribute('href', MCALLEN_PATH)
+    const marquee = screen.getByTestId('new-location-marquee')
+    expect(marquee).toHaveAttribute('href', MCALLEN_PATH)
+    expect(document.querySelector('header')?.firstElementChild).toBe(marquee)
 
     const switcher = within(
       screen.getByRole('navigation', { name: /gym locations/i })
@@ -83,7 +80,9 @@ describe('Landing page', () => {
 
     expect(screen.queryByText(/hours coming soon/i)).not.toBeInTheDocument()
     expect(screen.queryByTestId('grand-opening-note')).not.toBeInTheDocument()
-    expect(screen.queryByTestId('presale-countdown')).not.toBeInTheDocument()
+    expect(
+      screen.queryByTestId('new-location-announcement')
+    ).not.toBeInTheDocument()
     expect(
       screen.queryByText(/pre-sale membership options/i)
     ).not.toBeInTheDocument()

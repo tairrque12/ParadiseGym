@@ -17,17 +17,12 @@ async function getBoundingRect(locator: Locator) {
 }
 
 test.describe('McAllen page', () => {
-  test('is reachable from the homepage announcement banner', async ({
-    page,
-  }) => {
+  test('is reachable from the homepage marquee banner', async ({ page }) => {
     await page.emulateMedia({ reducedMotion: 'reduce' })
     await page.setViewportSize({ width: 1280, height: 800 })
     await page.goto('/')
 
-    await page
-      .getByTestId('new-location-announcement')
-      .getByRole('link', { name: /view pre-sale pricing/i })
-      .click()
+    await page.getByTestId('new-location-marquee').click()
 
     await expect(page).toHaveURL(/\/mcallen$/)
     await expect(

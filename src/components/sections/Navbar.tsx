@@ -2,9 +2,12 @@
 
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import { Menu, X } from 'lucide-react'
 import { Logo } from '@/components/Logo'
 import { LocationSwitcher } from '@/components/LocationSwitcher'
+import { NewLocationMarquee } from '@/components/NewLocationMarquee'
+import { MCALLEN_PATH } from '@/lib/locations'
 import { NAV_LINKS } from '@/lib/sections'
 import { handleSectionNavClick } from '@/lib/section-nav'
 import { useModal } from '@/context/modal-context'
@@ -12,6 +15,9 @@ import { cn } from '@/lib/utils'
 
 export function Navbar() {
   const { openTourModal } = useModal()
+  const pathname = usePathname()
+  // McAllen visitors are already on the page the banner promotes.
+  const showMarquee = pathname !== MCALLEN_PATH
   const [scrolled, setScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
 
@@ -38,6 +44,8 @@ export function Navbar() {
           : 'border-transparent bg-transparent'
       )}
     >
+      {showMarquee ? <NewLocationMarquee /> : null}
+
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         <Link href="/" className="shrink-0" aria-label="Paradise Gym home">
           <Logo compact className="sm:hidden" />

@@ -23,9 +23,9 @@ export function HoursLocation({
   return (
     <section
       id={SECTION_IDS.hours}
-      className="relative scroll-mt-32 bg-[#0d0d0d] py-20 sm:py-28"
+      className="relative scroll-mt-40 bg-[#0d0d0d] py-20 sm:py-28"
     >
-      <div id={SECTION_IDS.tour} className="scroll-mt-32" aria-hidden />
+      <div id={SECTION_IDS.tour} className="scroll-mt-40" aria-hidden />
       <GrainOverlay />
 
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">

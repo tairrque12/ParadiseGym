@@ -10,7 +10,7 @@ export function McAllenPricing() {
   return (
     <section
       id={SECTION_IDS.pricing}
-      className="relative isolate scroll-mt-32 overflow-hidden bg-[#0d0d0d] py-16 sm:py-24"
+      className="relative isolate scroll-mt-40 overflow-hidden bg-[#0d0d0d] py-16 sm:py-24"
     >
       <GrainOverlay />
 

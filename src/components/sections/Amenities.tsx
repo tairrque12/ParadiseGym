@@ -167,7 +167,7 @@ export function Amenities() {
   return (
     <section
       id={SECTION_IDS.amenities}
-      className="relative scroll-mt-32 overflow-hidden bg-carbon py-20 sm:py-28"
+      className="relative scroll-mt-40 overflow-hidden bg-carbon py-20 sm:py-28"
     >
       <GrainOverlay />
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">

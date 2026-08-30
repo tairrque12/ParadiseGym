@@ -113,6 +113,14 @@ describe('McAllen page', () => {
     ).not.toHaveAttribute('aria-current')
   })
 
+  it('does not promote itself with the McAllen marquee banner', () => {
+    renderMcAllen()
+
+    expect(
+      screen.queryByTestId('new-location-marquee')
+    ).not.toBeInTheDocument()
+  })
+
   it('keeps the shared amenities and reviews sections', () => {
     renderMcAllen()
 
