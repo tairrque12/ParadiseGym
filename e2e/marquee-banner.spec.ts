@@ -54,37 +54,28 @@ test.describe('New location marquee banner', () => {
     })
   }
 
-  test('keeps scrolling seamlessly and stays pinned while the page scrolls', async ({
-    page,
-  }) => {
+  test('stays pinned to the top while the page scrolls', async ({ page }) => {
     await page.setViewportSize({ width: 375, height: 812 })
     await page.goto('/')
 
     const banner = page.getByTestId('new-location-marquee')
-    const track = page.getByTestId('marquee-track')
 
-    const animation = await track.evaluate((element) => {
-      const style = getComputedStyle(element)
-      return {
-        name: style.animationName,
-        duration: style.animationDuration,
-        timing: style.animationTimingFunction,
-        iterations: style.animationIterationCount,
-      }
-    })
+    const animation = await page
+      .getByTestId('marquee-run')
+      .first()
+      .evaluate((element) => {
+        const style = getComputedStyle(element)
+        return {
+          name: style.animationName,
+          duration: style.animationDuration,
+          timing: style.animationTimingFunction,
+          iterations: style.animationIterationCount,
+        }
+      })
     expect(animation.name).not.toBe('none')
     expect(animation.timing).toBe('linear')
     expect(animation.iterations).toBe('infinite')
     expect(parseFloat(animation.duration)).toBeGreaterThanOrEqual(20)
-
-    // Two identical runs mean the -50% keyframe lands on a seamless repeat.
-    const runWidths = await track.evaluate((element) =>
-      Array.from(element.children).map((child) =>
-        Math.round(child.getBoundingClientRect().width)
-      )
-    )
-    expect(runWidths).toHaveLength(2)
-    expect(runWidths[0]).toBe(runWidths[1])
 
     await page.evaluate(() => window.scrollTo(0, 2200))
     await page.waitForTimeout(300)
@@ -92,6 +83,47 @@ test.describe('New location marquee banner', () => {
     await expect(banner).toBeVisible()
     expect((await getBoundingRect(banner)).y).toBe(0)
   })
+
+  for (const width of [375, 1440] as const) {
+    test(`loops with no blank gap at any point in the cycle at ${width}px`, async ({
+      page,
+    }) => {
+      await page.setViewportSize({ width, height: 812 })
+      await page.goto('/')
+      await expect(page.getByTestId('marquee-run').first()).toBeVisible()
+
+      // Negative animation delays step deterministically through the loop.
+      const worst = await page.evaluate(() => {
+        const runs = Array.from(
+          document.querySelectorAll('[data-testid=marquee-run]')
+        ) as HTMLElement[]
+        const duration = Math.round(
+          parseFloat(getComputedStyle(runs[0]).animationDuration)
+        )
+
+        let smallestRightMargin = Infinity
+        for (let second = 0; second <= duration; second++) {
+          runs.forEach((run) => {
+            run.style.animationDelay = `-${second}s`
+          })
+          const right = Math.max(
+            ...runs.map((run) => run.getBoundingClientRect().right)
+          )
+          smallestRightMargin = Math.min(
+            smallestRightMargin,
+            right - window.innerWidth
+          )
+        }
+        runs.forEach((run) => {
+          run.style.animationDelay = ''
+        })
+        return smallestRightMargin
+      })
+
+      // The trailing run always reaches past the right edge, so no gap appears.
+      expect(worst).toBeGreaterThan(0)
+    })
+  }
 
   test('navigates to the McAllen page when tapped', async ({ page }) => {
     await page.setViewportSize({ width: 375, height: 812 })

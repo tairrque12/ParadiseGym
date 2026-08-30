@@ -20,8 +20,15 @@ describe('NewLocationMarquee', () => {
     render(<NewLocationMarquee />)
 
     const track = screen.getByTestId('marquee-track')
-    expect(track).toHaveClass('animate-marquee')
-    expect(track).toHaveAttribute('aria-hidden')
+    const runs = screen.getAllByTestId('marquee-run')
+
+    expect(runs).toHaveLength(2)
+    for (const run of runs) {
+      expect(run).toHaveAttribute('aria-hidden')
+      expect(run).toHaveClass('animate-marquee')
+      // Each run spans the viewport, so the next one is always in place.
+      expect(run).toHaveClass('min-w-full', 'shrink-0')
+    }
 
     expect(
       within(track).getAllByText(/new location coming — mcallen, tx/i)
@@ -39,6 +46,7 @@ describe('NewLocationMarquee', () => {
     const fallback = screen.getByTestId('marquee-static')
 
     expect(track).toHaveClass('motion-reduce:hidden')
+    expect(track).not.toHaveClass('animate-marquee')
     expect(fallback).toHaveClass('hidden', 'motion-reduce:flex')
   })
 

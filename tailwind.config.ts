@@ -70,10 +70,11 @@ const config: Config = {
             textShadow: '0 0 26px rgba(57, 255, 20, 0.75)',
           },
         },
-        // The track holds two identical runs, so -50% lands on a seamless repeat.
+        // Both runs shift by their own width, so the second lands exactly where
+        // the first started — seamless regardless of viewport width.
         marquee: {
           from: { transform: 'translateX(0)' },
-          to: { transform: 'translateX(-50%)' },
+          to: { transform: 'translateX(-100%)' },
         },
       },
       animation: {
