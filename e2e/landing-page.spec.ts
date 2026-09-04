@@ -328,4 +328,19 @@ test.describe('Landing page', () => {
 
     await expect(dialog.getByLabel(/preferred time/i)).toHaveValue('10:00 AM')
   })
+
+  test('footer lists phone and address without a public email', async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 1280, height: 800 })
+    await page.goto('/')
+
+    const footer = page.locator('footer')
+    await expect(footer.getByRole('link', { name: '956-990-5277' })).toBeVisible()
+    await expect(
+      footer.getByText('6201 FM 106 UNIT 16A, Harlingen, TX 78550')
+    ).toBeVisible()
+    await expect(footer.getByText(/gmail\.com/i)).toHaveCount(0)
+    await expect(footer.locator('a[href^="mailto:"]')).toHaveCount(0)
+  })
 })

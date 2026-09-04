@@ -63,11 +63,6 @@ export function Footer({
                 </a>
               </li>
               <li>
-                <a href={CONTACT.emailHref} className="hover:text-neon">
-                  {CONTACT.email}
-                </a>
-              </li>
-              <li>
                 <span className="text-white/50">{location.name}: </span>
                 {location.address}
               </li>
