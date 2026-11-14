@@ -2,12 +2,16 @@
 
 import { useEffect, useState } from 'react'
 import { usePathname } from 'next/navigation'
-import { useModal } from '@/context/modal-context'
 import { CONTACT } from '@/lib/contact'
 import { joinUrl, MCALLEN_PATH, type LocationId } from '@/lib/locations'
+import { MEMBERSHIP_OPTIONS } from '@/lib/membership-options'
 import { cn } from '@/lib/utils'
 
 const ROUTES = new Set(['/', MCALLEN_PATH, '/gallery'])
+
+const fromPrice = MEMBERSHIP_OPTIONS.find(
+  (option) => option.slug === '12_month_contract'
+)?.price
 
 function useHeroCtasInView(pathname: string) {
   const [inView, setInView] = useState(true)
@@ -55,12 +59,12 @@ function useMenuOpen() {
 
 export function MobileActionBar() {
   const pathname = usePathname()
-  const { activeModal, openTourModal } = useModal()
   const heroInView = useHeroCtasInView(pathname ?? '')
   const menuOpen = useMenuOpen()
   const onRoute = Boolean(pathname && ROUTES.has(pathname))
-  const show = onRoute && !activeModal && !heroInView && !menuOpen
+  const show = onRoute && !heroInView && !menuOpen
   const locationId: LocationId = pathname === MCALLEN_PATH ? 'mcallen' : 'harlingen'
+  const joinLabel = fromPrice ? `Join · ${fromPrice}` : 'Join'
 
   if (!onRoute) return null
 
@@ -73,31 +77,21 @@ export function MobileActionBar() {
         show && 'motion-safe:animate-mobile-bar-in motion-reduce:animate-none'
       )}
     >
-      <div className="mx-auto flex max-w-lg gap-2">
+      <div className="mx-auto flex max-w-lg flex-col gap-2">
         <a
           href={joinUrl(locationId, 'mobile_bar')}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex h-11 flex-1 items-center justify-center bg-neon px-3 text-sm font-semibold text-carbon transition-colors duration-200 hover:bg-white motion-reduce:transition-none"
+          className="inline-flex h-12 w-full items-center justify-center bg-neon px-3 text-sm font-semibold text-carbon"
         >
-          Join
+          {joinLabel}
         </a>
-        {locationId === 'mcallen' ? (
-          <a
-            href={CONTACT.phoneHref}
-            className="inline-flex h-11 flex-1 items-center justify-center border border-white/20 px-3 text-sm font-medium text-white transition-colors duration-200 hover:border-white/50 hover:bg-white/5 motion-reduce:transition-none"
-          >
-            Call
-          </a>
-        ) : (
-          <button
-            type="button"
-            onClick={() => openTourModal('sticky')}
-            className="inline-flex h-11 flex-1 items-center justify-center border border-white/20 px-3 text-sm font-medium text-white transition-colors duration-200 hover:border-white/50 hover:bg-white/5 motion-reduce:transition-none"
-          >
-            Tour
-          </button>
-        )}
+        <a
+          href={CONTACT.phoneHref}
+          className="inline-flex h-11 w-full items-center justify-center text-sm font-medium text-white"
+        >
+          Call
+        </a>
       </div>
     </div>
   )

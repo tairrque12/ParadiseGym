@@ -29,7 +29,8 @@ describe('Navbar', () => {
     )
 
     const header = screen.getByRole('banner')
-    expect(header).toHaveClass('h-[60px]')
+    expect(within(header).getByTestId('nav-row')).toHaveClass('h-[60px]')
+    expect(screen.getByTestId('opening-banner')).toHaveAttribute('href', '/mcallen')
     expect(screen.queryByTestId('location-announcement')).not.toBeInTheDocument()
     expect(within(header).queryByText('Call')).not.toBeInTheDocument()
 
@@ -50,8 +51,7 @@ describe('Navbar', () => {
     expect(harlingenCta).toHaveAttribute('href', joinUrl('harlingen', 'header'))
     expect(harlingenCta).toHaveAttribute('target', '_blank')
     expect(harlingenCta).toHaveAttribute('rel', 'noopener noreferrer')
-    expect(screen.getByTestId('header-tour')).toHaveTextContent('Book a Tour')
-    expect(screen.getByTestId('header-tour')).not.toHaveClass('bg-neon')
+    expect(screen.queryByTestId('header-tour')).not.toBeInTheDocument()
     expect(screen.queryByTestId('mobile-header-join')).not.toBeInTheDocument()
 
     usePathname.mockReturnValue('/mcallen')
@@ -145,10 +145,16 @@ describe('Navbar', () => {
     const join = within(dialog).getByTestId('mobile-join')
     expect(join).toHaveAttribute('href', joinUrl('mcallen', 'mobile_menu'))
     expect(join).toHaveTextContent(`Join today · from ${fromPrice}`)
-    expect(within(dialog).getByText('Secure checkout by ABC Fitness')).toBeInTheDocument()
-    expect(within(dialog).getByTestId('mobile-tour')).toHaveTextContent(
-      'Not ready? Book a free tour'
-    )
+    expect(
+      within(dialog)
+        .getAllByRole('link', { name: /^call$/i })
+        .some((link) => link.getAttribute('href') === 'tel:+19569905277')
+    ).toBe(true)
+    expect(within(dialog).queryByTestId('mobile-tour')).not.toBeInTheDocument()
+    const locationToggle = within(dialog).getByRole('group', { name: /gym locations/i })
+    expect(
+      locationToggle.compareDocumentPosition(mobileNav) & Node.DOCUMENT_POSITION_FOLLOWING
+    ).toBeTruthy()
   })
 
   it('marks the McAllen menu link that was just clicked as current', async () => {
@@ -251,21 +257,4 @@ describe('Navbar', () => {
     })
   })
 
-  it('opens the tour modal from the menu fallback', async () => {
-    const user = userEvent.setup()
-    render(
-      <Providers>
-        <Navbar />
-      </Providers>
-    )
-
-    await user.click(screen.getByTestId('mobile-menu-button'))
-    const dialog = screen.getByRole('dialog')
-    const tour = within(dialog).getByTestId('mobile-tour')
-    const join = within(dialog).getByTestId('mobile-join')
-    expect(join.compareDocumentPosition(tour) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
-    await user.click(tour)
-
-    expect(screen.getByRole('heading', { name: /book a free tour/i })).toBeInTheDocument()
-  })
 })

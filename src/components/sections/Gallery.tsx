@@ -4,7 +4,6 @@ import Image from 'next/image'
 import { GALLERY_IMAGES, GALLERY_IMAGE_SIZES } from '@/lib/gallery'
 import { SectionReveal } from '@/components/motion'
 import { SectionHeading } from '@/components/section-heading'
-import { TourPrompt } from '@/components/tour-prompt'
 import { cn } from '@/lib/utils'
 
 function GalleryImage({
@@ -72,9 +71,6 @@ export function Gallery() {
           ))}
         </div>
 
-        <div className="mt-10">
-          <TourPrompt>Not ready? Book a free tour</TourPrompt>
-        </div>
       </div>
     </section>
   )

@@ -284,66 +284,6 @@ test.describe('Landing page', () => {
     })
   }
 
-  test('tour flow from navbar opens modal, submits, and closes', async ({
-    page,
-  }) => {
-    await page.setViewportSize({ width: 1280, height: 800 })
-    await page.goto('/')
-
-    await page.getByRole('button', { name: /free tour/i }).first().click()
-
-    const dialog = page.getByRole('dialog')
-    await expect(dialog).toBeVisible()
-
-    await dialog.getByLabel(/first name/i).fill('Elena')
-    await dialog.getByLabel(/last name/i).fill('Rivera')
-    await dialog.getByLabel(/phone/i).fill('956-244-6692')
-    const days = dialog.getByRole('group', { name: /preferred day/i }).getByRole('button')
-    await days.last().click()
-    await dialog.getByRole('button', { name: '10:00 AM' }).click()
-    await dialog.getByRole('button', { name: /request tour/i }).click()
-
-    await expect(dialog.getByText(/tour requested/i)).toBeVisible()
-    await expect(dialog).toBeVisible()
-    await dialog.getByRole('button', { name: 'Done' }).click()
-    await expect(dialog).toBeHidden()
-  })
-
-  test('escape closes an open modal', async ({ page }) => {
-    await page.goto('/')
-    await page.getByRole('button', { name: /book a free tour/i }).first().click()
-    await expect(page.getByRole('dialog')).toBeVisible()
-
-    await page.keyboard.press('Escape')
-    await expect(page.getByRole('dialog')).toBeHidden()
-  })
-
-  test('tour modal date and time selection works on mobile viewport', async ({
-    page,
-  }) => {
-    await page.setViewportSize({ width: 375, height: 812 })
-    await page.goto('/')
-
-    await page.getByTestId('mobile-menu-button').click()
-    await page.getByTestId('mobile-tour').click()
-
-    const dialog = page.getByRole('dialog')
-    await expect(dialog).toBeVisible()
-    await expect(dialog.getByText(/choose a day first/i)).toBeVisible()
-
-    await dialog
-      .getByRole('group', { name: /preferred day/i })
-      .getByRole('button')
-      .last()
-      .click()
-    await dialog.getByRole('button', { name: '10:00 AM' }).click()
-
-    await expect(dialog.getByRole('button', { name: '10:00 AM' })).toHaveAttribute(
-      'aria-pressed',
-      'true'
-    )
-  })
-
   test('mobile bar stays above the footer phone', async ({ page }) => {
     await page.emulateMedia({ reducedMotion: 'reduce' })
     await page.setViewportSize({ width: 390, height: 844 })
@@ -353,9 +293,9 @@ test.describe('Landing page', () => {
     await expect(bar).toBeHidden()
     await page.locator('[data-hero-cta]').scrollIntoViewIfNeeded()
     await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight))
-    await expect(bar.getByRole('link', { name: 'Join', exact: true })).toBeVisible()
-    await expect(bar.getByRole('button', { name: 'Tour' })).toBeVisible()
-    await expect(bar.getByRole('link', { name: 'Call' })).toHaveCount(0)
+    await expect(bar.getByRole('link', { name: /join/i })).toBeVisible()
+    await expect(bar.getByRole('link', { name: 'Call' })).toBeVisible()
+    await expect(bar.getByRole('button', { name: 'Tour' })).toHaveCount(0)
 
     await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight))
     const phone = page.locator('footer').getByRole('link', { name: '956-990-5277' })
@@ -364,10 +304,6 @@ test.describe('Landing page', () => {
     expect(phoneBox).toBeTruthy()
     expect(barBox).toBeTruthy()
     expect(phoneBox!.y + phoneBox!.height).toBeLessThanOrEqual(barBox!.y + 1)
-
-    await bar.getByRole('button', { name: 'Tour' }).click()
-    await expect(page.getByRole('dialog')).toBeVisible()
-    await expect(bar).toBeHidden()
   })
 
   test('footer lists phone and address without a public email', async ({

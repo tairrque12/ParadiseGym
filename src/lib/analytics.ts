@@ -52,3 +52,7 @@ export function trackPhoneClick(properties: {
 }) {
   trackEvent('phone_click', properties)
 }
+
+export function trackAnnouncementBarClick() {
+  trackEvent('announcement_bar_click', { location: 'mcallen' })
+}

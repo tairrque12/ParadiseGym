@@ -4,7 +4,6 @@ import Image from 'next/image'
 import { SECTION_IDS } from '@/lib/sections'
 import { ImageWipe, SectionReveal, SlideReveal } from '@/components/motion'
 import { SectionHeading } from '@/components/section-heading'
-import { TourPrompt } from '@/components/tour-prompt'
 import { cn } from '@/lib/utils'
 
 const AMENITIES = [
@@ -87,7 +86,11 @@ function AmenityRow({
   )
 }
 
-export function Amenities() {
+export function Amenities({ includeShowers = true }: { includeShowers?: boolean }) {
+  const amenities = includeShowers
+    ? AMENITIES
+    : AMENITIES.filter((amenity) => amenity.title !== 'Showers')
+
   return (
     <section
       id={SECTION_IDS.amenities}
@@ -98,18 +101,18 @@ export function Amenities() {
           <SectionHeading
             eyebrow="Member perks"
             title="Included with every membership"
-            description="Showers, infrared sauna, and a posing room. No add-on fees."
+            description={
+              includeShowers
+                ? 'Showers, infrared sauna, and a posing room. No add-on fees.'
+                : 'Infrared sauna and a posing room. No add-on fees.'
+            }
           />
         </SectionReveal>
 
         <div className="mt-12 lg:mt-16">
-          {AMENITIES.map((amenity, index) => (
-            <AmenityRow key={amenity.numeral} {...amenity} flip={index === 1} />
+          {amenities.map((amenity, index) => (
+            <AmenityRow key={amenity.title} {...amenity} flip={index === 1} />
           ))}
-        </div>
-
-        <div className="mt-4 border-t border-white/10 pt-10">
-          <TourPrompt>Not ready? Book a free tour</TourPrompt>
         </div>
       </div>
     </section>

@@ -25,8 +25,6 @@ export function HoursLocation({
       id={SECTION_IDS.hours}
       className="relative scroll-mt-24 bg-carbon py-16 sm:py-20 lg:py-28"
     >
-      <div id={SECTION_IDS.tour} className="scroll-mt-32" aria-hidden />
-
       <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-10">
         <SectionReveal>
           <SectionHeading

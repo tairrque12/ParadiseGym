@@ -21,7 +21,7 @@ export default function McAllenPage() {
       <main className="bg-carbon text-white">
         <McAllenHero />
         <McAllenPricing />
-        <Amenities />
+        <Amenities includeShowers={false} />
         <Reviews />
         <HoursLocation location={mcallen} />
       </main>

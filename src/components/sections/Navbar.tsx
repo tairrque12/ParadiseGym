@@ -39,15 +39,9 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip'
-import { useModal } from '@/context/modal-context'
+import { McallenOpeningBanner } from '@/components/mcallen-opening-banner'
 import { CONTACT } from '@/lib/contact'
-import {
-  joinUrl,
-  LOCATIONS,
-  MCALLEN_PATH,
-  TOUR_FALLBACK_LABEL,
-  type LocationId,
-} from '@/lib/locations'
+import { joinUrl, LOCATIONS, MCALLEN_PATH, type LocationId } from '@/lib/locations'
 import { MEMBERSHIP_OPTIONS } from '@/lib/membership-options'
 import { handleSectionNavClick, sectionHrefForPath } from '@/lib/section-nav'
 import { GALLERY_PATH, NAV_LINKS } from '@/lib/sections'
@@ -145,14 +139,21 @@ function LocationToggle({
 }
 
 export function Navbar() {
-  const { openTourModal } = useModal()
   const pathname = usePathname()
   const headerRef = useRef<HTMLElement>(null)
   const location = LOCATIONS[activeLocationId(pathname)]
   const [menuOpen, setMenuOpen] = useState(false)
   const [hash, setHash] = useState('')
+  const [bannerCollapsed, setBannerCollapsed] = useState(false)
 
   useHeaderHeight(headerRef)
+
+  useEffect(() => {
+    const onScroll = () => setBannerCollapsed(window.scrollY > 8)
+    onScroll()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
 
   useEffect(() => {
     const root = document.documentElement
@@ -189,11 +190,6 @@ export function Navbar() {
     setMenuOpen(false)
   }
 
-  function openTour(placement: 'header' | 'mobile_menu') {
-    setMenuOpen(false)
-    openTourModal(placement)
-  }
-
   function trackJoin(placement: JoinPlacement) {
     trackJoinOnlineClick({ location: location.id, placement })
   }
@@ -201,9 +197,13 @@ export function Navbar() {
   return (
     <header
       ref={headerRef}
-      className="fixed inset-x-0 top-0 z-50 h-[60px] border-b border-white/10 bg-carbon/85 text-white backdrop-blur-xl xl:h-[72px]"
+      className="fixed inset-x-0 top-0 z-50 border-b border-white/10 bg-carbon/85 text-white backdrop-blur-xl"
     >
-      <div className="mx-auto flex h-full max-w-7xl flex-nowrap items-center gap-2 px-4 xl:gap-3 xl:px-6">
+      <McallenOpeningBanner collapsed={bannerCollapsed} />
+      <div
+        data-testid="nav-row"
+        className="mx-auto flex h-[60px] max-w-7xl flex-nowrap items-center gap-2 px-4 xl:h-[72px] xl:gap-3 xl:px-6"
+      >
         <Link
           href="/"
           aria-label="Paradise Gym home"
@@ -267,15 +267,6 @@ export function Navbar() {
           </TooltipProvider>
 
           <Button
-            variant="outline"
-            data-testid="header-tour"
-            className="hidden h-11 border-white/20 bg-transparent px-3 text-sm font-medium tracking-normal text-white hover:border-white/50 hover:bg-white/5 lg:inline-flex"
-            onClick={() => openTour('header')}
-          >
-            Book a Tour
-          </Button>
-
-          <Button
             size="sm"
             nativeButton={false}
             data-testid="header-cta"
@@ -330,14 +321,14 @@ export function Navbar() {
               </SheetHeader>
 
               <div className="flex min-h-0 flex-1 flex-col overflow-y-auto px-5 pb-4">
-                <p className="mt-6 text-[13px] font-medium text-text-2">
-                  McAllen pre-sale is open
-                </p>
                 <LocationToggle
                   activeId={location.id}
                   onNavigate={() => setMenuOpen(false)}
-                  className="mt-3"
+                  className="mt-6"
                 />
+                <p className="mt-4 text-[13px] font-medium text-text-2">
+                  McAllen pre-sale is open
+                </p>
 
                 <nav aria-label="Mobile" className="mt-6">
                   <ul className="flex flex-col">
@@ -383,12 +374,13 @@ export function Navbar() {
                   {menuJoinLabel}
                 </Button>
                 <Button
-                  variant="outline"
-                  data-testid="mobile-tour"
-                  className="h-11 w-full border-white/20 bg-transparent text-sm font-medium text-white hover:bg-white/5"
-                  onClick={() => openTour('mobile_menu')}
+                  variant="ghost"
+                  nativeButton={false}
+                  className="h-11 w-full text-sm font-medium text-white hover:bg-white/5"
+                  render={<a href={CONTACT.phoneHref} />}
                 >
-                  {TOUR_FALLBACK_LABEL}
+                  <Phone className="size-5" />
+                  Call
                 </Button>
                 <p className="text-center text-xs leading-relaxed text-text-2">
                   Secure checkout by ABC Fitness
