@@ -34,7 +34,14 @@ describe('Navbar', () => {
     expect(banner).toHaveAttribute('href', '/mcallen')
     expect(banner).toHaveClass('w-full')
     expect(banner.className).not.toMatch(/justify-center/)
-    expect(screen.getByTestId('opening-banner-arrow')).toHaveClass('bg-neon', 'w-14')
+    expect(banner).toHaveTextContent(
+      'McAllen Grand Opening Nov 28- Click Here to See The McAllen Location'
+    )
+    expect(screen.getByTestId('opening-banner-arrow')).toHaveClass(
+      'bg-neon',
+      'w-14',
+      'lg:size-9'
+    )
     expect(screen.queryByTestId('location-announcement')).not.toBeInTheDocument()
     expect(within(header).queryByText('Call')).not.toBeInTheDocument()
 
