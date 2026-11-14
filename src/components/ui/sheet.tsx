@@ -27,7 +27,7 @@ function SheetOverlay({ className, ...props }: SheetPrimitive.Backdrop.Props) {
     <SheetPrimitive.Backdrop
       data-slot="sheet-overlay"
       className={cn(
-        "fixed inset-x-0 bottom-0 top-[var(--header-height,0px)] z-[60] bg-black/50 motion-reduce:transition-none",
+        "fixed inset-0 z-[60] bg-black/60 motion-reduce:transition-none",
         className
       )}
       {...props}
@@ -46,7 +46,7 @@ function SheetContent({
       <SheetPrimitive.Popup
         data-slot="sheet-content"
         className={cn(
-          "fixed inset-x-0 bottom-0 top-[var(--header-height,0px)] z-[60] flex flex-col overflow-y-auto bg-carbon text-white outline-none motion-reduce:transition-none",
+          "fixed inset-y-0 right-0 z-[60] flex h-dvh w-full flex-col bg-background text-white outline-none motion-reduce:transition-none sm:max-w-sm",
           className
         )}
         {...props}
@@ -90,13 +90,23 @@ function SheetDescription({
   )
 }
 
+function SheetFooter({ className, ...props }: React.ComponentProps<"div">) {
+  return (
+    <div
+      data-slot="sheet-footer"
+      className={cn("mt-auto flex flex-col gap-2", className)}
+      {...props}
+    />
+  )
+}
+
 function SheetCloseButton({ className, ...props }: SheetPrimitive.Close.Props) {
   return (
     <SheetPrimitive.Close
       data-slot="sheet-close"
       aria-label="Close menu"
       className={cn(
-        "inline-flex h-10 w-10 items-center justify-center rounded-sm text-white transition-colors hover:bg-white/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neon/70 motion-reduce:transition-none",
+        "inline-flex size-11 items-center justify-center rounded-md text-white transition-colors hover:bg-white/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neon/70 motion-reduce:transition-none",
         className
       )}
       {...props}
@@ -112,6 +122,7 @@ export {
   SheetCloseButton,
   SheetContent,
   SheetDescription,
+  SheetFooter,
   SheetHeader,
   SheetTitle,
   SheetTrigger,

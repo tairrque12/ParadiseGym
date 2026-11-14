@@ -53,7 +53,7 @@ export function McAllenHero() {
             {mcallen.grandOpeningNote}
           </p>
 
-          <div className="mt-8 flex flex-col items-start gap-4 sm:mt-10">
+          <div data-hero-cta="" className="mt-8 flex flex-col items-start gap-4 sm:mt-10">
             <div className="flex flex-col items-start gap-2">
               <NeonButton
                 href={joinUrl('mcallen', 'hero')}

@@ -10,45 +10,62 @@ import {
 } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Menu, X } from 'lucide-react'
+import { Menu, Phone, X } from 'lucide-react'
 import { Logo } from '@/components/Logo'
-import { LocationAnnouncement } from '@/components/LocationAnnouncement'
-import { LocationSwitcher } from '@/components/LocationSwitcher'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import {
+  NavigationMenu,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+} from '@/components/ui/navigation-menu'
 import { Separator } from '@/components/ui/separator'
 import {
   Sheet,
   SheetClose,
   SheetContent,
   SheetDescription,
+  SheetFooter,
+  SheetHeader,
   SheetTitle,
   SheetTrigger,
 } from '@/components/ui/sheet'
+import { Toggle, ToggleGroup } from '@/components/ui/toggle-group'
+import {
+  Tooltip,
+  TooltipPopup,
+  TooltipPortal,
+  TooltipPositioner,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip'
 import { useModal } from '@/context/modal-context'
 import { CONTACT } from '@/lib/contact'
 import {
-  ABC_CHECKOUT_NOTE,
-  JOIN_NOW_LABEL,
   joinUrl,
   LOCATIONS,
   MCALLEN_PATH,
   TOUR_FALLBACK_LABEL,
-  type GymLocation,
   type LocationId,
 } from '@/lib/locations'
+import { MEMBERSHIP_OPTIONS } from '@/lib/membership-options'
 import { handleSectionNavClick, sectionHrefForPath } from '@/lib/section-nav'
-import { NAV_LINKS } from '@/lib/sections'
+import { GALLERY_PATH, NAV_LINKS } from '@/lib/sections'
 import { trackJoinOnlineClick, type JoinPlacement } from '@/lib/analytics'
 import { cn } from '@/lib/utils'
 
 const DESKTOP_NAV_QUERY = '(min-width: 1280px)'
 
-const focusRing =
-  'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neon/70 focus-visible:ring-offset-2 focus-visible:ring-offset-carbon'
+const HEADER_LINKS = NAV_LINKS.filter((link) => link.href !== GALLERY_PATH)
 
-function useHeaderHeight(
-  headerRef: RefObject<HTMLElement | null>,
-  dependency: boolean
-) {
+const fromPrice = MEMBERSHIP_OPTIONS.find(
+  (option) => option.slug === '12_month_contract'
+)?.price
+
+const menuJoinLabel = fromPrice ? `Join today · from ${fromPrice}` : 'Join today'
+
+function useHeaderHeight(headerRef: RefObject<HTMLElement | null>) {
   useLayoutEffect(() => {
     const header = headerRef.current
     if (!header) return
@@ -66,7 +83,7 @@ function useHeaderHeight(
     const observer = new ResizeObserver(apply)
     observer.observe(header)
     return () => observer.disconnect()
-  }, [headerRef, dependency])
+  }, [headerRef])
 }
 
 function activeLocationId(pathname: string): LocationId {
@@ -82,60 +99,70 @@ function isLinkActive(href: string, pathname: string, hash: string) {
   return pathname === href
 }
 
-function MembershipLink({
-  location,
-  placement,
-  campaign,
+function LocationToggle({
+  activeId,
+  onNavigate,
   className,
-  testId,
 }: {
-  location: GymLocation
-  placement: JoinPlacement
-  campaign: 'header' | 'mobile_menu'
+  activeId: LocationId
+  onNavigate?: () => void
   className?: string
-  testId?: string
 }) {
   return (
-    <a
-      href={joinUrl(location.id, campaign)}
-      target="_blank"
-      rel="noopener noreferrer"
-      data-testid={testId}
-      className={className}
-      onClick={() =>
-        trackJoinOnlineClick({
-          location: location.id,
-          placement,
-        })
-      }
+    <ToggleGroup
+      value={[activeId]}
+      className={cn(
+        'rounded-lg border border-line-strong bg-background p-0.5',
+        className
+      )}
+      render={<nav aria-label="Gym locations" />}
     >
-      {JOIN_NOW_LABEL}
-    </a>
+      <Toggle
+        value="harlingen"
+        nativeButton={false}
+        aria-current={activeId === 'harlingen' ? 'page' : undefined}
+        className={cn(
+          'rounded-md',
+          activeId === 'harlingen' && 'bg-white text-carbon'
+        )}
+        render={<Link href="/" onClick={onNavigate} />}
+      >
+        Harlingen
+      </Toggle>
+      <Toggle
+        value="mcallen"
+        nativeButton={false}
+        aria-current={activeId === 'mcallen' ? 'page' : undefined}
+        className={cn(
+          'gap-1.5 rounded-md',
+          activeId === 'mcallen' && 'bg-white text-carbon'
+        )}
+        render={<Link href={MCALLEN_PATH} onClick={onNavigate} />}
+      >
+        McAllen
+        <Badge
+          variant="outline"
+          className={cn(
+            'border-current',
+            activeId === 'mcallen' ? 'text-carbon' : 'text-white'
+          )}
+        >
+          Pre-sale
+        </Badge>
+      </Toggle>
+    </ToggleGroup>
   )
 }
-
-const membershipClassName = cn(
-  'inline-flex min-h-11 items-center justify-center bg-neon px-4 text-sm font-semibold text-carbon transition-colors duration-200 hover:bg-white',
-  focusRing,
-  'motion-reduce:transition-none'
-)
-
-const tourClassName = cn(
-  'inline-flex min-h-11 items-center justify-center border border-white/30 px-4 text-sm font-medium text-white transition-colors duration-200 hover:border-white/60 hover:bg-white/5',
-  focusRing,
-  'motion-reduce:transition-none'
-)
 
 export function Navbar() {
   const { openTourModal } = useModal()
   const pathname = usePathname()
   const headerRef = useRef<HTMLElement>(null)
-  const showAnnouncement = pathname !== MCALLEN_PATH
   const location = LOCATIONS[activeLocationId(pathname)]
   const [menuOpen, setMenuOpen] = useState(false)
   const [hash, setHash] = useState('')
 
-  useHeaderHeight(headerRef, showAnnouncement)
+  useHeaderHeight(headerRef)
 
   useEffect(() => {
     const sync = () => setHash(window.location.hash)
@@ -147,13 +174,6 @@ export function Navbar() {
       window.removeEventListener('popstate', sync)
     }
   }, [])
-
-  useEffect(() => {
-    document.body.style.overflow = menuOpen ? 'hidden' : ''
-    return () => {
-      document.body.style.overflow = ''
-    }
-  }, [menuOpen])
 
   useEffect(() => {
     const media = window.matchMedia(DESKTOP_NAV_QUERY)
@@ -172,169 +192,227 @@ export function Navbar() {
     setMenuOpen(false)
   }
 
-  function openTourFromMenu() {
+  function openTour(placement: 'header' | 'mobile_menu') {
     setMenuOpen(false)
-    openTourModal('mobile_menu')
+    openTourModal(placement)
+  }
+
+  function trackJoin(placement: JoinPlacement) {
+    trackJoinOnlineClick({ location: location.id, placement })
   }
 
   return (
     <header
       ref={headerRef}
-      className="fixed inset-x-0 top-0 z-50 border-b border-white/10 bg-carbon/95 text-white backdrop-blur-md"
+      className="fixed inset-x-0 top-0 z-50 h-[60px] border-b border-border bg-background/90 text-white backdrop-blur xl:h-[72px]"
     >
-      {showAnnouncement ? <LocationAnnouncement /> : null}
+      <div className="mx-auto flex h-full max-w-7xl flex-nowrap items-center gap-2 px-3 xl:gap-3 xl:px-6">
+        <Link
+          href="/"
+          aria-label="Paradise Gym home"
+          className="inline-flex size-11 shrink-0 items-center justify-center rounded-md"
+        >
+          <Logo compact />
+        </Link>
 
-      <div className="mx-auto flex max-w-7xl flex-col gap-2.5 px-4 py-3 sm:px-6 xl:flex-row xl:items-center xl:gap-6 xl:px-8 xl:py-3">
-        <div className="flex items-center justify-between gap-3">
-          <Link
-            href="/"
-            aria-label="Paradise Gym home"
-            className={cn('shrink-0 rounded-sm', focusRing)}
+        <NavigationMenu
+          aria-label="Main"
+          data-testid="desktop-nav"
+          className="ml-2 hidden min-w-0 xl:flex"
+        >
+          <NavigationMenuList className="gap-1">
+            {HEADER_LINKS.map((link) => {
+              const href = sectionHrefForPath(link.href, pathname)
+              const active = isLinkActive(href, pathname, hash)
+              return (
+                <NavigationMenuItem key={link.href}>
+                  <NavigationMenuLink
+                    href={href}
+                    active={active}
+                    className={cn(
+                      active &&
+                        'underline decoration-neon decoration-2 underline-offset-8'
+                    )}
+                    onClick={(event) => onSectionClick(event, href)}
+                  >
+                    {link.label}
+                  </NavigationMenuLink>
+                </NavigationMenuItem>
+              )
+            })}
+          </NavigationMenuList>
+        </NavigationMenu>
+
+        <div className="ml-auto flex shrink-0 flex-nowrap items-center gap-2">
+          <LocationToggle
+            activeId={location.id}
+            className="hidden xl:inline-flex"
+          />
+
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger
+                data-testid="header-phone"
+                aria-label="Call"
+                className="hidden size-11 items-center justify-center rounded-md text-white hover:bg-white/5 xl:inline-flex"
+                render={<a href={CONTACT.phoneHref} />}
+              >
+                <Phone className="size-5" />
+              </TooltipTrigger>
+              <TooltipPortal>
+                <TooltipPositioner sideOffset={8}>
+                  <TooltipPopup>{CONTACT.phone}</TooltipPopup>
+                </TooltipPositioner>
+              </TooltipPortal>
+            </Tooltip>
+          </TooltipProvider>
+
+          <Button
+            variant="outline"
+            data-testid="header-tour"
+            className="hidden h-11 border-line-strong bg-transparent px-3 text-white hover:bg-white/5 xl:inline-flex"
+            onClick={() => openTour('header')}
           >
-            <Logo compact className="sm:hidden" />
-            <Logo className="hidden sm:flex" />
-          </Link>
+            Book a tour
+          </Button>
 
-          <Sheet open={menuOpen} onOpenChange={setMenuOpen} modal={false}>
-            <SheetTrigger
-              className={cn(
-                'inline-flex h-10 w-10 items-center justify-center rounded-sm text-white transition-colors duration-200 hover:bg-white/5 xl:hidden motion-reduce:transition-none',
-                focusRing
-              )}
-              aria-label={menuOpen ? 'Close menu' : 'Open menu'}
-              data-testid="mobile-menu-button"
+          <Button
+            size="sm"
+            nativeButton={false}
+            data-testid="header-cta"
+            className="hidden h-11 bg-neon px-3 text-carbon hover:bg-white xl:inline-flex"
+            render={
+              <a
+                href={joinUrl(location.id, 'header')}
+                target="_blank"
+                rel="noopener noreferrer"
+              />
+            }
+            onClick={() => trackJoin('header')}
+          >
+            Join today
+          </Button>
+
+          <Sheet open={menuOpen} onOpenChange={setMenuOpen}>
+            <Button
+              size="sm"
+              nativeButton={false}
+              data-testid="mobile-header-join"
+              className="h-11 bg-neon px-3 text-carbon hover:bg-white xl:hidden"
+              render={
+                <a
+                  href={joinUrl(location.id, 'header')}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                />
+              }
+              onClick={() => trackJoin('header')}
             >
-              {menuOpen ? <X className="size-5" /> : <Menu className="size-5" />}
+              Join
+            </Button>
+            <SheetTrigger
+              data-testid="mobile-menu-button"
+              aria-label="Open menu"
+              className="inline-flex size-11 items-center justify-center rounded-md text-white hover:bg-white/5 xl:hidden"
+            >
+              <Menu className="size-5" />
             </SheetTrigger>
             <SheetContent>
-              <div className="mx-auto flex w-full max-w-lg flex-col px-6 py-6">
+              <SheetHeader className="px-4 pt-3">
+                <Link
+                  href="/"
+                  aria-label="Paradise Gym home"
+                  className="inline-flex size-11 items-center justify-center rounded-md"
+                  onClick={() => setMenuOpen(false)}
+                >
+                  <Logo compact />
+                </Link>
                 <SheetTitle className="sr-only">Menu</SheetTitle>
-                <SheetDescription>
-                  Paradise Gym pages, locations, and membership
+                <SheetDescription className="sr-only">
+                  Paradise Gym locations, pages, and membership
                 </SheetDescription>
+                <SheetClose
+                  aria-label="Close menu"
+                  className="inline-flex size-11 items-center justify-center rounded-md text-white hover:bg-white/5"
+                >
+                  <X className="size-5" />
+                </SheetClose>
+              </SheetHeader>
 
-                <nav id="mobile-nav" aria-label="Mobile" className="mt-6">
+              <div className="flex min-h-0 flex-1 flex-col overflow-y-auto px-4 pb-4">
+                <p className="mt-4 text-sm text-white">McAllen pre-sale is open</p>
+                <LocationToggle
+                  activeId={location.id}
+                  onNavigate={() => setMenuOpen(false)}
+                  className="mt-3"
+                />
+
+                <nav aria-label="Mobile" className="mt-6">
                   <ul className="flex flex-col">
-                    {NAV_LINKS.map((link) => {
+                    {HEADER_LINKS.map((link, index) => {
                       const href = sectionHrefForPath(link.href, pathname)
                       const active = isLinkActive(href, pathname, hash)
                       return (
                         <li key={link.href}>
+                          {index > 0 ? <Separator className="bg-line" /> : null}
                           <Link
                             href={href}
                             aria-current={active ? 'page' : undefined}
                             onClick={(event) => onSectionClick(event, href)}
                             className={cn(
-                              'flex items-center justify-between border-b border-white/10 py-3.5 text-base font-medium text-white/80 transition-colors duration-200 hover:text-white motion-reduce:transition-none',
-                              focusRing,
-                              active && 'text-white'
+                              'flex h-[52px] items-center border-l-2 px-4 text-lg text-white',
+                              active ? 'border-neon' : 'border-transparent'
                             )}
                           >
                             {link.label}
-                            {active ? (
-                              <span
-                                aria-hidden
-                                className="h-1.5 w-1.5 rounded-full bg-neon"
-                              />
-                            ) : null}
                           </Link>
                         </li>
                       )
                     })}
                   </ul>
-
-                  <div className="mt-6 flex flex-col gap-3">
-                    <MembershipLink
-                      location={location}
-                      placement="mobile_menu"
-                      campaign="mobile_menu"
-                      testId="mobile-join"
-                      className={cn(membershipClassName, 'w-full')}
-                    />
-                    <p className="text-sm text-white/80">{ABC_CHECKOUT_NOTE}</p>
-                    <button
-                      type="button"
-                      data-testid="mobile-tour"
-                      onClick={openTourFromMenu}
-                      className={cn(tourClassName, 'w-full')}
-                    >
-                      {TOUR_FALLBACK_LABEL}
-                    </button>
-                  </div>
                 </nav>
-                <SheetClose className="sr-only">Close menu</SheetClose>
               </div>
+
+              <SheetFooter className="px-4 pt-2 pb-[max(1rem,env(safe-area-inset-bottom))]">
+                <Button
+                  size="sm"
+                  nativeButton={false}
+                  data-testid="mobile-join"
+                  className="h-12 w-full bg-neon text-carbon hover:bg-white"
+                  render={
+                    <a
+                      href={joinUrl(location.id, 'mobile_menu')}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    />
+                  }
+                  onClick={() => trackJoin('mobile_menu')}
+                >
+                  {menuJoinLabel}
+                </Button>
+                <p className="text-center text-xs text-text-2">
+                  Secure checkout by ABC Fitness
+                </p>
+                <Button
+                  variant="outline"
+                  data-testid="mobile-tour"
+                  className="h-12 w-full border-line-strong bg-transparent text-white hover:bg-white/5"
+                  onClick={() => openTour('mobile_menu')}
+                >
+                  {TOUR_FALLBACK_LABEL}
+                </Button>
+                <Button
+                  variant="ghost"
+                  nativeButton={false}
+                  className="h-11 w-full text-white hover:bg-white/5"
+                  render={<a href={CONTACT.phoneHref} />}
+                >
+                  <Phone className="size-5" />
+                  Call
+                </Button>
+              </SheetFooter>
             </SheetContent>
           </Sheet>
-        </div>
-
-        <nav
-          aria-label="Main"
-          data-testid="desktop-nav"
-          className="hidden items-center gap-x-6 xl:ml-10 xl:flex"
-        >
-          {NAV_LINKS.map((link) => {
-            const href = sectionHrefForPath(link.href, pathname)
-            const active = isLinkActive(href, pathname, hash)
-            return (
-              <Link
-                key={link.href}
-                href={href}
-                aria-current={active ? 'page' : undefined}
-                onClick={(event) => onSectionClick(event, href)}
-                className={cn(
-                  'text-sm font-medium text-white/70 transition-colors duration-200 hover:text-white motion-reduce:transition-none',
-                  focusRing,
-                  active &&
-                    'text-white underline decoration-neon decoration-2 underline-offset-8'
-                )}
-              >
-                {link.label}
-              </Link>
-            )
-          })}
-        </nav>
-
-        <div className="flex min-w-0 items-center gap-3 xl:ml-auto xl:gap-4">
-          <a
-            href={CONTACT.phoneHref}
-            data-testid="header-phone"
-            className={cn(
-              'inline-flex min-h-11 items-center px-2 text-sm text-white',
-              focusRing
-            )}
-          >
-            <span className="xl:hidden">Call</span>
-            <span className="hidden xl:inline">{CONTACT.phone}</span>
-          </a>
-          <LocationSwitcher />
-          <Separator
-            orientation="vertical"
-            aria-hidden
-            className="hidden h-4 w-px bg-white/15 xl:block"
-          />
-          <div className="hidden flex-col items-end gap-1 xl:flex">
-            <div className="flex items-center gap-2">
-              <MembershipLink
-                location={location}
-                placement="header"
-                campaign="header"
-                testId="header-cta"
-                className={membershipClassName}
-              />
-              <button
-                type="button"
-                data-testid="header-tour"
-                onClick={() => openTourModal('header')}
-                className={tourClassName}
-              >
-                {TOUR_FALLBACK_LABEL}
-              </button>
-            </div>
-            <p className="max-w-xs text-right text-xs leading-snug text-white/80">
-              {ABC_CHECKOUT_NOTE}
-            </p>
-          </div>
         </div>
       </div>
     </header>

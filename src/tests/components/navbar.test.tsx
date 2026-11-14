@@ -5,17 +5,23 @@ import userEvent from '@testing-library/user-event'
 import { Providers } from '@/components/providers'
 import { Navbar } from '@/components/sections/Navbar'
 import { joinUrl } from '@/lib/locations'
+import { MEMBERSHIP_OPTIONS } from '@/lib/membership-options'
 
 const usePathname = vi.hoisted(() => vi.fn(() => '/'))
 
 vi.mock('next/navigation', () => ({ usePathname }))
+
+const fromPrice = MEMBERSHIP_OPTIONS.find(
+  (option) => option.slug === '12_month_contract'
+)?.price
 
 describe('Navbar', () => {
   beforeEach(() => {
     usePathname.mockReturnValue('/')
   })
 
-  it('renders the McAllen announcement above the nav row on the main site', () => {
+  it('keeps the header to one row and moves the pre-sale note into the menu', async () => {
+    const user = userEvent.setup()
     render(
       <Providers>
         <Navbar />
@@ -23,25 +29,12 @@ describe('Navbar', () => {
     )
 
     const header = screen.getByRole('banner')
-    const announcement = screen.getByTestId('location-announcement')
-
-    expect(header).toContainElement(announcement)
-    expect(header.firstElementChild).toBe(announcement)
-    expect(
-      within(header).getByRole('navigation', { name: /gym locations/i })
-    ).toBeInTheDocument()
-  })
-
-  it('hides the announcement on the McAllen page it promotes', () => {
-    usePathname.mockReturnValue('/mcallen')
-
-    render(
-      <Providers>
-        <Navbar />
-      </Providers>
-    )
-
+    expect(header).toHaveClass('h-[60px]')
     expect(screen.queryByTestId('location-announcement')).not.toBeInTheDocument()
+    expect(within(header).queryByText('Call')).not.toBeInTheDocument()
+
+    await user.click(screen.getByTestId('mobile-menu-button'))
+    expect(screen.getByText('McAllen pre-sale is open')).toBeInTheDocument()
   })
 
   it('points the primary CTA at the active location membership', () => {
@@ -52,15 +45,18 @@ describe('Navbar', () => {
     )
 
     const harlingenCta = screen.getByTestId('header-cta')
-    expect(harlingenCta).toHaveTextContent('Join now')
+    expect(harlingenCta).toHaveTextContent('Join today')
     expect(harlingenCta).toHaveClass('bg-neon')
     expect(harlingenCta).toHaveAttribute('href', joinUrl('harlingen', 'header'))
     expect(harlingenCta).toHaveAttribute('target', '_blank')
     expect(harlingenCta).toHaveAttribute('rel', 'noopener noreferrer')
-    expect(screen.getByTestId('header-tour')).toHaveTextContent(
-      /book a free tour/i
-    )
+    expect(screen.getByTestId('header-tour')).toHaveTextContent('Book a tour')
     expect(screen.getByTestId('header-tour')).not.toHaveClass('bg-neon')
+    expect(screen.getByTestId('mobile-header-join')).toHaveTextContent('Join')
+    expect(screen.getByTestId('mobile-header-join')).toHaveAttribute(
+      'href',
+      joinUrl('harlingen', 'header')
+    )
 
     usePathname.mockReturnValue('/mcallen')
     rerender(
@@ -69,9 +65,14 @@ describe('Navbar', () => {
       </Providers>
     )
 
-    const mcallenCta = screen.getByTestId('header-cta')
-    expect(mcallenCta).toHaveTextContent('Join now')
-    expect(mcallenCta).toHaveAttribute('href', joinUrl('mcallen', 'header'))
+    expect(screen.getByTestId('header-cta')).toHaveAttribute(
+      'href',
+      joinUrl('mcallen', 'header')
+    )
+    expect(screen.getByTestId('mobile-header-join')).toHaveAttribute(
+      'href',
+      joinUrl('mcallen', 'header')
+    )
   })
 
   it('keeps McAllen section links on the McAllen page, including reviews', () => {
@@ -100,10 +101,7 @@ describe('Navbar', () => {
       'href',
       '/mcallen#hours'
     )
-    expect(desktop.getByRole('link', { name: 'Gallery' })).toHaveAttribute(
-      'href',
-      '/gallery'
-    )
+    expect(desktop.queryByRole('link', { name: 'Gallery' })).not.toBeInTheDocument()
   })
 
   it('marks the McAllen section that was just clicked as current', async () => {
@@ -126,24 +124,9 @@ describe('Navbar', () => {
     )
   })
 
-  it('marks the gallery link as current on the gallery page', () => {
-    usePathname.mockReturnValue('/gallery')
-
-    render(
-      <Providers>
-        <Navbar />
-      </Providers>
-    )
-
-    expect(
-      within(screen.getByTestId('desktop-nav')).getByRole('link', {
-        name: 'Gallery',
-      })
-    ).toHaveAttribute('aria-current', 'page')
-  })
-
-  it('toggles mobile menu open and closed', async () => {
+  it('opens a modal menu with location-aware links and the membership price', async () => {
     const user = userEvent.setup()
+    usePathname.mockReturnValue('/mcallen')
     render(
       <Providers>
         <Navbar />
@@ -151,23 +134,32 @@ describe('Navbar', () => {
     )
 
     const menuButton = screen.getByTestId('mobile-menu-button')
-    expect(menuButton).toHaveAttribute('aria-expanded', 'false')
-
+    expect(menuButton).toHaveAttribute('aria-label', 'Open menu')
     await user.click(menuButton)
 
-    await waitFor(() => {
-      expect(menuButton).toHaveAttribute('aria-expanded', 'true')
-    })
-    expect(screen.getByRole('navigation', { name: /mobile/i })).toBeVisible()
+    const dialog = screen.getByRole('dialog')
+    const mobileNav = within(dialog).getByRole('navigation', { name: /mobile/i })
+    expect(within(mobileNav).getByRole('link', { name: 'Pricing' })).toHaveAttribute(
+      'href',
+      '/mcallen#pricing'
+    )
+    expect(within(mobileNav).getByRole('link', { name: 'Reviews' })).toHaveAttribute(
+      'href',
+      '/mcallen#reviews'
+    )
+    expect(within(mobileNav).queryByRole('link', { name: 'Gallery' })).not.toBeInTheDocument()
 
-    await user.click(menuButton)
-
-    await waitFor(() => {
-      expect(menuButton).toHaveAttribute('aria-expanded', 'false')
-    })
+    const join = within(dialog).getByTestId('mobile-join')
+    expect(join).toHaveAttribute('href', joinUrl('mcallen', 'mobile_menu'))
+    expect(join).toHaveTextContent(`Join today · from ${fromPrice}`)
+    expect(within(dialog).getByText('Secure checkout by ABC Fitness')).toBeInTheDocument()
+    expect(within(dialog).getByTestId('mobile-tour')).toHaveTextContent(
+      'Not ready? Book a free tour'
+    )
   })
 
-  it('renders anchor links to page sections', async () => {
+  it('marks the McAllen menu link that was just clicked as current', async () => {
+    usePathname.mockReturnValue('/mcallen')
     const user = userEvent.setup()
     render(
       <Providers>
@@ -176,29 +168,13 @@ describe('Navbar', () => {
     )
 
     await user.click(screen.getByTestId('mobile-menu-button'))
+    const mobileNav = within(screen.getByRole('dialog')).getByRole('navigation', {
+      name: /mobile/i,
+    })
+    const pricing = within(mobileNav).getByRole('link', { name: 'Pricing' })
+    await user.click(pricing)
 
-    const mobileNav = screen.getByRole('navigation', { name: /mobile/i })
-
-    expect(within(mobileNav).getByRole('link', { name: 'Amenities' })).toHaveAttribute(
-      'href',
-      '/#amenities'
-    )
-    expect(within(mobileNav).getByRole('link', { name: 'Gallery' })).toHaveAttribute(
-      'href',
-      '/gallery'
-    )
-    expect(within(mobileNav).getByRole('link', { name: 'Pricing' })).toHaveAttribute(
-      'href',
-      '/#pricing'
-    )
-    expect(within(mobileNav).getByRole('link', { name: 'Reviews' })).toHaveAttribute(
-      'href',
-      '/#reviews'
-    )
-    expect(within(mobileNav).getByRole('link', { name: 'Hours' })).toHaveAttribute(
-      'href',
-      '/#hours'
-    )
+    expect(pricing).toHaveAttribute('aria-current', 'page')
   })
 
   it('closes the mobile menu when the viewport reaches desktop width', async () => {
@@ -237,28 +213,21 @@ describe('Navbar', () => {
       const menuButton = screen.getByTestId('mobile-menu-button')
       await user.click(menuButton)
       await waitFor(() => {
-        expect(menuButton).toHaveAttribute('aria-expanded', 'true')
+        expect(screen.getByRole('dialog')).toBeInTheDocument()
       })
-
-      desktopMedia.matches = false
-      onChange?.({ matches: false })
-      expect(menuButton).toHaveAttribute('aria-expanded', 'true')
 
       desktopMedia.matches = true
       onChange?.({ matches: true })
 
       await waitFor(() => {
-        expect(menuButton).toHaveAttribute('aria-expanded', 'false')
+        expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
       })
-      expect(
-        screen.queryByRole('navigation', { name: /mobile/i })
-      ).not.toBeInTheDocument()
     } finally {
       window.matchMedia = originalMatchMedia
     }
   })
 
-  it('lets the header location switcher dismiss the open menu', async () => {
+  it('closes the menu when a section link or location is chosen', async () => {
     const user = userEvent.setup()
     render(
       <Providers>
@@ -268,43 +237,28 @@ describe('Navbar', () => {
 
     const menuButton = screen.getByTestId('mobile-menu-button')
     await user.click(menuButton)
-    await waitFor(() => {
-      expect(menuButton).toHaveAttribute('aria-expanded', 'true')
-    })
-
+    const dialog = screen.getByRole('dialog')
     await user.click(
-      within(screen.getByRole('navigation', { name: /gym locations/i })).getByRole(
+      within(within(dialog).getByRole('navigation', { name: /mobile/i })).getByRole(
         'link',
-        { name: /mcallen/i }
+        { name: 'Pricing' }
       )
     )
 
     await waitFor(() => {
-      expect(menuButton).toHaveAttribute('aria-expanded', 'false')
+      expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
     })
-    expect(screen.queryByRole('navigation', { name: /mobile/i })).not.toBeInTheDocument()
-  })
 
-  it('closes the mobile menu after a link is chosen', async () => {
-    const user = userEvent.setup()
-    render(
-      <Providers>
-        <Navbar />
-      </Providers>
-    )
-
-    const menuButton = screen.getByTestId('mobile-menu-button')
     await user.click(menuButton)
-
-    const mobileNav = screen.getByRole('navigation', { name: /mobile/i })
-    await user.click(within(mobileNav).getByRole('link', { name: 'Gallery' }))
+    const reopened = screen.getByRole('dialog')
+    await user.click(within(reopened).getByRole('button', { name: /mcallen/i }))
 
     await waitFor(() => {
-      expect(menuButton).toHaveAttribute('aria-expanded', 'false')
+      expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
     })
   })
 
-  it('opens tour modal from Free Tour CTA', async () => {
+  it('opens the tour modal from the menu fallback', async () => {
     const user = userEvent.setup()
     render(
       <Providers>
@@ -313,15 +267,12 @@ describe('Navbar', () => {
     )
 
     await user.click(screen.getByTestId('mobile-menu-button'))
-    const mobileNav = screen.getByRole('navigation', { name: /mobile/i })
-    const tour = within(mobileNav).getByTestId('mobile-tour')
-    const join = within(mobileNav).getByTestId('mobile-join')
+    const dialog = screen.getByRole('dialog')
+    const tour = within(dialog).getByTestId('mobile-tour')
+    const join = within(dialog).getByTestId('mobile-join')
     expect(join.compareDocumentPosition(tour) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
     await user.click(tour)
 
-    expect(screen.getByRole('dialog')).toBeInTheDocument()
-    expect(
-      screen.getByRole('heading', { name: /book a free tour/i })
-    ).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: /book a free tour/i })).toBeInTheDocument()
   })
 })

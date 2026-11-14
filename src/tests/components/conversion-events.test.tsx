@@ -71,11 +71,7 @@ describe('conversion events', () => {
     await user.click(screen.getByRole('link', { name: CONTACT.phone }))
 
     await user.click(screen.getByTestId('mobile-menu-button'))
-    await user.click(
-      within(screen.getByRole('navigation', { name: /mobile/i })).getByTestId(
-        'mobile-join'
-      )
-    )
+    await user.click(within(screen.getByRole('dialog')).getByTestId('mobile-join'))
 
     expect(track).toHaveBeenCalledWith('join_online_click', {
       location: 'harlingen',
