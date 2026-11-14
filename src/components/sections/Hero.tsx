@@ -6,17 +6,22 @@ import { Wordmark } from '@/components/Logo'
 import { NeonButton } from '@/components/NeonButton'
 import { GrainOverlay } from '@/components/motion'
 import { useModal } from '@/context/modal-context'
+import { OpenTodayHours } from '@/components/open-today-hours'
 import {
   ABC_CHECKOUT_NOTE,
   joinUrl,
   LOCATIONS,
   TOUR_FALLBACK_LABEL,
 } from '@/lib/locations'
+import { MEMBERSHIP_OPTIONS } from '@/lib/membership-options'
 import { usePrefersReducedMotion } from '@/hooks/use-prefers-reduced-motion'
 
 export function Hero() {
   const { openTourModal } = useModal()
   const harlingen = LOCATIONS.harlingen
+  const fromPrice = MEMBERSHIP_OPTIONS.find(
+    (option) => option.slug === '12_month_contract'
+  )?.price
   const reducedMotion = usePrefersReducedMotion()
   const { scrollY } = useScroll()
   const y = useTransform(scrollY, [0, 600], ['0%', reducedMotion ? '0%' : '18%'])
@@ -43,6 +48,13 @@ export function Hero() {
           <p className="mt-4 max-w-xl text-lg text-white/75 sm:mt-6 sm:text-xl">
             Where Strength Meets Aesthetics
           </p>
+          <ul className="mt-6 max-w-xl space-y-1 text-sm text-white/85 sm:text-base">
+            <li>
+              <OpenTodayHours />
+            </li>
+            <li>{harlingen.address}</li>
+            {fromPrice ? <li>From {fromPrice}</li> : null}
+          </ul>
           <div className="mt-8 flex flex-col items-start gap-4 sm:mt-10">
             <div className="flex flex-col items-start gap-2">
               <NeonButton
