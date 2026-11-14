@@ -1,3 +1,6 @@
+export const GALLERY_IMAGE_SIZES =
+  '(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw'
+
 export const GALLERY_IMAGES = [
   {
     src: '/images/gallery/gym-floor.png',
@@ -8,6 +11,7 @@ export const GALLERY_IMAGES = [
     src: '/images/gallery/dumbbell-rack.png',
     alt: 'Premier dumbbell rack along the mirror wall at Paradise Gym',
     span: 'tall' as const,
+    priority: true,
   },
   {
     src: '/images/gallery/training-floor.png',
