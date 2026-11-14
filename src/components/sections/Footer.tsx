@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { Logo } from '@/components/Logo'
+import { TrackedPhoneLink } from '@/components/tracked-phone-link'
 import { CONTACT } from '@/lib/contact'
 import { LOCATIONS, type GymLocation } from '@/lib/locations'
 
@@ -58,9 +59,14 @@ export function Footer({
             </h3>
             <ul className="mt-4 space-y-2 text-sm text-white/70">
               <li>
-                <a href={CONTACT.phoneHref} className="hover:text-neon">
+                <TrackedPhoneLink
+                  href={CONTACT.phoneHref}
+                  location={location.id}
+                  placement="footer"
+                  className="hover:text-neon"
+                >
                   {CONTACT.phone}
-                </a>
+                </TrackedPhoneLink>
               </li>
               <li>
                 <span className="text-white/50">{location.name}: </span>

@@ -32,6 +32,7 @@ import {
 } from '@/lib/locations'
 import { handleSectionNavClick } from '@/lib/section-nav'
 import { NAV_LINKS } from '@/lib/sections'
+import { trackMembershipClick, type MembershipPlacement } from '@/lib/analytics'
 import { cn } from '@/lib/utils'
 
 const DESKTOP_NAV_QUERY = '(min-width: 1280px)'
@@ -81,10 +82,12 @@ function isLinkActive(href: string, pathname: string, hash: string) {
 
 function MembershipLink({
   location,
+  placement,
   className,
   testId,
 }: {
   location: GymLocation
+  placement: MembershipPlacement
   className?: string
   testId?: string
 }) {
@@ -95,6 +98,12 @@ function MembershipLink({
       rel="noopener noreferrer"
       data-testid={testId}
       className={className}
+      onClick={() =>
+        trackMembershipClick({
+          location: location.id,
+          placement,
+        })
+      }
     >
       {headerCtaLabel(location)}
     </a>
@@ -154,7 +163,7 @@ export function Navbar() {
 
   function openTourFromMenu() {
     setMenuOpen(false)
-    openTourModal()
+    openTourModal('mobile_menu')
   }
 
   return (
@@ -225,10 +234,13 @@ export function Navbar() {
                   <div className="mt-6 flex flex-col gap-3">
                     <MembershipLink
                       location={location}
+                      placement="mobile_menu"
+                      testId="mobile-membership-cta"
                       className={cn(membershipClassName, 'h-11 w-full')}
                     />
                     <button
                       type="button"
+                      data-testid="mobile-tour"
                       onClick={openTourFromMenu}
                       className={cn(
                         'inline-flex h-11 w-full items-center justify-center border border-white/15 text-sm font-medium text-white transition-colors duration-200 hover:border-white/40 hover:bg-white/5 motion-reduce:transition-none',
@@ -281,7 +293,8 @@ export function Navbar() {
           <div className="hidden items-center gap-2 xl:flex">
             <button
               type="button"
-              onClick={openTourModal}
+              data-testid="header-tour"
+              onClick={() => openTourModal('header')}
               className={cn(
                 'inline-flex h-10 items-center px-3 text-sm font-medium text-white/80 transition-colors duration-200 hover:text-white motion-reduce:transition-none',
                 focusRing
@@ -291,6 +304,7 @@ export function Navbar() {
             </button>
             <MembershipLink
               location={location}
+              placement="header"
               testId="header-cta"
               className={membershipClassName}
             />

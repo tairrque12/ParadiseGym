@@ -1,4 +1,11 @@
+'use client'
+
 import { cn } from '@/lib/utils'
+import {
+  trackMembershipClick,
+  type AnalyticsLocation,
+  type MembershipPlacement,
+} from '@/lib/analytics'
 
 const base =
   'inline-flex items-center justify-center rounded-sm font-medium transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neon/60'
@@ -12,6 +19,7 @@ export function NeonButton({
   children,
   variant = 'primary',
   className,
+  membership,
 }: {
   href?: string
   target?: React.HTMLAttributeAnchorTarget
@@ -21,6 +29,11 @@ export function NeonButton({
   children: React.ReactNode
   variant?: 'primary' | 'outline'
   className?: string
+  membership?: {
+    location: AnalyticsLocation
+    placement: MembershipPlacement
+    plan?: string
+  }
 }) {
   const classes = cn(
     base,
@@ -40,17 +53,26 @@ export function NeonButton({
     )
   }
 
-  if (onClick) {
+  if (href) {
     return (
-      <button type="button" onClick={onClick} className={classes}>
+      <a
+        href={href}
+        target={target}
+        rel={rel}
+        className={classes}
+        onClick={() => {
+          if (membership) trackMembershipClick(membership)
+          onClick?.()
+        }}
+      >
         {children}
-      </button>
+      </a>
     )
   }
 
   return (
-    <a href={href} target={target} rel={rel} className={classes}>
+    <button type="button" onClick={onClick} className={classes}>
       {children}
-    </a>
+    </button>
   )
 }

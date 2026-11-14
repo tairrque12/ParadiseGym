@@ -18,6 +18,7 @@ import {
   groupTimeSlots,
   isValidTimeSlotForDate,
 } from '@/lib/gym-hours'
+import { trackTourFormSubmit, type AnalyticsLocation } from '@/lib/analytics'
 import {
   tourRequestSchema,
   type TourRequestInput,
@@ -26,6 +27,7 @@ import {
 type TourRequestModalProps = {
   open: boolean
   onOpenChange: (open: boolean) => void
+  location?: AnalyticsLocation
 }
 
 const SUCCESS_CLOSE_DELAY_MS = 1500
@@ -36,6 +38,7 @@ const fieldClassName =
 export function TourRequestModal({
   open,
   onOpenChange,
+  location = 'harlingen',
 }: TourRequestModalProps) {
   const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>(
     'idle'
@@ -139,6 +142,7 @@ export function TourRequestModal({
         return
       }
 
+      trackTourFormSubmit({ location })
       setStatus('success')
     } catch {
       setStatus('error')

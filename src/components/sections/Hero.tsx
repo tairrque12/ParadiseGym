@@ -43,10 +43,11 @@ export function Hero() {
               href={harlingen.joinLink}
               target="_blank"
               rel="noopener noreferrer"
+              membership={{ location: 'harlingen', placement: 'hero' }}
             >
               {harlingen.ctaLabel}
             </NeonButton>
-            <NeonButton onClick={openTourModal} variant="outline">
+            <NeonButton onClick={() => openTourModal('hero')} variant="outline">
               Free Gym Tour
             </NeonButton>
           </div>

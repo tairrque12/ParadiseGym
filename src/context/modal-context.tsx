@@ -8,23 +8,37 @@ import {
   useState,
   type ReactNode,
 } from 'react'
+import { usePathname } from 'next/navigation'
+import {
+  analyticsLocation,
+  trackTourCtaClick,
+  type TourPlacement,
+} from '@/lib/analytics'
 
 export type ActiveModal = 'tour' | null
 
 type ModalContextValue = {
   activeModal: ActiveModal
-  openTourModal: () => void
+  openTourModal: (placement: TourPlacement) => void
   closeModal: () => void
 }
 
 const ModalContext = createContext<ModalContextValue | null>(null)
 
 export function ModalProvider({ children }: { children: ReactNode }) {
+  const pathname = usePathname()
   const [activeModal, setActiveModal] = useState<ActiveModal>(null)
 
-  const openTourModal = useCallback(() => {
-    setActiveModal('tour')
-  }, [])
+  const openTourModal = useCallback(
+    (placement: TourPlacement) => {
+      trackTourCtaClick({
+        location: analyticsLocation(pathname ?? '/'),
+        placement,
+      })
+      setActiveModal('tour')
+    },
+    [pathname]
+  )
 
   const closeModal = useCallback(() => {
     setActiveModal(null)

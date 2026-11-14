@@ -49,6 +49,7 @@ export function McAllenHero() {
               href={mcallen.joinLink}
               target="_blank"
               rel="noopener noreferrer"
+              membership={{ location: 'mcallen', placement: 'hero' }}
             >
               {mcallen.ctaLabel}
             </NeonButton>

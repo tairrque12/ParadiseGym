@@ -2,6 +2,7 @@ import {
   GrainOverlay,
   SectionReveal,
 } from '@/components/motion'
+import { TrackedMembershipLink } from '@/components/tracked-membership-link'
 import {
   PRICING_DISCOUNT_NOTE,
   PRICING_FOOTER_NOTE,
@@ -29,8 +30,11 @@ function PricingRow({
   joinLink: string
 }) {
   return (
-    <a
+    <TrackedMembershipLink
       href={joinLink}
+      location="harlingen"
+      placement="pricing"
+      plan={option.slug}
       target="_blank"
       rel="noopener noreferrer"
       className={cn(
@@ -62,7 +66,7 @@ function PricingRow({
           Join Now
         </span>
       </div>
-    </a>
+    </TrackedMembershipLink>
   )
 }
 
