@@ -98,7 +98,11 @@ describe('conversion events', () => {
     const user = userEvent.setup()
     renderHome()
 
-    await user.click(screen.getAllByRole('button', { name: /book a free tour/i })[0])
+    await user.click(
+      within(screen.getByRole('main')).getByRole('button', {
+        name: /book a free tour/i,
+      })
+    )
     await user.click(screen.getByRole('button', { name: /close/i }))
     await user.click(screen.getByTestId('header-tour'))
     await user.click(screen.getByRole('button', { name: /close/i }))
