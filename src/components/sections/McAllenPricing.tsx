@@ -4,7 +4,11 @@ import { SectionHeading } from '@/components/section-heading'
 import { TourPrompt } from '@/components/tour-prompt'
 import { TrackedPlanLink } from '@/components/tracked-plan-link'
 import { ABC_CHECKOUT_NOTE, joinUrl, LOCATIONS } from '@/lib/locations'
-import { feeDisclosureEnabled, planFeeSummary } from '@/lib/plan-fees'
+import {
+  feeDisclosureEnabled,
+  planFeeSummary,
+  publicDueTodayLabel,
+} from '@/lib/plan-fees'
 import { PRICING_DISCOUNT_NOTE } from '@/lib/membership-options'
 import { SECTION_IDS } from '@/lib/sections'
 
@@ -30,6 +34,9 @@ export function McAllenPricing() {
             const feeSummary = feeDisclosureEnabled()
               ? planFeeSummary('mcallen', option.slug)
               : null
+            const dueToday = feeSummary
+              ? null
+              : publicDueTodayLabel('mcallen', option.slug)
 
             return (
               <TrackedPlanLink
@@ -53,6 +60,12 @@ export function McAllenPricing() {
 
                 {option.subLabel ? (
                   <span className="mt-3 block text-sm text-white/50">{option.subLabel}</span>
+                ) : null}
+
+                {dueToday ? (
+                  <span className="mt-4 block text-sm font-normal normal-case leading-snug tracking-normal text-white">
+                    {dueToday}
+                  </span>
                 ) : null}
 
                 {feeSummary ? (
