@@ -3,6 +3,7 @@
 import Image from 'next/image'
 import { SECTION_IDS } from '@/lib/sections'
 import { GrainOverlay, SectionReveal, SlideReveal } from '@/components/motion'
+import { TourPrompt } from '@/components/tour-prompt'
 
 const AMENITIES = [
   {
@@ -184,6 +185,10 @@ export function Amenities() {
           <CompactAmenityRow {...AMENITIES[0]} />
           <FeaturedSaunaRow image={AMENITIES[1].image} />
           <CompactAmenityRow {...AMENITIES[2]} />
+        </div>
+
+        <div className="mt-10">
+          <TourPrompt>Not ready? Book a free tour</TourPrompt>
         </div>
       </div>
     </section>

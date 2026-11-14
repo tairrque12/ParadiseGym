@@ -3,6 +3,7 @@
 import Image from 'next/image'
 import { GALLERY_IMAGES } from '@/lib/gallery'
 import { GrainOverlay, SectionReveal, StaggerContainer, StaggerItem } from '@/components/motion'
+import { TourPrompt } from '@/components/tour-prompt'
 import { cn } from '@/lib/utils'
 
 function GalleryImage({
@@ -72,6 +73,10 @@ export function Gallery() {
             </StaggerItem>
           ))}
         </StaggerContainer>
+
+        <div className="mt-10">
+          <TourPrompt>Not ready? Book a free tour</TourPrompt>
+        </div>
       </div>
     </section>
   )

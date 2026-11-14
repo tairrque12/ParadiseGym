@@ -344,6 +344,29 @@ test.describe('Landing page', () => {
     )
   })
 
+  test('mobile bar stays above the footer phone', async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: 'reduce' })
+    await page.setViewportSize({ width: 390, height: 844 })
+    await page.goto('/')
+
+    const bar = page.getByTestId('mobile-action-bar')
+    await expect(bar.getByRole('link', { name: 'Join now' })).toBeVisible()
+    await expect(bar.getByRole('button', { name: 'Tour' })).toBeVisible()
+    await expect(bar.getByRole('link', { name: 'Call' })).toBeVisible()
+
+    await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight))
+    const phone = page.locator('footer').getByRole('link', { name: '956-990-5277' })
+    const phoneBox = await phone.boundingBox()
+    const barBox = await bar.boundingBox()
+    expect(phoneBox).toBeTruthy()
+    expect(barBox).toBeTruthy()
+    expect(phoneBox!.y + phoneBox!.height).toBeLessThanOrEqual(barBox!.y + 1)
+
+    await bar.getByRole('button', { name: 'Tour' }).click()
+    await expect(page.getByRole('dialog')).toBeVisible()
+    await expect(bar).toBeHidden()
+  })
+
   test('footer lists phone and address without a public email', async ({
     page,
   }) => {

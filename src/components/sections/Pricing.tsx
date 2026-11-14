@@ -8,6 +8,7 @@ import {
   PRICING_FOOTER_NOTE,
   type MembershipOption,
 } from '@/lib/membership-options'
+import { TourPrompt } from '@/components/tour-prompt'
 import { ABC_CHECKOUT_NOTE, joinUrl, LOCATIONS } from '@/lib/locations'
 import { feeDisclosureEnabled, planFeeSummary } from '@/lib/plan-fees'
 import { SECTION_IDS } from '@/lib/sections'
@@ -142,6 +143,7 @@ export function Pricing() {
 
         <SectionReveal className="mt-6 space-y-2">
           <p className="text-sm leading-relaxed text-white/80">{ABC_CHECKOUT_NOTE}</p>
+          <TourPrompt>Not ready to join? Book a free tour</TourPrompt>
           <p className="text-sm leading-relaxed text-white/80">
             {PRICING_FOOTER_NOTE}
           </p>

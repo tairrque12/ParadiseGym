@@ -1,5 +1,6 @@
 import { ArrowUpRight } from 'lucide-react'
 import { GrainOverlay, SectionReveal } from '@/components/motion'
+import { TourPrompt } from '@/components/tour-prompt'
 import { TrackedPlanLink } from '@/components/tracked-plan-link'
 import { ABC_CHECKOUT_NOTE, joinUrl, LOCATIONS } from '@/lib/locations'
 import { feeDisclosureEnabled, planFeeSummary } from '@/lib/plan-fees'
@@ -83,6 +84,9 @@ export function McAllenPricing() {
         </div>
 
         <p className="mt-8 text-sm leading-relaxed text-white/80">{ABC_CHECKOUT_NOTE}</p>
+        <div className="mt-4">
+          <TourPrompt>Not ready to join? Book a free tour</TourPrompt>
+        </div>
 
         <SectionReveal className="mt-10 border border-neon/20 bg-carbon/70 px-5 py-4 sm:px-6">
           <p className="text-xs font-semibold uppercase tracking-[0.18em] text-neon">
