@@ -47,7 +47,7 @@ test.describe('McAllen page', () => {
     await locationLink(page, /harlingen/i).click()
     await expect(page).toHaveURL(/\/$/)
     await expect(
-      page.getByRole('link', { name: 'Request Membership' }).first()
+      page.getByTestId('header-cta')
     ).toBeVisible()
     await expect(page.getByText('Week Pass')).toBeVisible()
   })
@@ -68,7 +68,7 @@ test.describe('McAllen page', () => {
     await expect(page.getByText(/opening in/i)).toHaveCount(0)
 
     await expect(
-      page.getByRole('link', { name: /lock in founding member pricing/i })
+      page.getByTestId('hero-join')
     ).toHaveAttribute('href', MCALLEN_JOIN_URL)
 
     await expect(page.locator('#hours').getByText(/hours coming soon/i)).toBeVisible()

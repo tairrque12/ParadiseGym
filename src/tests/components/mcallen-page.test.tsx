@@ -81,9 +81,13 @@ describe('McAllen page', () => {
   it('sends the hero CTA to the McAllen signup', () => {
     renderMcAllen()
 
+    const heroJoin = screen.getByTestId('hero-join')
+    expect(heroJoin).toHaveTextContent('Join founding membership')
+    expect(heroJoin).toHaveAttribute('href', MCALLEN_JOIN_URL)
+    expect(heroJoin).toHaveAttribute('target', '_blank')
     expect(
-      screen.getByRole('link', { name: /lock in founding member pricing/i })
-    ).toHaveAttribute('href', MCALLEN_JOIN_URL)
+      screen.getAllByRole('button', { name: /book a free tour/i }).length
+    ).toBeGreaterThan(0)
   })
 
   it('shows McAllen hours and address instead of Harlingen details', () => {

@@ -115,7 +115,7 @@ test.describe('Landing page', () => {
     await page.goto('/')
 
     for (const name of [
-      /request membership/i,
+      /join now/i,
       /12 month contract/i,
       /month to month/i,
       /1 year paid in full/i,
@@ -306,7 +306,7 @@ test.describe('Landing page', () => {
 
   test('escape closes an open modal', async ({ page }) => {
     await page.goto('/')
-    await page.getByRole('button', { name: /free gym tour/i }).first().click()
+    await page.getByRole('button', { name: /book a free tour/i }).first().click()
     await expect(page.getByRole('dialog')).toBeVisible()
 
     await page.keyboard.press('Escape')
@@ -320,7 +320,7 @@ test.describe('Landing page', () => {
     await page.goto('/')
 
     await page.getByTestId('mobile-menu-button').click()
-    await page.getByRole('button', { name: /free tour/i }).click()
+    await page.getByTestId('mobile-tour').click()
 
     const dialog = page.getByRole('dialog')
     await expect(dialog).toBeVisible()

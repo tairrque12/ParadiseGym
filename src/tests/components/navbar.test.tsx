@@ -52,10 +52,15 @@ describe('Navbar', () => {
     )
 
     const harlingenCta = screen.getByTestId('header-cta')
-    expect(harlingenCta).toHaveTextContent('Request Membership')
+    expect(harlingenCta).toHaveTextContent('Join now')
+    expect(harlingenCta).toHaveClass('bg-neon')
     expect(harlingenCta).toHaveAttribute('href', HARLINGEN_JOIN_URL)
     expect(harlingenCta).toHaveAttribute('target', '_blank')
     expect(harlingenCta).toHaveAttribute('rel', 'noopener noreferrer')
+    expect(screen.getByTestId('header-tour')).toHaveTextContent(
+      /book a free tour/i
+    )
+    expect(screen.getByTestId('header-tour')).not.toHaveClass('bg-neon')
 
     usePathname.mockReturnValue('/mcallen')
     rerender(
@@ -65,7 +70,7 @@ describe('Navbar', () => {
     )
 
     const mcallenCta = screen.getByTestId('header-cta')
-    expect(mcallenCta).toHaveTextContent('Founding Membership')
+    expect(mcallenCta).toHaveTextContent('Join now')
     expect(mcallenCta).toHaveAttribute('href', MCALLEN_JOIN_URL)
   })
 
@@ -256,7 +261,11 @@ describe('Navbar', () => {
     )
 
     await user.click(screen.getByTestId('mobile-menu-button'))
-    await user.click(within(screen.getByRole('navigation', { name: /mobile/i })).getByRole('button', { name: /free tour/i }))
+    const mobileNav = screen.getByRole('navigation', { name: /mobile/i })
+    const tour = within(mobileNav).getByTestId('mobile-tour')
+    const join = within(mobileNav).getByTestId('mobile-join')
+    expect(join.compareDocumentPosition(tour) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
+    await user.click(tour)
 
     expect(screen.getByRole('dialog')).toBeInTheDocument()
     expect(screen.getByText(/free gym tour/i)).toBeInTheDocument()

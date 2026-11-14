@@ -34,7 +34,7 @@ describe('locations data', () => {
       address: '6201 FM 106 UNIT 16A, Harlingen, TX 78550',
       sqft: 7500,
       joinLink: HARLINGEN_JOIN_URL,
-      ctaLabel: 'Request Membership',
+      ctaLabel: 'Join now',
     })
     expect(harlingen.membershipOptions).toEqual(MEMBERSHIP_OPTIONS)
     expect(harlingen.membershipOptions).toHaveLength(6)
@@ -57,7 +57,7 @@ describe('locations data', () => {
       sqft: 20000,
       hours: null,
       joinLink: 'https://onlinejoin.abcfitness.com/signup/plan?club=32367',
-      ctaLabel: 'Lock In Founding Member Pricing',
+      ctaLabel: 'Join founding membership',
       grandOpeningNote: 'Official Grand Opening Date — Coming Soon',
     })
     expect(mcallen.presaleNote).toMatch(/founding member pricing/i)

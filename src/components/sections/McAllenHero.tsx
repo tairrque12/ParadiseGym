@@ -1,10 +1,18 @@
+'use client'
+
 import Image from 'next/image'
 import { NeonButton } from '@/components/NeonButton'
 import { GrainOverlay } from '@/components/motion'
-import { LOCATIONS } from '@/lib/locations'
+import { useModal } from '@/context/modal-context'
+import {
+  ABC_CHECKOUT_NOTE,
+  LOCATIONS,
+  TOUR_FALLBACK_LABEL,
+} from '@/lib/locations'
 import { SECTION_IDS } from '@/lib/sections'
 
 export function McAllenHero() {
+  const { openTourModal } = useModal()
   const mcallen = LOCATIONS.mcallen
 
   return (
@@ -44,18 +52,33 @@ export function McAllenHero() {
             {mcallen.grandOpeningNote}
           </p>
 
-          <div className="mt-8 flex flex-col gap-4 sm:mt-10 sm:flex-row sm:items-center">
+          <div className="mt-8 flex flex-col items-start gap-4 sm:mt-10">
+            <div className="flex flex-col items-start gap-2">
+              <NeonButton
+                href={mcallen.joinLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="normal-case tracking-normal"
+                testId="hero-join"
+                membership={{ location: 'mcallen', placement: 'hero' }}
+              >
+                {mcallen.ctaLabel}
+              </NeonButton>
+              <p className="max-w-sm text-sm text-white/80">{ABC_CHECKOUT_NOTE}</p>
+            </div>
             <NeonButton
-              href={mcallen.joinLink}
-              target="_blank"
-              rel="noopener noreferrer"
-              membership={{ location: 'mcallen', placement: 'hero' }}
+              onClick={() => openTourModal('hero')}
+              variant="outline"
+              className="normal-case tracking-normal"
             >
-              {mcallen.ctaLabel}
+              {TOUR_FALLBACK_LABEL}
             </NeonButton>
-            <NeonButton href={`#${SECTION_IDS.pricing}`} variant="outline">
-              View Pre-Sale Pricing
-            </NeonButton>
+            <a
+              href={`#${SECTION_IDS.pricing}`}
+              className="text-sm text-white/80 underline-offset-4 hover:underline"
+            >
+              View pre-sale pricing
+            </a>
           </div>
         </div>
       </div>

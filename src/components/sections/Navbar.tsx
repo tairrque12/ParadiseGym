@@ -25,8 +25,11 @@ import {
 } from '@/components/ui/sheet'
 import { useModal } from '@/context/modal-context'
 import {
+  ABC_CHECKOUT_NOTE,
+  JOIN_NOW_LABEL,
   LOCATIONS,
   MCALLEN_PATH,
+  TOUR_FALLBACK_LABEL,
   type GymLocation,
   type LocationId,
 } from '@/lib/locations'
@@ -68,11 +71,6 @@ function activeLocationId(pathname: string): LocationId {
   return pathname === MCALLEN_PATH ? 'mcallen' : 'harlingen'
 }
 
-function headerCtaLabel(location: GymLocation) {
-  if (location.id === 'mcallen') return 'Founding Membership'
-  return location.ctaLabel
-}
-
 function isLinkActive(href: string, pathname: string, hash: string) {
   if (href.startsWith('/#')) {
     return pathname === '/' && hash === href.slice(1)
@@ -105,13 +103,19 @@ function MembershipLink({
         })
       }
     >
-      {headerCtaLabel(location)}
+      {JOIN_NOW_LABEL}
     </a>
   )
 }
 
 const membershipClassName = cn(
-  'inline-flex h-10 items-center justify-center bg-neon px-4 text-sm font-semibold text-carbon transition-colors duration-200 hover:bg-white',
+  'inline-flex min-h-11 items-center justify-center bg-neon px-4 text-sm font-semibold text-carbon transition-colors duration-200 hover:bg-white',
+  focusRing,
+  'motion-reduce:transition-none'
+)
+
+const tourClassName = cn(
+  'inline-flex min-h-11 items-center justify-center border border-white/30 px-4 text-sm font-medium text-white transition-colors duration-200 hover:border-white/60 hover:bg-white/5',
   focusRing,
   'motion-reduce:transition-none'
 )
@@ -173,7 +177,7 @@ export function Navbar() {
     >
       {showAnnouncement ? <LocationAnnouncement /> : null}
 
-      <div className="mx-auto flex max-w-7xl flex-col gap-2.5 px-4 py-3 sm:px-6 xl:h-[4.5rem] xl:flex-row xl:items-center xl:gap-6 xl:px-8 xl:py-0">
+      <div className="mx-auto flex max-w-7xl flex-col gap-2.5 px-4 py-3 sm:px-6 xl:flex-row xl:items-center xl:gap-6 xl:px-8 xl:py-3">
         <div className="flex items-center justify-between gap-3">
           <Link
             href="/"
@@ -235,19 +239,17 @@ export function Navbar() {
                     <MembershipLink
                       location={location}
                       placement="mobile_menu"
-                      testId="mobile-membership-cta"
-                      className={cn(membershipClassName, 'h-11 w-full')}
+                      testId="mobile-join"
+                      className={cn(membershipClassName, 'w-full')}
                     />
+                    <p className="text-sm text-white/80">{ABC_CHECKOUT_NOTE}</p>
                     <button
                       type="button"
                       data-testid="mobile-tour"
                       onClick={openTourFromMenu}
-                      className={cn(
-                        'inline-flex h-11 w-full items-center justify-center border border-white/15 text-sm font-medium text-white transition-colors duration-200 hover:border-white/40 hover:bg-white/5 motion-reduce:transition-none',
-                        focusRing
-                      )}
+                      className={cn(tourClassName, 'w-full')}
                     >
-                      Free Tour
+                      {TOUR_FALLBACK_LABEL}
                     </button>
                   </div>
                 </nav>
@@ -290,24 +292,26 @@ export function Navbar() {
             aria-hidden
             className="hidden h-4 w-px bg-white/15 xl:block"
           />
-          <div className="hidden items-center gap-2 xl:flex">
-            <button
-              type="button"
-              data-testid="header-tour"
-              onClick={() => openTourModal('header')}
-              className={cn(
-                'inline-flex h-10 items-center px-3 text-sm font-medium text-white/80 transition-colors duration-200 hover:text-white motion-reduce:transition-none',
-                focusRing
-              )}
-            >
-              Free Tour
-            </button>
-            <MembershipLink
-              location={location}
-              placement="header"
-              testId="header-cta"
-              className={membershipClassName}
-            />
+          <div className="hidden flex-col items-end gap-1 xl:flex">
+            <div className="flex items-center gap-2">
+              <MembershipLink
+                location={location}
+                placement="header"
+                testId="header-cta"
+                className={membershipClassName}
+              />
+              <button
+                type="button"
+                data-testid="header-tour"
+                onClick={() => openTourModal('header')}
+                className={tourClassName}
+              >
+                {TOUR_FALLBACK_LABEL}
+              </button>
+            </div>
+            <p className="max-w-xs text-right text-xs leading-snug text-white/80">
+              {ABC_CHECKOUT_NOTE}
+            </p>
           </div>
         </div>
       </div>

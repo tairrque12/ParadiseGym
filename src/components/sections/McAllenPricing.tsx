@@ -1,7 +1,7 @@
 import { ArrowUpRight } from 'lucide-react'
 import { GrainOverlay, SectionReveal } from '@/components/motion'
 import { TrackedPlanLink } from '@/components/tracked-plan-link'
-import { LOCATIONS } from '@/lib/locations'
+import { ABC_CHECKOUT_NOTE, LOCATIONS } from '@/lib/locations'
 import { PRICING_DISCOUNT_NOTE } from '@/lib/membership-options'
 import { SECTION_IDS } from '@/lib/sections'
 
@@ -68,6 +68,8 @@ export function McAllenPricing() {
             </TrackedPlanLink>
           ))}
         </div>
+
+        <p className="mt-8 text-sm leading-relaxed text-white/80">{ABC_CHECKOUT_NOTE}</p>
 
         <SectionReveal className="mt-10 border border-neon/20 bg-carbon/70 px-5 py-4 sm:px-6">
           <p className="text-xs font-semibold uppercase tracking-[0.18em] text-neon">

@@ -8,7 +8,7 @@ import {
   PRICING_FOOTER_NOTE,
   type MembershipOption,
 } from '@/lib/membership-options'
-import { LOCATIONS } from '@/lib/locations'
+import { ABC_CHECKOUT_NOTE, LOCATIONS } from '@/lib/locations'
 import { SECTION_IDS } from '@/lib/sections'
 import { cn } from '@/lib/utils'
 
@@ -44,6 +44,11 @@ function PricingRow({
       <div className="min-w-0 flex-1">
         <span className="block font-medium text-white transition-colors group-hover:text-neon">
           {option.name}
+          {option.slug === '12_month_contract' ? (
+            <span className="ml-2 inline-flex items-center rounded-full border border-white/40 px-2 py-0.5 align-middle text-xs font-medium normal-case tracking-normal text-white">
+              Recommended
+            </span>
+          ) : null}
         </span>
         {option.subLabel ? (
           <span className="mt-1 block text-xs uppercase tracking-[0.14em] text-white/45">
@@ -141,8 +146,9 @@ export function Pricing() {
           </p>
         </SectionReveal>
 
-        <SectionReveal className="mt-6">
-          <p className="text-xs leading-relaxed text-white/45">
+        <SectionReveal className="mt-6 space-y-2">
+          <p className="text-sm leading-relaxed text-white/80">{ABC_CHECKOUT_NOTE}</p>
+          <p className="text-sm leading-relaxed text-white/80">
             {PRICING_FOOTER_NOTE}
           </p>
         </SectionReveal>

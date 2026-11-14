@@ -11,6 +11,7 @@ describe('Pricing', () => {
     expect(screen.getByText('Recurring')).toBeInTheDocument()
     expect(screen.getByText('Single Payment')).toBeInTheDocument()
     expect(screen.getByText('12 Month Contract')).toBeInTheDocument()
+    expect(screen.getByText('Recommended')).toBeInTheDocument()
     expect(screen.getByText('$39.99/mo')).toBeInTheDocument()
     expect(screen.getByText('Month to Month')).toBeInTheDocument()
     expect(screen.getByText('No contract')).toBeInTheDocument()
