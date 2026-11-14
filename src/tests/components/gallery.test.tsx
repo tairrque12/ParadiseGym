@@ -30,7 +30,11 @@ describe('Gallery', () => {
   })
 
   it('loads the first photo immediately and leaves the rest lazy', () => {
-    render(<Gallery />)
+    render(
+      <Providers>
+        <Gallery />
+      </Providers>
+    )
 
     const images = GALLERY_IMAGES.map((image) =>
       screen.getByRole('img', { name: image.alt })
