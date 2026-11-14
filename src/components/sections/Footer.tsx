@@ -73,7 +73,7 @@ export function Footer({
                 </TrackedPhoneLink>
               </li>
               <li className="leading-relaxed">
-                <span className="text-text-3">{location.name}: </span>
+                <span className="text-text-2">{location.name}: </span>
                 {location.address}
               </li>
             </ul>
@@ -85,7 +85,7 @@ export function Footer({
               <ul className="mt-4 space-y-2 text-sm leading-relaxed text-text-2">
                 {location.hours.map((row) => (
                   <li key={row.days}>
-                    <span className="text-text-3">{row.days}: </span>
+                    <span className="text-text-2">{row.days}: </span>
                     {row.time}
                   </li>
                 ))}
@@ -103,7 +103,7 @@ export function Footer({
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Paradise Gym on Instagram"
-                className="inline-flex size-11 items-center justify-center text-white/80 transition-colors duration-200 hover:text-neon motion-reduce:transition-none"
+                className="inline-flex size-11 items-center justify-center text-white transition-colors duration-200 hover:text-neon motion-reduce:transition-none"
               >
                 <InstagramIcon className="h-5 w-5" />
               </Link>
@@ -112,7 +112,7 @@ export function Footer({
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Paradise Gym on TikTok"
-                className="inline-flex size-11 items-center justify-center text-white/80 transition-colors duration-200 hover:text-neon motion-reduce:transition-none"
+                className="inline-flex size-11 items-center justify-center text-white transition-colors duration-200 hover:text-neon motion-reduce:transition-none"
               >
                 <TikTokIcon className="h-5 w-5" />
               </Link>
@@ -121,7 +121,7 @@ export function Footer({
         </div>
 
         <div className="mt-14 border-t border-white/10 pt-6">
-          <p className="text-xs text-text-3">
+          <p className="text-xs text-text-2">
             &copy; {year} Paradise Gym. All rights reserved.
           </p>
         </div>

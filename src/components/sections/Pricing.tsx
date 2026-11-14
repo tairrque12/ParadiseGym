@@ -21,6 +21,7 @@ function PricingRow({ option }: { option: MembershipOption }) {
   const feeSummary = feeDisclosureEnabled()
     ? planFeeSummary('harlingen', option.slug)
     : null
+  const dueToday = feeSummary ? null : publicDueTodayLabel('harlingen', option.slug)
   const recommended = option.slug === '12_month_contract'
 
   return (
@@ -31,9 +32,10 @@ function PricingRow({ option }: { option: MembershipOption }) {
       target="_blank"
       rel="noopener noreferrer"
       className={cn(
-        'group grid grid-cols-1 gap-4 border border-white/10 bg-surface/80 px-5 py-5 text-left transition-colors duration-200 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-start sm:gap-8 sm:px-6 sm:py-6',
-        'hover:border-white/30 hover:bg-surface focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neon/70 motion-reduce:transition-none',
-        recommended && 'border-l-[3px] border-l-neon bg-surface'
+        'group flex flex-col gap-4 border border-white/10 bg-surface px-5 py-5 text-left transition-colors duration-200',
+        'hover:border-white/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neon/70 motion-reduce:transition-none',
+        'lg:grid lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center lg:gap-8 lg:px-6 lg:py-6',
+        recommended && 'border-l-[3px] border-l-neon'
       )}
     >
       <span className="min-w-0">
@@ -42,33 +44,40 @@ function PricingRow({ option }: { option: MembershipOption }) {
         ) : null}
         <span className="block text-base font-medium text-white">{option.name}</span>
         {option.subLabel ? (
-          <span className="mt-1 block text-sm text-text-3">{option.subLabel}</span>
+          <span className="mt-1 block text-sm text-text-2">{option.subLabel}</span>
         ) : null}
       </span>
 
-      <span className="sm:text-right">
-        <span className="block text-[2.25rem] font-medium leading-none tracking-tight text-white tabular-nums">
-          {option.price}
+      <span className="flex flex-col gap-3 lg:items-end">
+        <span>
+          <span className="block font-sans text-[2rem] font-medium leading-none tracking-tight text-white tabular-nums lg:text-[2.25rem]">
+            {option.price}
+          </span>
+          {option.priceNote ? (
+            <span className="mt-1.5 block text-sm text-text-2">{option.priceNote}</span>
+          ) : null}
+          {dueToday ? (
+            <span className="mt-2 block max-w-[16rem] text-sm leading-snug text-white lg:text-right">
+              {dueToday}
+            </span>
+          ) : null}
+          {feeSummary ? (
+            <span className="mt-2 block max-w-[16rem] text-sm leading-snug text-text-2 lg:text-right">
+              {feeSummary}
+            </span>
+          ) : null}
         </span>
-        {option.priceNote ? (
-          <span className="mt-1.5 block text-xs text-text-3">{option.priceNote}</span>
-        ) : null}
-        {dueToday ? (
-          <span className="mt-1 block max-w-[14rem] text-sm font-normal normal-case leading-snug tracking-normal text-white">
-            {dueToday}
-          </span>
-        ) : null}
-        {feeSummary ? (
-          <span className="mt-2 block max-w-[16rem] text-sm font-normal leading-snug text-text-2 sm:ml-auto">
-            {feeSummary}
-          </span>
-        ) : null}
-        <span className="mt-3 inline-flex items-center gap-1 text-sm font-semibold text-neon">
+        <span
+          className={cn(
+            'inline-flex h-11 w-full items-center justify-center gap-1.5 px-4 text-sm font-semibold',
+            recommended
+              ? 'bg-neon text-carbon'
+              : 'border border-white/25 text-white',
+            'lg:w-auto lg:min-w-[7.5rem]'
+          )}
+        >
           Join now
-          <ArrowUpRight
-            className="size-3.5 transition-transform duration-200 group-hover:-translate-y-px group-hover:translate-x-px motion-reduce:transition-none"
-            aria-hidden
-          />
+          <ArrowUpRight className="size-4" aria-hidden />
         </span>
       </span>
     </TrackedPlanLink>
@@ -84,8 +93,8 @@ function PricingColumn({
 }) {
   return (
     <div>
-      <h3 className="text-sm font-medium tracking-[0.04em] text-text-2">{label}</h3>
-      <div className="mt-4 flex flex-col gap-3">
+      <h3 className="text-sm font-medium text-text-2">{label}</h3>
+      <div className="mt-3 flex flex-col gap-3">
         {options.map((option) => (
           <PricingRow key={option.slug} option={option} />
         ))}
@@ -102,7 +111,7 @@ export function Pricing() {
   return (
     <section
       id={SECTION_IDS.pricing}
-      className="relative scroll-mt-32 bg-carbon py-24 sm:py-28 lg:py-32"
+      className="relative scroll-mt-24 bg-carbon py-16 sm:py-20 lg:py-28"
     >
       <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-10">
         <SectionReveal>
@@ -114,13 +123,13 @@ export function Pricing() {
           />
         </SectionReveal>
 
-        <div className="mt-14 grid items-start gap-14 lg:mt-16 lg:grid-cols-2 lg:gap-16">
+        <div className="mt-10 grid items-start gap-10 lg:mt-14 lg:grid-cols-2 lg:gap-16">
           <PricingColumn label="Recurring" options={recurring} />
           <PricingColumn label="Single Payment" options={singlePayment} />
         </div>
 
-        <div className="mt-14 grid gap-4 border-t border-white/10 pt-8 sm:grid-cols-[11rem_1fr] sm:gap-10">
-          <p className="text-xs font-medium tracking-[0.08em] text-text-3">Discounts available</p>
+        <div className="mt-10 grid gap-4 border-t border-white/10 pt-6 sm:grid-cols-[11rem_1fr] sm:gap-10">
+          <p className="text-xs font-medium text-text-3">Discounts available</p>
           <div className="space-y-4">
             <p className="max-w-xl text-base leading-relaxed text-text-2">{PRICING_DISCOUNT_NOTE}</p>
             <p className="text-sm leading-relaxed text-text-2">{ABC_CHECKOUT_NOTE}</p>

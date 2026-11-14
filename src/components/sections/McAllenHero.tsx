@@ -19,40 +19,51 @@ export function McAllenHero() {
   return (
     <HeroFrame>
       <RevealOnMount className="max-w-xl">
-        <p className="flex items-center gap-2 text-xs font-medium tracking-[0.08em] text-white/75">
+        <p className="inline-flex items-center gap-2 text-[13px] font-medium text-white">
           <span aria-hidden className="size-1.5 shrink-0 rounded-full bg-neon" />
           Pre-Sale Now Open
         </p>
 
-        <h1 className="mt-4 font-sans text-[clamp(2.75rem,5.4vw,4.5rem)] font-medium leading-[1.02] tracking-[-0.03em] text-white">
+        <h1 className="mt-3 font-sans text-[clamp(2.75rem,11vw,3.5rem)] font-medium leading-[1.04] tracking-[-0.03em] text-white md:text-[clamp(3.5rem,5vw,4.5rem)]">
           Paradise Gym
           <span className="block">McAllen</span>
         </h1>
 
-        <p className="mt-5 max-w-md text-base leading-relaxed text-white/80 sm:text-lg">
+        <p className="mt-4 max-w-md text-[15px] leading-relaxed text-white/80 sm:text-lg">
           {mcallen.sqft.toLocaleString('en-US')} sq ft of custom-built training,
           coming to {mcallen.address.split(',')[1]?.trim()}.
         </p>
 
+        {mcallen.presaleNote ? (
+          <p className="mt-3 max-w-md text-sm leading-relaxed text-white/80">
+            {mcallen.presaleNote}
+          </p>
+        ) : null}
+
         <p
           data-testid="grand-opening-note"
-          className="mt-3 max-w-md text-sm leading-relaxed text-white/55"
+          className="mt-2 max-w-md text-sm leading-relaxed text-white/60"
         >
           {mcallen.grandOpeningNote}
         </p>
 
-        <div data-hero-cta="" className="mt-8 flex flex-col items-start gap-3">
-          <div className="flex flex-wrap items-center gap-3">
+        <div data-hero-cta="" className="mt-6 flex flex-col items-stretch gap-3 sm:items-start">
+          <div className="flex flex-col gap-2.5 sm:flex-row sm:flex-wrap sm:items-center">
             <NeonButton
               href={joinUrl('mcallen', 'hero')}
               target="_blank"
               rel="noopener noreferrer"
               testId="hero-join"
               membership={{ location: 'mcallen', placement: 'hero' }}
+              className="w-full bg-neon text-carbon sm:w-auto"
             >
               {mcallen.ctaLabel}
             </NeonButton>
-            <NeonButton variant="outline" onClick={() => openTourModal('hero')}>
+            <NeonButton
+              variant="outline"
+              onClick={() => openTourModal('hero')}
+              className="w-full sm:w-auto"
+            >
               {TOUR_FALLBACK_LABEL}
             </NeonButton>
           </div>
@@ -62,7 +73,10 @@ export function McAllenHero() {
           >
             View pre-sale pricing
           </a>
-          <p className="max-w-sm text-xs leading-relaxed text-white/75">{ABC_CHECKOUT_NOTE}</p>
+          <p className="max-w-sm text-[13px] leading-relaxed text-white/70">{ABC_CHECKOUT_NOTE}</p>
+          <p className="text-[13px] leading-relaxed text-white/70" data-testid="hero-photo-caption">
+            Photo from our Harlingen gym. McAllen is opening soon.
+          </p>
         </div>
       </RevealOnMount>
     </HeroFrame>
