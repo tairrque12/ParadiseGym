@@ -37,4 +37,22 @@ describe('section-nav', () => {
 
     target.remove()
   })
+
+  it('does not push another history entry when that hash is already current', () => {
+    const target = document.createElement('section')
+    target.id = 'reviews'
+    document.body.appendChild(target)
+    target.scrollIntoView = vi.fn()
+
+    window.history.replaceState(null, '', '/mcallen#reviews')
+    const pushState = vi.spyOn(window.history, 'pushState')
+
+    scrollToSection('reviews', 'auto', '/mcallen')
+
+    expect(pushState).not.toHaveBeenCalled()
+    expect(window.location.hash).toBe('#reviews')
+
+    pushState.mockRestore()
+    target.remove()
+  })
 })

@@ -24,7 +24,8 @@ export function scrollToSection(
   target.scrollIntoView({ behavior, block: 'start' })
   const next =
     pathname === '/' ? `/#${sectionId}` : `${pathname}#${sectionId}`
-  window.history.pushState(null, '', next)
+  const current = `${window.location.pathname}${window.location.hash}`
+  if (current !== next) window.history.pushState(null, '', next)
   return true
 }
 
