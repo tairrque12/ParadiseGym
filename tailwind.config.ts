@@ -12,6 +12,12 @@ const config: Config = {
       colors: {
         carbon: '#0A0A0A',
         neon: '#39FF14',
+        surface: '#141414',
+        'surface-2': '#1E1E1E',
+        line: '#2E2E2E',
+        'line-strong': '#4A4A4A',
+        'text-2': '#C7C7C7',
+        'text-3': '#9A9A9A',
         background: 'var(--background)',
         foreground: 'var(--foreground)',
         card: {

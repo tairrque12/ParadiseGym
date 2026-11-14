@@ -24,6 +24,17 @@
     --input: rgba(255, 255, 255, 0.12);
     --ring: #39ff14;
     --radius: 0.25rem;
+    --bg: #0a0a0a;
+    --surface: #141414;
+    --surface-2: #1e1e1e;
+    --line: #2e2e2e;
+    --line-strong: #4a4a4a;
+    --text: #ffffff;
+    --text-2: #c7c7c7;
+    --text-3: #9a9a9a;
+    --neon: #39ff14;
+    --on-neon: #0a0a0a;
+    --error: #ff6b6b;
   }
 
   * {
