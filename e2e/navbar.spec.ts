@@ -57,10 +57,9 @@ test.describe('Navbar', () => {
       expect(headerBox.y).toBe(0)
 
       const logo = await box(page.getByRole('banner').getByRole('link', { name: 'Paradise Gym home' }))
-      const join = await box(page.getByTestId('mobile-header-join'))
       const menu = await box(page.getByTestId('mobile-menu-button'))
-      expect(Math.abs(logo.y - join.y)).toBeLessThan(12)
-      expect(Math.abs(join.y - menu.y)).toBeLessThan(12)
+      expect(Math.abs(logo.y - menu.y)).toBeLessThan(12)
+      expect(page.getByTestId('mobile-header-join')).toHaveCount(0)
       expect(page.locator('header').getByTestId('location-announcement')).toHaveCount(0)
     })
   }

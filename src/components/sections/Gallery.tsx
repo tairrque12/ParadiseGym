@@ -48,7 +48,7 @@ function GalleryImage({
 
 export function Gallery() {
   return (
-    <section className="relative scroll-mt-32 overflow-hidden bg-carbon py-24 sm:py-28 lg:py-32">
+    <section className="relative scroll-mt-24 overflow-hidden bg-carbon py-16 sm:py-20 lg:py-28">
       <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-10">
         <SectionReveal className="mb-12 max-w-2xl lg:mb-16">
           <SectionHeading

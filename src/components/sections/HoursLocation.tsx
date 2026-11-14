@@ -23,7 +23,7 @@ export function HoursLocation({
   return (
     <section
       id={SECTION_IDS.hours}
-      className="relative scroll-mt-32 bg-carbon py-24 sm:py-28 lg:py-32"
+      className="relative scroll-mt-24 bg-carbon py-16 sm:py-20 lg:py-28"
     >
       <div id={SECTION_IDS.tour} className="scroll-mt-32" aria-hidden />
 
@@ -36,7 +36,7 @@ export function HoursLocation({
           />
         </SectionReveal>
 
-        <div className="mt-14 grid gap-14 lg:mt-16 lg:grid-cols-2 lg:gap-24">
+        <div className="mt-8 grid gap-10 lg:mt-14 lg:grid-cols-2 lg:gap-24">
           <SectionReveal>
             <h3 className="text-sm font-medium text-text-2">Gym hours</h3>
             {hours ? (

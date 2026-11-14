@@ -155,6 +155,13 @@ export function Navbar() {
   useHeaderHeight(headerRef)
 
   useEffect(() => {
+    const root = document.documentElement
+    if (menuOpen) root.setAttribute('data-menu-open', '')
+    else root.removeAttribute('data-menu-open')
+    return () => root.removeAttribute('data-menu-open')
+  }, [menuOpen])
+
+  useEffect(() => {
     const sync = () => setHash(window.location.hash)
     sync()
     window.addEventListener('hashchange', sync)
@@ -196,7 +203,7 @@ export function Navbar() {
       ref={headerRef}
       className="fixed inset-x-0 top-0 z-50 h-[60px] border-b border-white/10 bg-carbon/85 text-white backdrop-blur-xl xl:h-[72px]"
     >
-      <div className="mx-auto flex h-full max-w-7xl flex-nowrap items-center gap-2 px-3 xl:gap-3 xl:px-6">
+      <div className="mx-auto flex h-full max-w-7xl flex-nowrap items-center gap-2 px-4 xl:gap-3 xl:px-6">
         <Link
           href="/"
           aria-label="Paradise Gym home"
@@ -286,22 +293,6 @@ export function Navbar() {
           </Button>
 
           <Sheet open={menuOpen} onOpenChange={setMenuOpen}>
-            <Button
-              size="sm"
-              nativeButton={false}
-              data-testid="mobile-header-join"
-              className="h-11 bg-neon px-3.5 text-[13px] font-semibold text-carbon hover:bg-white lg:hidden"
-              render={
-                <a
-                  href={joinUrl(location.id, 'header')}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                />
-              }
-              onClick={() => trackJoin('header')}
-            >
-              Join
-            </Button>
             <SheetTrigger
               data-testid="mobile-menu-button"
               aria-label="Open menu"
@@ -310,7 +301,7 @@ export function Navbar() {
               <Menu className="size-5" />
             </SheetTrigger>
             <SheetContent>
-              <SheetHeader className="px-4 pt-3">
+              <SheetHeader className="border-b border-white/10 px-4 pt-[max(0.75rem,env(safe-area-inset-top))] pb-3">
                 <Link
                   href="/"
                   aria-label="Paradise Gym home"
@@ -323,6 +314,13 @@ export function Navbar() {
                 <SheetDescription className="sr-only">
                   Paradise Gym locations, pages, and membership
                 </SheetDescription>
+                <a
+                  href={CONTACT.phoneHref}
+                  aria-label="Call"
+                  className="ml-auto inline-flex size-11 items-center justify-center text-white hover:bg-white/5"
+                >
+                  <Phone className="size-5" />
+                </a>
                 <SheetClose
                   aria-label="Close menu"
                   className="inline-flex size-11 items-center justify-center rounded-md text-white hover:bg-white/5"
@@ -331,8 +329,8 @@ export function Navbar() {
                 </SheetClose>
               </SheetHeader>
 
-              <div className="flex min-h-0 flex-1 flex-col overflow-y-auto px-4 pb-4">
-                <p className="mt-8 text-xs font-medium tracking-normal text-text-3">
+              <div className="flex min-h-0 flex-1 flex-col overflow-y-auto px-5 pb-4">
+                <p className="mt-6 text-[13px] font-medium text-text-2">
                   McAllen pre-sale is open
                 </p>
                 <LocationToggle
@@ -367,12 +365,12 @@ export function Navbar() {
                 </nav>
               </div>
 
-              <SheetFooter className="px-4 pt-2 pb-[max(1rem,env(safe-area-inset-bottom))]">
+              <SheetFooter className="gap-2 border-t border-white/10 px-5 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
                 <Button
                   size="sm"
                   nativeButton={false}
                   data-testid="mobile-join"
-                  className="h-12 w-full bg-neon text-carbon hover:bg-white"
+                  className="h-11 w-full bg-neon text-sm font-semibold text-carbon hover:bg-white"
                   render={
                     <a
                       href={joinUrl(location.id, 'mobile_menu')}
@@ -384,26 +382,17 @@ export function Navbar() {
                 >
                   {menuJoinLabel}
                 </Button>
-                <p className="text-center text-xs text-text-2">
-                  Secure checkout by ABC Fitness
-                </p>
                 <Button
                   variant="outline"
                   data-testid="mobile-tour"
-                  className="h-12 w-full border-line-strong bg-transparent text-white hover:bg-white/5"
+                  className="h-11 w-full border-white/20 bg-transparent text-sm font-medium text-white hover:bg-white/5"
                   onClick={() => openTour('mobile_menu')}
                 >
                   {TOUR_FALLBACK_LABEL}
                 </Button>
-                <Button
-                  variant="ghost"
-                  nativeButton={false}
-                  className="h-11 w-full text-white hover:bg-white/5"
-                  render={<a href={CONTACT.phoneHref} />}
-                >
-                  <Phone className="size-5" />
-                  Call
-                </Button>
+                <p className="text-center text-xs leading-relaxed text-text-2">
+                  Secure checkout by ABC Fitness
+                </p>
               </SheetFooter>
             </SheetContent>
           </Sheet>

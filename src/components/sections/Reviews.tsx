@@ -44,10 +44,10 @@ export function Reviews() {
   return (
     <section
       id={SECTION_IDS.reviews}
-      className="relative scroll-mt-32 overflow-hidden bg-surface py-24 sm:py-28 lg:py-32"
+      className="relative scroll-mt-24 overflow-hidden bg-surface py-16 sm:py-20 lg:py-28"
     >
       <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-10">
-        <div className="grid items-start gap-10 lg:grid-cols-[minmax(12rem,16rem)_minmax(0,1fr)] lg:gap-16">
+        <div className="grid items-start gap-8 lg:grid-cols-[minmax(12rem,16rem)_minmax(0,1fr)] lg:gap-16">
           <SectionReveal>
             <SectionHeading
               eyebrow="Members"

@@ -24,36 +24,39 @@ export function Hero() {
   return (
     <HeroFrame>
       <RevealOnMount className="max-w-xl">
-        <p className="text-xs font-medium uppercase tracking-[0.12em] text-white/70">
-          Harlingen
-        </p>
-        <Wordmark className="mt-4" />
-        <p className="mt-5 max-w-md text-lg leading-relaxed text-white/80 sm:text-xl">
+        <p className="text-[13px] font-medium text-white/75">Harlingen</p>
+        <Wordmark className="mt-3" />
+        <p className="mt-4 max-w-md text-[15px] leading-relaxed text-white/80 sm:text-lg">
           Where Strength Meets Aesthetics
         </p>
-        <ul className="mt-7 space-y-1.5 text-sm leading-relaxed text-white/70">
+        <ul className="mt-5 space-y-1 text-[15px] leading-relaxed text-white/75">
           <li>
             <OpenTodayHours />
           </li>
           <li>{harlingen.address}</li>
           {fromPrice ? <li>From {fromPrice}</li> : null}
         </ul>
-        <div data-hero-cta="" className="mt-8 flex flex-col items-start gap-3">
-          <div className="flex flex-wrap items-center gap-3">
+        <div data-hero-cta="" className="mt-6 flex flex-col items-stretch gap-3 sm:items-start">
+          <div className="flex flex-col gap-2.5 sm:flex-row sm:flex-wrap sm:items-center">
             <NeonButton
               href={joinUrl('harlingen', 'hero')}
               target="_blank"
               rel="noopener noreferrer"
               testId="hero-join"
               membership={{ location: 'harlingen', placement: 'hero' }}
+              className="w-full sm:w-auto"
             >
               {harlingen.ctaLabel}
             </NeonButton>
-            <NeonButton variant="outline" onClick={() => openTourModal('hero')}>
+            <NeonButton
+              variant="outline"
+              onClick={() => openTourModal('hero')}
+              className="w-full sm:w-auto"
+            >
               {TOUR_FALLBACK_LABEL}
             </NeonButton>
           </div>
-          <p className="max-w-sm text-xs leading-relaxed text-white/75">{ABC_CHECKOUT_NOTE}</p>
+          <p className="max-w-sm text-[13px] leading-relaxed text-white/70">{ABC_CHECKOUT_NOTE}</p>
         </div>
       </RevealOnMount>
     </HeroFrame>

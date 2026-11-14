@@ -55,9 +55,9 @@ function AmenityRow({
 }) {
   return (
     <SectionReveal>
-      <article className="grid items-center gap-8 border-t border-white/10 py-12 lg:grid-cols-12 lg:gap-16 lg:py-16">
+      <article className="grid items-center gap-5 border-t border-white/10 py-8 lg:grid-cols-12 lg:gap-16 lg:py-16">
         <div className={cn('lg:col-span-6', flip && 'lg:order-2')}>
-          <div className="group relative aspect-[4/3] overflow-hidden bg-carbon ring-1 ring-white/10">
+          <div className="group relative aspect-[16/10] overflow-hidden bg-carbon ring-1 ring-white/10 lg:aspect-[4/3]">
             <Image
               src={image.src}
               alt={image.alt}
@@ -68,8 +68,8 @@ function AmenityRow({
           </div>
         </div>
         <div className={cn('lg:col-span-5', flip ? 'lg:order-1' : 'lg:col-start-8')}>
-          <p className="text-sm font-medium tabular-nums text-text-3">{numeral}</p>
-          <h3 className="mt-3 text-[clamp(1.75rem,3vw,2.5rem)] font-medium leading-tight tracking-[-0.02em] text-white">
+          <p className="text-xs font-medium tabular-nums text-text-3">{numeral}</p>
+          <h3 className="mt-2 font-sans text-[clamp(1.5rem,5vw,2rem)] font-medium leading-tight tracking-[-0.02em] text-white lg:text-[clamp(1.75rem,3vw,2.5rem)]">
             {title}
           </h3>
           <p className="mt-4 max-w-md text-base leading-relaxed text-text-2">{description}</p>
@@ -87,7 +87,7 @@ export function Amenities() {
   return (
     <section
       id={SECTION_IDS.amenities}
-      className="relative scroll-mt-32 overflow-hidden bg-surface py-24 sm:py-28 lg:py-32"
+      className="relative scroll-mt-24 overflow-hidden bg-surface py-16 sm:py-20 lg:py-28"
     >
       <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-10">
         <SectionReveal>
