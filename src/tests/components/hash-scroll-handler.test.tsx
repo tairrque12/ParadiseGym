@@ -26,4 +26,17 @@ describe('HashScrollHandler', () => {
     pushState.mockRestore()
     target.remove()
   })
+
+  it('drops a tour hash and keeps the query string', () => {
+    window.history.replaceState(null, '', '/mcallen?utm_source=email#tour')
+    const replaceState = vi.spyOn(window.history, 'replaceState')
+
+    render(<HashScrollHandler />)
+
+    expect(replaceState).toHaveBeenCalledWith(null, '', '/mcallen?utm_source=email')
+    expect(window.location.search).toBe('?utm_source=email')
+    expect(window.location.hash).toBe('')
+
+    replaceState.mockRestore()
+  })
 })

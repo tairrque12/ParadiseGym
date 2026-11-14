@@ -51,13 +51,6 @@ export function McAllenHero() {
               {mcallen.presaleNote}
             </p>
           ) : null}
-
-          <p
-            data-testid="grand-opening-note"
-            className="mt-2 max-w-md text-sm leading-relaxed text-white/60"
-          >
-            {mcallen.grandOpeningNote}
-          </p>
         </Rise>
 
         <Rise delay={0.42}>

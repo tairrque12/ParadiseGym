@@ -57,9 +57,8 @@ test.describe('McAllen page', () => {
     await page.goto('/mcallen')
 
     await expect(page.getByText('Pre-Sale Now Open')).toBeVisible()
-    await expect(page.getByTestId('grand-opening-note')).toHaveText(
-      'Official Grand Opening Date — Coming Soon'
-    )
+    await expect(page.getByTestId('mcallen-opening')).toHaveText('Opens Nov 28')
+    await expect(page.getByText(/grand opening date — coming soon/i)).toHaveCount(0)
 
     await expect(page.getByTestId('presale-countdown')).toHaveCount(0)
     await expect(page.getByText(/opening in/i)).toHaveCount(0)
@@ -148,7 +147,7 @@ test.describe('McAllen page', () => {
     await page.getByTestId('mobile-menu-button').click()
     await expect(locationLink(page, /mcallen/i)).toBeVisible()
     await page.keyboard.press('Escape')
-    await expect(page.getByTestId('grand-opening-note')).toBeVisible()
+    await expect(page.getByTestId('mcallen-opening')).toBeVisible()
 
     const cards = page.locator('#pricing a')
     await expect(cards).toHaveCount(3)
