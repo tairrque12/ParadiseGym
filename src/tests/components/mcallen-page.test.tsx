@@ -91,11 +91,20 @@ describe('McAllen page', () => {
 
     const heroJoin = screen.getByTestId('hero-join')
     expect(heroJoin).toHaveTextContent('Join founding membership')
+    expect(heroJoin).toHaveClass('bg-neon')
     expect(heroJoin).toHaveAttribute('href', joinUrl('mcallen', 'hero'))
+    expect(heroJoin.getAttribute('href')).toContain('club=32367')
     expect(heroJoin).toHaveAttribute('target', '_blank')
+    const tour = screen.getAllByRole('button', { name: /book a free tour/i })[0]
+    expect(tour).not.toHaveClass('bg-neon')
     expect(
-      screen.getAllByRole('button', { name: /book a free tour/i }).length
-    ).toBeGreaterThan(0)
+      heroJoin.compareDocumentPosition(tour) & Node.DOCUMENT_POSITION_FOLLOWING
+    ).toBeTruthy()
+    expect(screen.getAllByText(LOCATIONS.mcallen.presaleNote!).length).toBeGreaterThan(0)
+    expect(screen.getByTestId('hero-photo-caption')).toHaveTextContent(
+      'Photo from our Harlingen gym. McAllen is opening soon.'
+    )
+    expect(heroJoin).not.toHaveTextContent(/due today/i)
   })
 
   it('shows McAllen hours and address instead of Harlingen details', () => {

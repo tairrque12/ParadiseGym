@@ -48,10 +48,13 @@ export function McAllenHero() {
 
           <p
             data-testid="grand-opening-note"
-            className="mt-6 max-w-[17rem] font-heading text-lg uppercase leading-snug tracking-tight text-neon sm:max-w-none sm:text-3xl lg:text-4xl"
+            className="mt-6 max-w-[17rem] border-l-2 border-white pl-4 font-heading text-lg uppercase leading-snug tracking-tight text-neon sm:max-w-none sm:text-3xl lg:text-4xl"
           >
             {mcallen.grandOpeningNote}
           </p>
+          {mcallen.presaleNote ? (
+            <p className="mt-4 max-w-xl text-base text-white">{mcallen.presaleNote}</p>
+          ) : null}
 
           <div data-hero-cta="" className="mt-8 flex flex-col items-start gap-4 sm:mt-10">
             <div className="flex flex-col items-start gap-2">
@@ -59,21 +62,24 @@ export function McAllenHero() {
                 href={joinUrl('mcallen', 'hero')}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="normal-case tracking-normal"
+                className="h-[52px] bg-neon normal-case tracking-normal text-carbon"
                 testId="hero-join"
                 membership={{ location: 'mcallen', placement: 'hero' }}
               >
                 {mcallen.ctaLabel}
               </NeonButton>
-              <p className="max-w-sm text-sm text-white/80">{ABC_CHECKOUT_NOTE}</p>
+              <p className="max-w-sm text-sm text-white">{ABC_CHECKOUT_NOTE}</p>
             </div>
             <NeonButton
               onClick={() => openTourModal('hero')}
               variant="outline"
-              className="normal-case tracking-normal"
+              className="h-[52px] normal-case tracking-normal"
             >
               {TOUR_FALLBACK_LABEL}
             </NeonButton>
+            <p className="text-sm text-white" data-testid="hero-photo-caption">
+              Photo from our Harlingen gym. McAllen is opening soon.
+            </p>
             <a
               href={`#${SECTION_IDS.pricing}`}
               className="text-sm text-white/80 underline-offset-4 hover:underline"
