@@ -8,7 +8,10 @@ describe('Gallery', () => {
   it('renders the gallery section with all photos', () => {
     render(<Gallery />)
 
-    expect(screen.getByRole('heading', { name: /the gym/i })).toBeInTheDocument()
+    expect(screen.getAllByRole('heading', { level: 1 })).toHaveLength(1)
+    expect(
+      screen.getByRole('heading', { level: 1, name: /the gym/i })
+    ).toBeInTheDocument()
 
     for (const image of GALLERY_IMAGES) {
       expect(screen.getByRole('img', { name: image.alt })).toBeInTheDocument()

@@ -1,4 +1,4 @@
-import type { Metadata } from 'next'
+import { JsonLd } from '@/components/json-ld'
 import { Navbar } from '@/components/sections/Navbar'
 import { McAllenHero } from '@/components/sections/McAllenHero'
 import { McAllenPricing } from '@/components/sections/McAllenPricing'
@@ -7,18 +7,16 @@ import { Reviews } from '@/components/sections/Reviews'
 import { HoursLocation } from '@/components/sections/HoursLocation'
 import { Footer } from '@/components/sections/Footer'
 import { LOCATIONS } from '@/lib/locations'
+import { healthClubJsonLd, mcallenMetadata } from '@/lib/seo'
 
-export const metadata: Metadata = {
-  title: 'Paradise Gym McAllen | Founding Member Pre-Sale',
-  description:
-    'Paradise Gym is coming to McAllen, TX — 20,000 sq ft of custom-built training. Lock in founding member pricing during the pre-sale.',
-}
+export const metadata = mcallenMetadata
 
 export default function McAllenPage() {
   const mcallen = LOCATIONS.mcallen
 
   return (
     <>
+      <JsonLd data={healthClubJsonLd(mcallen)} />
       <Navbar />
       <main className="bg-carbon text-white">
         <McAllenHero />
