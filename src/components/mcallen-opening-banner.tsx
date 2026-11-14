@@ -45,9 +45,9 @@ export function McallenOpeningBanner({ collapsed }: { collapsed: boolean }) {
           data-testid="opening-banner"
           aria-label={accessible}
           onClick={() => trackAnnouncementBarClick()}
-          className="flex min-h-12 items-stretch bg-[#0a0a0a] text-sm text-white lg:items-center lg:justify-center"
+          className="flex min-h-12 w-full items-stretch bg-[#0a0a0a] text-sm text-white"
         >
-          <span className="flex min-w-0 flex-1 items-center px-4 py-2.5 text-left leading-snug lg:flex-none lg:py-0">
+          <span className="flex min-w-0 flex-1 items-center px-4 py-2.5 text-left leading-snug">
             {open ? (
               OPEN_LABEL.visible
             ) : (
@@ -60,7 +60,7 @@ export function McallenOpeningBanner({ collapsed }: { collapsed: boolean }) {
           <span
             aria-hidden
             data-testid="opening-banner-arrow"
-            className="flex w-14 shrink-0 items-center justify-center bg-neon text-carbon shadow-neon lg:ml-3 lg:size-11"
+            className="flex w-14 shrink-0 items-center justify-center bg-neon text-carbon shadow-neon"
           >
             <ChevronRight
               className="size-8 motion-safe:animate-banner-nudge"

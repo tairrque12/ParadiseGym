@@ -30,7 +30,10 @@ describe('Navbar', () => {
 
     const header = screen.getByRole('banner')
     expect(within(header).getByTestId('nav-row')).toHaveClass('h-[60px]')
-    expect(screen.getByTestId('opening-banner')).toHaveAttribute('href', '/mcallen')
+    const banner = screen.getByTestId('opening-banner')
+    expect(banner).toHaveAttribute('href', '/mcallen')
+    expect(banner).toHaveClass('w-full')
+    expect(banner.className).not.toMatch(/justify-center/)
     expect(screen.getByTestId('opening-banner-arrow')).toHaveClass('bg-neon', 'w-14')
     expect(screen.queryByTestId('location-announcement')).not.toBeInTheDocument()
     expect(within(header).queryByText('Call')).not.toBeInTheDocument()
