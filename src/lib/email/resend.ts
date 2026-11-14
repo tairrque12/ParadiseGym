@@ -19,16 +19,14 @@ type EmailPayload = {
 export async function sendOwnerNotificationEmail(payload: EmailPayload) {
   const apiKey = process.env.RESEND_API_KEY
   const fromEmail = process.env.RESEND_FROM_EMAIL
+  const notificationEmail = process.env.NOTIFICATION_EMAIL
 
-  if (!apiKey || !fromEmail) {
+  if (!apiKey || !fromEmail || !notificationEmail) {
     console.error('Resend environment variables are not configured')
     return { error: new Error('Resend environment variables are not configured') }
   }
 
   const resend = new Resend(apiKey)
-
-  const notificationEmail =
-    process.env.NOTIFICATION_EMAIL || 'Paradisegym2025@gmail.com'
 
   const { error } = await resend.emails.send({
     from: fromEmail,
