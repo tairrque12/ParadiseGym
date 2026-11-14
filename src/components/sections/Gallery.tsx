@@ -1,8 +1,8 @@
 'use client'
 
 import Image from 'next/image'
-import { GALLERY_IMAGES } from '@/lib/gallery'
-import { GrainOverlay, SectionReveal, StaggerContainer, StaggerItem } from '@/components/motion'
+import { GALLERY_IMAGES, GALLERY_IMAGE_SIZES } from '@/lib/gallery'
+import { GrainOverlay, SectionReveal } from '@/components/motion'
 import { TourPrompt } from '@/components/tour-prompt'
 import { cn } from '@/lib/utils'
 
@@ -37,7 +37,7 @@ function GalleryImage({
           fill
           priority={priority}
           className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
-          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+          sizes={GALLERY_IMAGE_SIZES}
         />
         <div className="absolute inset-0 bg-gradient-to-t from-carbon/50 via-transparent to-transparent opacity-80 transition-opacity group-hover:opacity-100" />
       </div>
@@ -61,18 +61,18 @@ export function Gallery() {
           </p>
         </SectionReveal>
 
-        <StaggerContainer className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 sm:gap-5">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 sm:gap-5">
           {GALLERY_IMAGES.map((image) => (
-            <StaggerItem key={image.src}>
+            <div key={image.src}>
               <GalleryImage
                 src={image.src}
                 alt={image.alt}
                 span={image.span}
-                priority={image.priority}
+                priority={'priority' in image && image.priority}
               />
-            </StaggerItem>
+            </div>
           ))}
-        </StaggerContainer>
+        </div>
 
         <div className="mt-10">
           <TourPrompt>Not ready? Book a free tour</TourPrompt>
