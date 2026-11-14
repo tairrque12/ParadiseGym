@@ -73,13 +73,78 @@ describe('POST /api/membership-request', () => {
     expect(mockSendEmail).not.toHaveBeenCalled()
   })
 
-  it('returns 500 when Supabase insert fails without calling Resend', async () => {
-    mockInsert.mockResolvedValue({ error: { message: 'db error' } })
+  it('returns 200 when the database is down and the notification email sends', async () => {
+    mockInsert.mockResolvedValue({
+      error: {
+        message: 'TypeError: fetch failed',
+        details: 'getaddrinfo ENOTFOUND qgxptenksngduytpcgni.supabase.co',
+      },
+    })
 
     const response = await handleMembershipRequest(createRequest(validPayload))
+    const data = await response.json()
+
+    expect(response.status).toBe(200)
+    expect(data.success).toBe(true)
+    expect(mockInsert).toHaveBeenCalledOnce()
+    expect(mockSendEmail).toHaveBeenCalledOnce()
+    expect(mockSendEmail.mock.calls[0][0].subject).toBe(
+      'New Paradise Gym Membership Request'
+    )
+    expect(mockSendEmail.mock.calls[0][0].replyTo).toBe('marcus@example.com')
+    expect(console.error).toHaveBeenCalledWith(
+      'Membership insert failed:',
+      expect.objectContaining({ message: 'TypeError: fetch failed' })
+    )
+  })
+
+  it('returns 200 when a schema error blocks the insert and the notification email sends', async () => {
+    const schemaError = {
+      code: 'PGRST205',
+      details: null,
+      hint: null,
+      message: "Could not find the table 'public.membership_requests' in the schema cache",
+    }
+    mockInsert.mockResolvedValue({ error: schemaError })
+
+    const response = await handleMembershipRequest(createRequest(validPayload))
+    const data = await response.json()
+
+    expect(response.status).toBe(200)
+    expect(data.success).toBe(true)
+    expect(mockInsert).toHaveBeenCalledOnce()
+    expect(mockSendEmail).toHaveBeenCalledOnce()
+    expect(mockSendEmail.mock.calls[0][0].subject).toBe(
+      'New Paradise Gym Membership Request'
+    )
+    expect(mockSendEmail.mock.calls[0][0].replyTo).toBe('marcus@example.com')
+    expect(console.error).toHaveBeenCalledWith(
+      'Membership insert failed:',
+      schemaError
+    )
+  })
+
+  it('returns 500 when the database and the notification email both fail', async () => {
+    mockInsert.mockResolvedValue({
+      error: { message: 'TypeError: fetch failed' },
+    })
+    mockSendEmail.mockResolvedValue({ error: new Error('email failed') })
+
+    const response = await handleMembershipRequest(createRequest(validPayload))
+    const data = await response.json()
 
     expect(response.status).toBe(500)
-    expect(mockSendEmail).not.toHaveBeenCalled()
+    expect(data.error).toBe('Failed to save request')
+    expect(mockInsert).toHaveBeenCalledOnce()
+    expect(mockSendEmail).toHaveBeenCalledOnce()
+    expect(console.error).toHaveBeenCalledWith(
+      'Membership insert failed:',
+      expect.objectContaining({ message: 'TypeError: fetch failed' })
+    )
+    expect(console.error).toHaveBeenCalledWith(
+      'Membership email failed:',
+      expect.any(Error)
+    )
   })
 
   it('returns 200 when Resend fails after successful insert', async () => {

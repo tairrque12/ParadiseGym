@@ -25,31 +25,6 @@ export async function handleMembershipRequest(request: Request) {
 
   const data = parsed.data
 
-  let supabase
-  try {
-    supabase = getSupabaseServerClient()
-  } catch (error) {
-    console.error('Supabase configuration error:', error)
-    return NextResponse.json({ error: 'Failed to save request' }, { status: 500 })
-  }
-
-  const { error: insertError } = await supabase
-    .from('membership_requests')
-    .insert({
-      first_name: data.first_name,
-      last_name: data.last_name,
-      email: data.email,
-      phone: data.phone,
-      age: data.age,
-      membership_type: data.membership_type,
-      status: 'new',
-    })
-
-  if (insertError) {
-    console.error('Membership insert failed:', insertError)
-    return NextResponse.json({ error: 'Failed to save request' }, { status: 500 })
-  }
-
   const fields = {
     first_name: data.first_name,
     last_name: data.last_name,
@@ -58,6 +33,31 @@ export async function handleMembershipRequest(request: Request) {
     age: data.age,
     membership_type: data.membership_type,
   }
+
+  let saved = false
+
+  try {
+    const supabase = getSupabaseServerClient()
+
+    try {
+      const { error: insertError } = await supabase.from('membership_requests').insert({
+        ...fields,
+        status: 'new',
+      })
+
+      if (insertError) {
+        console.error('Membership insert failed:', insertError)
+      } else {
+        saved = true
+      }
+    } catch (error) {
+      console.error('Membership insert failed:', error)
+    }
+  } catch (error) {
+    console.error('Supabase configuration error:', error)
+  }
+
+  let emailed = false
 
   try {
     const { html, text } = formatMembershipRequestEmail(fields)
@@ -71,9 +71,15 @@ export async function handleMembershipRequest(request: Request) {
 
     if (emailResult.error) {
       console.error('Membership email failed:', emailResult.error)
+    } else {
+      emailed = true
     }
   } catch (error) {
     console.error('Membership email failed:', error)
+  }
+
+  if (!saved && !emailed) {
+    return NextResponse.json({ error: 'Failed to save request' }, { status: 500 })
   }
 
   return NextResponse.json({ success: true })

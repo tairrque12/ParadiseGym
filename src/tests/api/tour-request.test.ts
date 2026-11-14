@@ -83,13 +83,72 @@ describe('POST /api/tour-request', () => {
     expect(mockSendEmail).not.toHaveBeenCalled()
   })
 
-  it('returns 500 when Supabase insert fails without calling Resend', async () => {
-    mockInsert.mockResolvedValue({ error: { message: 'db error' } })
+  it('returns 200 when the database is down and the notification email sends', async () => {
+    mockInsert.mockResolvedValue({
+      error: {
+        message: 'TypeError: fetch failed',
+        details: 'getaddrinfo ENOTFOUND qgxptenksngduytpcgni.supabase.co',
+      },
+    })
 
     const response = await handleTourRequest(createRequest(validPayload))
+    const data = await response.json()
+
+    expect(response.status).toBe(200)
+    expect(data.success).toBe(true)
+    expect(mockInsert).toHaveBeenCalledOnce()
+    expect(mockSendEmail).toHaveBeenCalledOnce()
+    expect(mockSendEmail.mock.calls[0][0].subject).toBe('New Paradise Gym Tour Request')
+    expect(mockSendEmail.mock.calls[0][0].replyTo).toBe('elena@example.com')
+    expect(console.error).toHaveBeenCalledWith(
+      'Tour insert failed:',
+      expect.objectContaining({ message: 'TypeError: fetch failed' })
+    )
+  })
+
+  it('returns 200 when the location column is missing and the notification email sends', async () => {
+    const schemaError = {
+      code: 'PGRST204',
+      details: null,
+      hint: null,
+      message: "Could not find the 'location' column of 'tour_requests' in the schema cache",
+    }
+    mockInsert.mockResolvedValue({ error: schemaError })
+
+    const response = await handleTourRequest(createRequest(validPayload))
+    const data = await response.json()
+
+    expect(response.status).toBe(200)
+    expect(data.success).toBe(true)
+    expect(mockInsert).toHaveBeenCalledOnce()
+    expect(mockSendEmail).toHaveBeenCalledOnce()
+    expect(mockSendEmail.mock.calls[0][0].subject).toBe('New Paradise Gym Tour Request')
+    expect(mockSendEmail.mock.calls[0][0].replyTo).toBe('elena@example.com')
+    expect(mockSendEmail.mock.calls[0][0].text).toContain('location: mcallen')
+    expect(console.error).toHaveBeenCalledWith('Tour insert failed:', schemaError)
+  })
+
+  it('returns 500 when the database and the notification email both fail', async () => {
+    mockInsert.mockResolvedValue({
+      error: { message: 'TypeError: fetch failed' },
+    })
+    mockSendEmail.mockResolvedValue({ error: new Error('email failed') })
+
+    const response = await handleTourRequest(createRequest(validPayload))
+    const data = await response.json()
 
     expect(response.status).toBe(500)
-    expect(mockSendEmail).not.toHaveBeenCalled()
+    expect(data.error).toBe('Failed to save request')
+    expect(mockInsert).toHaveBeenCalledOnce()
+    expect(mockSendEmail).toHaveBeenCalledOnce()
+    expect(console.error).toHaveBeenCalledWith(
+      'Tour insert failed:',
+      expect.objectContaining({ message: 'TypeError: fetch failed' })
+    )
+    expect(console.error).toHaveBeenCalledWith(
+      'Tour email failed:',
+      expect.any(Error)
+    )
   })
 
   it('returns 200 when Resend fails after successful insert', async () => {
