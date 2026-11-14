@@ -44,6 +44,13 @@ describe('Landing page', () => {
     expect(heroJoin).toHaveAttribute('target', '_blank')
     expect(heroJoin).toHaveAttribute('rel', 'noopener noreferrer')
     expect(screen.getAllByText(ABC_CHECKOUT_NOTE).length).toBeGreaterThan(0)
+    expect(screen.getByText(/open today/i)).toBeInTheDocument()
+    expect(screen.getAllByText(LOCATIONS.harlingen.address).length).toBeGreaterThan(0)
+    expect(screen.getByText('From $39.99/mo')).toBeInTheDocument()
+    expect(screen.getByTestId('header-phone')).toHaveAttribute(
+      'href',
+      'tel:+19569905277'
+    )
     expect(screen.queryByRole('link', { name: /request membership/i })).not.toBeInTheDocument()
 
     await user.click(screen.getAllByRole('button', { name: /book a free tour/i })[0])

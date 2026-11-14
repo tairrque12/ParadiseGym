@@ -12,6 +12,16 @@ export const HOURS = [
   { days: 'Sunday', time: '9am – 5pm' },
 ] as const
 
+export function openTodayLabel(now = new Date()): string {
+  const weekday = new Intl.DateTimeFormat('en-US', {
+    timeZone: 'America/Chicago',
+    weekday: 'short',
+  }).format(now)
+
+  const row = weekday === 'Sat' ? HOURS[1] : weekday === 'Sun' ? HOURS[2] : HOURS[0]
+  return `Open today ${row.time}`
+}
+
 export const GYM_STATS = [
   { type: 'count' as const, value: 7500, suffix: '', label: 'SQ FT' },
   { type: 'count' as const, value: 70, suffix: '+', label: 'Custom Machines' },

@@ -24,6 +24,7 @@ import {
   SheetTrigger,
 } from '@/components/ui/sheet'
 import { useModal } from '@/context/modal-context'
+import { CONTACT } from '@/lib/contact'
 import {
   ABC_CHECKOUT_NOTE,
   JOIN_NOW_LABEL,
@@ -290,6 +291,17 @@ export function Navbar() {
         </nav>
 
         <div className="flex min-w-0 items-center gap-3 xl:ml-auto xl:gap-4">
+          <a
+            href={CONTACT.phoneHref}
+            data-testid="header-phone"
+            className={cn(
+              'inline-flex min-h-11 items-center px-2 text-sm text-white',
+              focusRing
+            )}
+          >
+            <span className="xl:hidden">Call</span>
+            <span className="hidden xl:inline">{CONTACT.phone}</span>
+          </a>
           <LocationSwitcher />
           <Separator
             orientation="vertical"
