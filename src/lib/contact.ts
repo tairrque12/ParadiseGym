@@ -12,6 +12,11 @@ export const HOURS = [
   { days: 'Sunday', time: '9am – 5pm' },
 ] as const
 
+/** Stable hours line for server render and the first client render. */
+export const POSTED_HOURS_SUMMARY = HOURS.map((row) => `${row.days} ${row.time}`).join(
+  ' · '
+)
+
 export function openTodayLabel(now = new Date()): string {
   const weekday = new Intl.DateTimeFormat('en-US', {
     timeZone: 'America/Chicago',

@@ -6,7 +6,7 @@ import { Wordmark } from '@/components/Logo'
 import { NeonButton } from '@/components/NeonButton'
 import { GrainOverlay } from '@/components/motion'
 import { useModal } from '@/context/modal-context'
-import { openTodayLabel } from '@/lib/contact'
+import { OpenTodayHours } from '@/components/open-today-hours'
 import {
   ABC_CHECKOUT_NOTE,
   joinUrl,
@@ -49,7 +49,9 @@ export function Hero() {
             Where Strength Meets Aesthetics
           </p>
           <ul className="mt-6 max-w-xl space-y-1 text-sm text-white/85 sm:text-base">
-            <li>{openTodayLabel()}</li>
+            <li>
+              <OpenTodayHours />
+            </li>
             <li>{harlingen.address}</li>
             {fromPrice ? <li>From {fromPrice}</li> : null}
           </ul>
