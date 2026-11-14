@@ -1,6 +1,10 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { MEMBERSHIP_OPTIONS } from '@/lib/membership-options'
-import { feeDisclosureEnabled, planFeeSummary } from '@/lib/plan-fees'
+import {
+  feeDisclosureEnabled,
+  planFeeSummary,
+  publicDueTodayLabel,
+} from '@/lib/plan-fees'
 
 describe('plan fee disclosure', () => {
   afterEach(() => {
@@ -18,6 +22,18 @@ describe('plan fee disclosure', () => {
       const summary = planFeeSummary('harlingen', option.slug) ?? ''
       expect(summary).not.toContain(option.price)
     }
+  })
+
+  it('publishes only the due-today amounts re-read from ABC', () => {
+    expect(publicDueTodayLabel('harlingen', '12_month_contract')).toBe(
+      'Amount due today $75.76'
+    )
+    expect(publicDueTodayLabel('mcallen', '12_month_contract')).toBe(
+      'Amount due today $43.29'
+    )
+    expect(publicDueTodayLabel('harlingen', 'month_to_month')).toBeNull()
+    expect(publicDueTodayLabel('mcallen', 'month_to_month')).toBeNull()
+    expect(publicDueTodayLabel('harlingen', 'day_pass')).toBeNull()
   })
 
   it('uses the Harlingen 12-month checkout summary', () => {

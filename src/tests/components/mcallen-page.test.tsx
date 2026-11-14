@@ -77,7 +77,12 @@ describe('McAllen page', () => {
       expect(link).toHaveAttribute('rel', 'noopener noreferrer')
       expect(link).toHaveTextContent(price)
       expect(link).toHaveTextContent(/join now/i)
-      expect(link).not.toHaveTextContent(/due today/i)
+      if (slug === '12_month_contract') {
+        expect(link).toHaveTextContent('Recommended')
+        expect(link).toHaveTextContent('Amount due today $43.29')
+      } else {
+        expect(link).not.toHaveTextContent(/due today/i)
+      }
       expect(link).not.toHaveTextContent(/\$30/)
     }
 
