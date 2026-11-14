@@ -10,7 +10,11 @@ import {
 } from '@/lib/membership-options'
 import { TourPrompt } from '@/components/tour-prompt'
 import { ABC_CHECKOUT_NOTE, joinUrl, LOCATIONS } from '@/lib/locations'
-import { feeDisclosureEnabled, planFeeSummary } from '@/lib/plan-fees'
+import {
+  feeDisclosureEnabled,
+  planFeeSummary,
+  publicDueTodayLabel,
+} from '@/lib/plan-fees'
 import { SECTION_IDS } from '@/lib/sections'
 import { cn } from '@/lib/utils'
 
@@ -28,6 +32,7 @@ function PricingRow({ option }: { option: MembershipOption }) {
   const feeSummary = feeDisclosureEnabled()
     ? planFeeSummary('harlingen', option.slug)
     : null
+  const dueToday = feeSummary ? null : publicDueTodayLabel('harlingen', option.slug)
 
   return (
     <TrackedPlanLink
@@ -64,6 +69,11 @@ function PricingRow({ option }: { option: MembershipOption }) {
         {option.priceNote ? (
           <span className="ml-1 text-xs font-medium text-white/50">
             {option.priceNote}
+          </span>
+        ) : null}
+        {dueToday ? (
+          <span className="mt-1 block max-w-[14rem] text-sm font-normal normal-case leading-snug tracking-normal text-white">
+            {dueToday}
           </span>
         ) : null}
         {feeSummary ? (

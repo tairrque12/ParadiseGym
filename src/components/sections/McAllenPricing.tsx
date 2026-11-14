@@ -3,7 +3,11 @@ import { GrainOverlay, SectionReveal } from '@/components/motion'
 import { TourPrompt } from '@/components/tour-prompt'
 import { TrackedPlanLink } from '@/components/tracked-plan-link'
 import { ABC_CHECKOUT_NOTE, joinUrl, LOCATIONS } from '@/lib/locations'
-import { feeDisclosureEnabled, planFeeSummary } from '@/lib/plan-fees'
+import {
+  feeDisclosureEnabled,
+  planFeeSummary,
+  publicDueTodayLabel,
+} from '@/lib/plan-fees'
 import { PRICING_DISCOUNT_NOTE } from '@/lib/membership-options'
 import { SECTION_IDS } from '@/lib/sections'
 
@@ -35,6 +39,9 @@ export function McAllenPricing() {
             const feeSummary = feeDisclosureEnabled()
               ? planFeeSummary('mcallen', option.slug)
               : null
+            const dueToday = feeSummary
+              ? null
+              : publicDueTodayLabel('mcallen', option.slug)
 
             return (
             <TrackedPlanLink
@@ -47,8 +54,13 @@ export function McAllenPricing() {
               className="group flex flex-col justify-between border border-white/12 bg-carbon/60 p-6 transition-colors hover:border-neon/60 hover:bg-white/[0.03] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neon/60 sm:p-8"
             >
               <div>
-                <span className="block text-sm font-medium uppercase tracking-[0.14em] text-white/70 transition-colors group-hover:text-white">
+                <span className="block text-sm font-medium uppercase tracking-[0.14em] text-white transition-colors group-hover:text-white">
                   {option.name}
+                  {option.slug === '12_month_contract' ? (
+                    <span className="ml-2 inline-flex items-center rounded-full border border-white/40 px-2 py-0.5 align-middle text-xs font-medium normal-case tracking-normal text-white">
+                      Recommended
+                    </span>
+                  ) : null}
                 </span>
 
                 <span className="mt-5 block font-heading text-5xl leading-none tracking-tight text-neon sm:text-6xl">
@@ -64,6 +76,12 @@ export function McAllenPricing() {
                 {option.subLabel ? (
                   <span className="mt-3 block text-xs uppercase tracking-[0.16em] text-white/45">
                     {option.subLabel}
+                  </span>
+                ) : null}
+
+                {dueToday ? (
+                  <span className="mt-4 block text-sm font-normal normal-case leading-snug tracking-normal text-white">
+                    {dueToday}
                   </span>
                 ) : null}
 

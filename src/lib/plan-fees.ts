@@ -81,6 +81,24 @@ export function feeDisclosureEnabled(): boolean {
   return process.env.NEXT_PUBLIC_SHOW_FEE_DISCLOSURE === 'true'
 }
 
+/**
+ * Due-today amounts re-read from the ABC profile summary on 14 Nov 2026.
+ * Other plans stay behind the disclosure flag.
+ */
+const PUBLIC_DUE_TODAY: Record<LocationId, readonly MembershipType[]> = {
+  harlingen: ['12_month_contract'],
+  mcallen: ['12_month_contract'],
+}
+
+export function publicDueTodayLabel(
+  location: LocationId,
+  slug: MembershipType
+): string | null {
+  if (!PUBLIC_DUE_TODAY[location].includes(slug)) return null
+  const amount = PLAN_FEES[location][slug]?.dueToday
+  return amount ? `Amount due today ${amount}` : null
+}
+
 export function planFeeSummary(
   location: LocationId,
   slug: MembershipType
