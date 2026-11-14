@@ -36,14 +36,14 @@ export function HoursLocation({
           <h2 className="mt-3 font-heading text-4xl uppercase tracking-tight text-white sm:text-5xl">
             Hours &amp; Location
           </h2>
-          <p className="mt-3 text-sm uppercase tracking-[0.16em] text-white/45">
+          <p className="mt-3 text-sm uppercase tracking-[0.16em] text-text-2">
             {location.name} · {location.sqft.toLocaleString('en-US')} sq ft
           </p>
         </SectionReveal>
 
         <div className="grid gap-10 lg:grid-cols-2 lg:gap-16">
           <SectionReveal>
-            <h3 className="mb-6 text-sm uppercase tracking-[0.18em] text-white/50">
+            <h3 className="mb-6 text-sm uppercase tracking-[0.18em] text-text-2">
               Gym Hours
             </h3>
             {hours ? (
@@ -80,13 +80,13 @@ export function HoursLocation({
           </SectionReveal>
 
           <SectionReveal delay={0.1}>
-            <h3 className="mb-6 text-sm uppercase tracking-[0.18em] text-white/50">
+            <h3 className="mb-6 text-sm uppercase tracking-[0.18em] text-text-2">
               Find Us
             </h3>
             <button
               type="button"
               onClick={openMaps}
-              className="group flex w-full items-start gap-4 border border-white/10 bg-carbon p-6 text-left transition-colors hover:border-neon/50"
+              className="group flex min-h-11 w-full items-start gap-4 border border-white/10 bg-carbon p-6 text-left transition-colors hover:border-neon/50"
             >
               <MapPin
                 className="mt-1 h-5 w-5 shrink-0 text-neon"

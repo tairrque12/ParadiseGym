@@ -68,13 +68,13 @@ export function McAllenPricing() {
                 </span>
 
                 {option.priceNote ? (
-                  <span className="mt-2 block text-sm font-medium text-white/50">
+                  <span className="mt-2 block text-sm font-medium text-text-2">
                     {option.priceNote}
                   </span>
                 ) : null}
 
                 {option.subLabel ? (
-                  <span className="mt-3 block text-xs uppercase tracking-[0.16em] text-white/45">
+                  <span className="mt-3 block text-xs uppercase tracking-[0.16em] text-text-2">
                     {option.subLabel}
                   </span>
                 ) : null}
