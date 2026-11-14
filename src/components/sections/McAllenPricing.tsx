@@ -1,7 +1,6 @@
 import { ArrowUpRight } from 'lucide-react'
 import { NeonRule, SectionReveal } from '@/components/motion'
 import { SectionHeading } from '@/components/section-heading'
-import { TourPrompt } from '@/components/tour-prompt'
 import { TrackedPlanLink } from '@/components/tracked-plan-link'
 import { ABC_CHECKOUT_NOTE, joinUrl, LOCATIONS } from '@/lib/locations'
 import {
@@ -106,9 +105,6 @@ export function McAllenPricing() {
         </div>
 
         <p className="mt-6 text-sm leading-relaxed text-text-2">{ABC_CHECKOUT_NOTE}</p>
-        <div className="mt-3">
-          <TourPrompt>Not ready to join? Book a free tour</TourPrompt>
-        </div>
 
         <div className="mt-10 grid gap-4 border-t border-white/10 pt-6 sm:grid-cols-[11rem_1fr] sm:gap-10">
           <p className="text-xs font-medium text-text-3">Discounts available</p>

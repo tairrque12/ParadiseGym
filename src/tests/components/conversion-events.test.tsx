@@ -1,6 +1,6 @@
 import '@/tests/mocks/react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { render, screen, waitFor, within } from '@testing-library/react'
+import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { track } from '@vercel/analytics'
 import Home from '@/app/page'
@@ -32,18 +32,6 @@ function renderMcAllen() {
       <McAllenPage />
     </Providers>
   )
-}
-
-async function fillTourForm(user: ReturnType<typeof userEvent.setup>) {
-  await user.type(screen.getByLabelText(/first name/i), 'Elena')
-  await user.type(screen.getByLabelText(/last name/i), 'Rivera')
-  await user.type(screen.getByLabelText(/email/i), 'elena@example.com')
-  await user.type(screen.getByLabelText(/phone/i), '956-244-6692')
-  const days = within(screen.getByRole('group', { name: /preferred day/i })).getAllByRole(
-    'button'
-  )
-  await user.click(days[days.length - 1])
-  await user.click(screen.getByRole('button', { name: '10:00 AM' }))
 }
 
 describe('conversion events', () => {
@@ -95,56 +83,18 @@ describe('conversion events', () => {
     })
   })
 
-  it('records each tour button as a tour CTA click', async () => {
+  it('records the McAllen announcement bar', async () => {
     const user = userEvent.setup()
     renderHome()
 
-    await user.click(
-      within(screen.getByRole('main')).getAllByRole('button', {
-        name: 'Not ready? Book a free tour',
-      })[0]
-    )
-    await user.click(screen.getByRole('button', { name: /close/i }))
-    await user.click(screen.getByTestId('header-tour'))
-    await user.click(screen.getByRole('button', { name: /close/i }))
-    await user.click(screen.getByTestId('mobile-menu-button'))
-    await user.click(screen.getByTestId('mobile-tour'))
+    await user.click(screen.getByTestId('opening-banner'))
 
-    expect(track).toHaveBeenCalledWith('tour_cta_click', {
-      location: 'harlingen',
-      placement: 'hero',
-    })
-    expect(track).toHaveBeenCalledWith('tour_cta_click', {
-      location: 'harlingen',
-      placement: 'header',
-    })
-    expect(track).toHaveBeenCalledWith('tour_cta_click', {
-      location: 'harlingen',
-      placement: 'mobile_menu',
-    })
-  })
-
-  it('records a tour form submit for the page the visitor is on', async () => {
-    const user = userEvent.setup()
-    renderMcAllen()
-
-    await user.click(screen.getByTestId('header-tour'))
-    await fillTourForm(user)
-    await user.click(screen.getByRole('button', { name: /request tour/i }))
-
-    await waitFor(() => {
-      expect(screen.getByText(/tour requested/i)).toBeInTheDocument()
-    })
-    expect(track).toHaveBeenCalledWith('tour_cta_click', {
-      location: 'mcallen',
-      placement: 'header',
-    })
-    expect(track).toHaveBeenCalledWith('tour_form_submit', {
+    expect(track).toHaveBeenCalledWith('announcement_bar_click', {
       location: 'mcallen',
     })
     expect(track).not.toHaveBeenCalledWith(
-      'tour_form_submit',
-      expect.objectContaining({ source: expect.anything() })
+      'tour_cta_click',
+      expect.anything()
     )
   })
 

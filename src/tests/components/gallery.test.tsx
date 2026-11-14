@@ -16,8 +16,8 @@ describe('Gallery', () => {
     )
 
     expect(
-      screen.getByRole('button', { name: /book a free tour/i })
-    ).toBeInTheDocument()
+      screen.queryByRole('button', { name: /book a free tour/i })
+    ).not.toBeInTheDocument()
 
     expect(screen.getAllByRole('heading', { level: 1 })).toHaveLength(1)
     expect(

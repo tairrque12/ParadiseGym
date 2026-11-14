@@ -40,8 +40,8 @@ describe('Pricing', () => {
     expect(screen.getByText('Day Pass')).toBeInTheDocument()
     expect(screen.getByText('$17.99')).toBeInTheDocument()
     expect(
-      screen.getByRole('button', { name: /not ready to join\? book a free tour/i })
-    ).toBeInTheDocument()
+      screen.queryByRole('button', { name: /book a free tour/i })
+    ).not.toBeInTheDocument()
     expect(screen.getByTestId('mobile-action-bar')).toBeInTheDocument()
     expect(screen.getByText(/discounts available/i)).toBeInTheDocument()
     expect(

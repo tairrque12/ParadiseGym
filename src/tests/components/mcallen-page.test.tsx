@@ -100,11 +100,10 @@ describe('McAllen page', () => {
     expect(heroJoin).toHaveAttribute('href', joinUrl('mcallen', 'hero'))
     expect(heroJoin.getAttribute('href')).toContain('club=32367')
     expect(heroJoin).toHaveAttribute('target', '_blank')
-    const tour = screen.getAllByRole('button', { name: /book a free tour/i })[0]
-    expect(tour).not.toHaveClass('bg-neon')
-    expect(
-      heroJoin.compareDocumentPosition(tour) & Node.DOCUMENT_POSITION_FOLLOWING
-    ).toBeTruthy()
+    expect(screen.queryByRole('button', { name: /book a free tour/i })).not.toBeInTheDocument()
+    expect(screen.getByTestId('mcallen-opening')).toHaveTextContent('Opens Nov 28')
+    expect(screen.queryByRole('img', { name: /shower/i })).not.toBeInTheDocument()
+    expect(screen.queryByRole('heading', { name: 'Showers' })).not.toBeInTheDocument()
     expect(screen.getAllByText(LOCATIONS.mcallen.presaleNote!).length).toBeGreaterThan(0)
     expect(screen.getByTestId('hero-photo-caption')).toHaveTextContent(
       'Photo from our Harlingen gym. McAllen is opening soon.'

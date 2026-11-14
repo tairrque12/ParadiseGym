@@ -52,15 +52,18 @@ test.describe('Navbar', () => {
       await page.goto('/')
 
       const header = page.getByRole('banner')
-      const headerBox = await box(header)
-      expect(headerBox.height).toBeLessThanOrEqual(64)
-      expect(headerBox.y).toBe(0)
+      expect((await box(header)).y).toBe(0)
+      const banner = page.getByTestId('opening-banner')
+      const bannerBox = await box(banner)
+      expect(bannerBox.height).toBeGreaterThanOrEqual(44)
+
+      const row = page.getByTestId('nav-row')
+      const rowBox = await box(row)
+      expect(rowBox.height).toBeLessThanOrEqual(64)
 
       const logo = await box(page.getByRole('banner').getByRole('link', { name: 'Paradise Gym home' }))
       const menu = await box(page.getByTestId('mobile-menu-button'))
       expect(Math.abs(logo.y - menu.y)).toBeLessThan(12)
-      expect(page.getByTestId('mobile-header-join')).toHaveCount(0)
-      expect(page.locator('header').getByTestId('location-announcement')).toHaveCount(0)
     })
   }
 
@@ -70,10 +73,11 @@ test.describe('Navbar', () => {
       await page.goto('/')
 
       const header = page.getByRole('banner')
-      const headerBox = await box(header)
-      expect(headerBox.height).toBeLessThanOrEqual(72)
+      const row = page.getByTestId('nav-row')
+      const rowBox = await box(row)
+      expect(rowBox.height).toBeLessThanOrEqual(72)
 
-      const controls = header.locator('a, button')
+      const controls = row.locator('a, button')
       const count = await controls.count()
       const tops: number[] = []
       for (let index = 0; index < count; index++) {
@@ -149,8 +153,8 @@ test.describe('Navbar', () => {
     await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight))
     await expect(hero).not.toBeInViewport()
     await expect(bar).toBeVisible()
-    await expect(bar.getByRole('link', { name: 'Join', exact: true })).toBeVisible()
-    await expect(bar.getByRole('button', { name: 'Tour' })).toBeVisible()
+    await expect(bar.getByRole('link', { name: /join/i })).toBeVisible()
+    await expect(bar.getByRole('button', { name: 'Tour' })).toHaveCount(0)
   })
 
   test('header and menu controls are at least 44px and meet contrast', async ({ page }) => {

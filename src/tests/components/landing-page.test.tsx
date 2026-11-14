@@ -1,7 +1,6 @@
 import '@/tests/mocks/react'
 import { describe, it, expect, vi } from 'vitest'
 import { render, screen, within } from '@testing-library/react'
-import userEvent from '@testing-library/user-event'
 import Home from '@/app/page'
 import { SECTION_IDS } from '@/lib/sections'
 import { Providers } from '@/components/providers'
@@ -27,14 +26,15 @@ describe('Landing page', () => {
     renderHome()
 
     for (const id of Object.values(SECTION_IDS)) {
+      if (id === SECTION_IDS.tour) continue
       expect(document.getElementById(id)).toBeInTheDocument()
     }
+    expect(document.getElementById(SECTION_IDS.tour)).not.toBeInTheDocument()
 
     expect(document.getElementById('gallery')).not.toBeInTheDocument()
   })
 
-  it('links membership externally and opens the tour modal from hero CTAs', async () => {
-    const user = userEvent.setup()
+  it('links membership externally and does not offer a tour', () => {
     renderHome()
 
     const heroJoin = screen.getByTestId('hero-join')
@@ -52,12 +52,8 @@ describe('Landing page', () => {
       'tel:+19569905277'
     )
     expect(screen.queryByRole('link', { name: /request membership/i })).not.toBeInTheDocument()
-
-    await user.click(screen.getAllByRole('button', { name: /book a free tour/i })[0])
-    expect(screen.getByRole('dialog')).toBeInTheDocument()
-    expect(
-      screen.getByRole('heading', { name: /book a free tour/i })
-    ).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: /book a free tour/i })).not.toBeInTheDocument()
+    expect(screen.getByTestId('opening-banner')).toHaveAttribute('href', '/mcallen')
   })
 
   it('routes to the McAllen page from the header location toggle', () => {

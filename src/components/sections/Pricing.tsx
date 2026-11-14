@@ -7,7 +7,6 @@ import {
   PRICING_FOOTER_NOTE,
   type MembershipOption,
 } from '@/lib/membership-options'
-import { TourPrompt } from '@/components/tour-prompt'
 import { ABC_CHECKOUT_NOTE, joinUrl, LOCATIONS } from '@/lib/locations'
 import {
   feeDisclosureEnabled,
@@ -136,7 +135,6 @@ export function Pricing() {
           <div className="space-y-4">
             <p className="max-w-xl text-base leading-relaxed text-text-2">{PRICING_DISCOUNT_NOTE}</p>
             <p className="text-sm leading-relaxed text-text-2">{ABC_CHECKOUT_NOTE}</p>
-            <TourPrompt>Not ready to join? Book a free tour</TourPrompt>
             <p className="text-sm leading-relaxed text-text-3">{PRICING_FOOTER_NOTE}</p>
           </div>
         </div>

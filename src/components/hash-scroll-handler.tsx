@@ -13,6 +13,12 @@ export function HashScrollHandler() {
     const sectionId = window.location.hash.replace('#', '')
     if (!sectionId) return
 
+    if (sectionId.toLowerCase() === 'tour') {
+      const next = pathname === MCALLEN_PATH ? MCALLEN_PATH : '/'
+      window.history.replaceState(null, '', next)
+      return
+    }
+
     const target = document.getElementById(sectionId)
     if (!target) return
     // The URL already contains this hash. Scrolling must not push another

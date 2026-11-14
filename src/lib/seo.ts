@@ -225,8 +225,8 @@ export function mcallenPageCopy(): PageCopy {
   return {
     title: `${SITE_NAME} ${location.name}`,
     description: opening
-      ? `${SITE_NAME} at ${location.address}. ${opening}.`
-      : `${SITE_NAME} at ${location.address}.`,
+      ? `${SITE_NAME} at ${location.address}. Opens Nov 28. ${opening}.`
+      : `${SITE_NAME} at ${location.address}. Opens Nov 28.`,
     path: location.href,
   }
 }
