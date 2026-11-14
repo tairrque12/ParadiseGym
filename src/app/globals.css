@@ -90,4 +90,24 @@
     opacity: 0;
     transform: translate(-50%, -48%) scale(0.985);
   }
+
+  [data-slot='dialog-content'][data-dialog-layout='sheet'][data-starting-style],
+  [data-slot='dialog-content'][data-dialog-layout='sheet'][data-ending-style] {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+}
+
+@media (min-width: 640px) and (prefers-reduced-motion: no-preference) {
+  [data-slot='dialog-content'][data-dialog-layout='sheet'][data-starting-style],
+  [data-slot='dialog-content'][data-dialog-layout='sheet'][data-ending-style] {
+    transform: translate(-50%, -48%) scale(0.985);
+  }
+}
+
+[data-slot='dialog-content']:focus,
+[data-slot='dialog-content']:focus-visible,
+[data-slot='sheet-content']:focus,
+[data-slot='sheet-content']:focus-visible {
+  outline: none;
 }

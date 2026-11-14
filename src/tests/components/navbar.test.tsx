@@ -52,11 +52,7 @@ describe('Navbar', () => {
     expect(harlingenCta).toHaveAttribute('rel', 'noopener noreferrer')
     expect(screen.getByTestId('header-tour')).toHaveTextContent('Book a Tour')
     expect(screen.getByTestId('header-tour')).not.toHaveClass('bg-neon')
-    expect(screen.getByTestId('mobile-header-join')).toHaveTextContent('Join')
-    expect(screen.getByTestId('mobile-header-join')).toHaveAttribute(
-      'href',
-      joinUrl('harlingen', 'header')
-    )
+    expect(screen.queryByTestId('mobile-header-join')).not.toBeInTheDocument()
 
     usePathname.mockReturnValue('/mcallen')
     rerender(
@@ -69,10 +65,7 @@ describe('Navbar', () => {
       'href',
       joinUrl('mcallen', 'header')
     )
-    expect(screen.getByTestId('mobile-header-join')).toHaveAttribute(
-      'href',
-      joinUrl('mcallen', 'header')
-    )
+    expect(screen.queryByTestId('mobile-header-join')).not.toBeInTheDocument()
   })
 
   it('keeps McAllen section links on the McAllen page, including reviews', () => {

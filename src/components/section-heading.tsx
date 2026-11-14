@@ -23,13 +23,11 @@ export function SectionHeading({
 
   return (
     <div className={cn('max-w-2xl', className)}>
-      <p className="text-xs font-medium uppercase tracking-[0.12em] text-text-3">
-        {eyebrow}
-      </p>
+      <p className="text-[13px] font-medium text-text-3">{eyebrow}</p>
       <Title
         id={id}
         className={cn(
-          'mt-3 text-[clamp(1.875rem,3vw,2.75rem)] font-medium leading-[1.12] tracking-[-0.022em] text-white',
+          'mt-2 font-sans text-[clamp(1.75rem,7vw,2.25rem)] font-medium leading-[1.15] tracking-[-0.02em] text-white md:text-[clamp(2rem,3vw,2.75rem)]',
           titleClassName
         )}
       >
