@@ -78,6 +78,21 @@ test.describe('McAllen page', () => {
     await expect(page.getByText('Day Pass')).toHaveCount(0)
   })
 
+  test('section nav stays on the McAllen page', async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: 'reduce' })
+    await page.setViewportSize({ width: 1280, height: 800 })
+    await page.goto('/mcallen')
+
+    const nav = page.getByRole('navigation', { name: 'Main' })
+    await nav.getByRole('link', { name: 'Pricing' }).click()
+    await expect(page).toHaveURL(/\/mcallen#pricing$/)
+    await expect(page.locator('#pricing')).toBeInViewport()
+
+    await nav.getByRole('link', { name: 'Reviews' }).click()
+    await expect(page).toHaveURL(/\/mcallen#reviews$/)
+    await expect(page.locator('#reviews')).toBeInViewport()
+  })
+
   test('puts pre-sale pricing directly below the hero', async ({ page }) => {
     await page.emulateMedia({ reducedMotion: 'reduce' })
     await page.setViewportSize({ width: 1280, height: 900 })

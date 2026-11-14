@@ -2,23 +2,22 @@
 
 import { useEffect } from 'react'
 import { usePathname } from 'next/navigation'
-import { scrollToSection } from '@/lib/section-nav'
+import { MCALLEN_PATH } from '@/lib/locations'
 
 export function HashScrollHandler() {
   const pathname = usePathname()
 
   useEffect(() => {
-    if (pathname !== '/') return
+    if (pathname !== '/' && pathname !== MCALLEN_PATH) return
 
-    const scrollFromHash = () => {
-      const sectionId = window.location.hash.replace('#', '')
-      if (!sectionId) return
-      scrollToSection(sectionId, 'auto')
-    }
+    const sectionId = window.location.hash.replace('#', '')
+    if (!sectionId) return
 
-    scrollFromHash()
-    window.addEventListener('hashchange', scrollFromHash)
-    return () => window.removeEventListener('hashchange', scrollFromHash)
+    const target = document.getElementById(sectionId)
+    if (!target) return
+    // The URL already contains this hash. Scrolling must not push another
+    // history entry, or the first Back press stays on the same page.
+    target.scrollIntoView({ behavior: 'auto', block: 'start' })
   }, [pathname])
 
   return null

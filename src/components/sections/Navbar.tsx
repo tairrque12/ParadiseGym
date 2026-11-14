@@ -35,7 +35,7 @@ import {
   type GymLocation,
   type LocationId,
 } from '@/lib/locations'
-import { handleSectionNavClick } from '@/lib/section-nav'
+import { handleSectionNavClick, sectionHrefForPath } from '@/lib/section-nav'
 import { NAV_LINKS } from '@/lib/sections'
 import { trackJoinOnlineClick, type JoinPlacement } from '@/lib/analytics'
 import { cn } from '@/lib/utils'
@@ -74,8 +74,10 @@ function activeLocationId(pathname: string): LocationId {
 }
 
 function isLinkActive(href: string, pathname: string, hash: string) {
-  if (href.startsWith('/#')) {
-    return pathname === '/' && hash === href.slice(1)
+  const hashIndex = href.indexOf('#')
+  if (hashIndex !== -1) {
+    const linkPath = href.slice(0, hashIndex) || '/'
+    return pathname === linkPath && hash === href.slice(hashIndex)
   }
   return pathname === href
 }
@@ -165,7 +167,8 @@ export function Navbar() {
 
   function onSectionClick(event: MouseEvent<HTMLAnchorElement>, href: string) {
     handleSectionNavClick(event, href)
-    if (href.startsWith('/#')) setHash(href.slice(1))
+    const hashIndex = href.indexOf('#')
+    if (hashIndex !== -1) setHash(href.slice(hashIndex))
     setMenuOpen(false)
   }
 
@@ -213,13 +216,14 @@ export function Navbar() {
                 <nav id="mobile-nav" aria-label="Mobile" className="mt-6">
                   <ul className="flex flex-col">
                     {NAV_LINKS.map((link) => {
-                      const active = isLinkActive(link.href, pathname, hash)
+                      const href = sectionHrefForPath(link.href, pathname)
+                      const active = isLinkActive(href, pathname, hash)
                       return (
                         <li key={link.href}>
                           <Link
-                            href={link.href}
+                            href={href}
                             aria-current={active ? 'page' : undefined}
-                            onClick={(event) => onSectionClick(event, link.href)}
+                            onClick={(event) => onSectionClick(event, href)}
                             className={cn(
                               'flex items-center justify-between border-b border-white/10 py-3.5 text-base font-medium text-white/80 transition-colors duration-200 hover:text-white motion-reduce:transition-none',
                               focusRing,
@@ -270,13 +274,14 @@ export function Navbar() {
           className="hidden items-center gap-x-6 xl:ml-10 xl:flex"
         >
           {NAV_LINKS.map((link) => {
-            const active = isLinkActive(link.href, pathname, hash)
+            const href = sectionHrefForPath(link.href, pathname)
+            const active = isLinkActive(href, pathname, hash)
             return (
               <Link
                 key={link.href}
-                href={link.href}
+                href={href}
                 aria-current={active ? 'page' : undefined}
-                onClick={(event) => onSectionClick(event, link.href)}
+                onClick={(event) => onSectionClick(event, href)}
                 className={cn(
                   'text-sm font-medium text-white/70 transition-colors duration-200 hover:text-white motion-reduce:transition-none',
                   focusRing,
