@@ -31,7 +31,7 @@ export function Wordmark({ className }: { className?: string }) {
   return (
     <h1
       className={cn(
-        'font-heading text-[clamp(3.5rem,7vw,5.75rem)] font-medium leading-[0.92] tracking-[-0.025em] text-white',
+        'font-heading text-[clamp(2.75rem,13vw,3.75rem)] font-medium leading-[0.94] tracking-[-0.03em] text-white md:text-[clamp(4.25rem,6.5vw,5.75rem)] md:leading-[0.9]',
         className
       )}
     >
