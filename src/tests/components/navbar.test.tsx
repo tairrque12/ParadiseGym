@@ -106,6 +106,26 @@ describe('Navbar', () => {
     )
   })
 
+  it('marks the McAllen section that was just clicked as current', async () => {
+    usePathname.mockReturnValue('/mcallen')
+    const user = userEvent.setup()
+
+    render(
+      <Providers>
+        <Navbar />
+      </Providers>
+    )
+
+    const desktop = within(screen.getByTestId('desktop-nav'))
+    const pricing = desktop.getByRole('link', { name: 'Pricing' })
+    await user.click(pricing)
+
+    expect(pricing).toHaveAttribute('aria-current', 'page')
+    expect(desktop.getByRole('link', { name: 'Amenities' })).not.toHaveAttribute(
+      'aria-current'
+    )
+  })
+
   it('marks the gallery link as current on the gallery page', () => {
     usePathname.mockReturnValue('/gallery')
 

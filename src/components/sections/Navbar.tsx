@@ -167,7 +167,8 @@ export function Navbar() {
 
   function onSectionClick(event: MouseEvent<HTMLAnchorElement>, href: string) {
     handleSectionNavClick(event, href)
-    if (href.startsWith('/#')) setHash(href.slice(1))
+    const hashIndex = href.indexOf('#')
+    if (hashIndex !== -1) setHash(href.slice(hashIndex))
     setMenuOpen(false)
   }
 
