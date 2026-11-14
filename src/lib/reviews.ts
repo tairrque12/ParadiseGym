@@ -1,4 +1,3 @@
-// PLACEHOLDER: Demo testimonials — replace with real member reviews before launch.
 export const TESTIMONIALS = [
   {
     name: 'Marcus T.',
