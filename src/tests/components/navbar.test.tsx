@@ -4,7 +4,7 @@ import { render, screen, within, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { Providers } from '@/components/providers'
 import { Navbar } from '@/components/sections/Navbar'
-import { HARLINGEN_JOIN_URL, MCALLEN_JOIN_URL } from '@/lib/locations'
+import { joinUrl } from '@/lib/locations'
 
 const usePathname = vi.hoisted(() => vi.fn(() => '/'))
 
@@ -54,7 +54,7 @@ describe('Navbar', () => {
     const harlingenCta = screen.getByTestId('header-cta')
     expect(harlingenCta).toHaveTextContent('Join now')
     expect(harlingenCta).toHaveClass('bg-neon')
-    expect(harlingenCta).toHaveAttribute('href', HARLINGEN_JOIN_URL)
+    expect(harlingenCta).toHaveAttribute('href', joinUrl('harlingen', 'header'))
     expect(harlingenCta).toHaveAttribute('target', '_blank')
     expect(harlingenCta).toHaveAttribute('rel', 'noopener noreferrer')
     expect(screen.getByTestId('header-tour')).toHaveTextContent(
@@ -71,7 +71,7 @@ describe('Navbar', () => {
 
     const mcallenCta = screen.getByTestId('header-cta')
     expect(mcallenCta).toHaveTextContent('Join now')
-    expect(mcallenCta).toHaveAttribute('href', MCALLEN_JOIN_URL)
+    expect(mcallenCta).toHaveAttribute('href', joinUrl('mcallen', 'header'))
   })
 
   it('marks the gallery link as current on the gallery page', () => {

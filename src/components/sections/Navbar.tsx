@@ -27,6 +27,7 @@ import { useModal } from '@/context/modal-context'
 import {
   ABC_CHECKOUT_NOTE,
   JOIN_NOW_LABEL,
+  joinUrl,
   LOCATIONS,
   MCALLEN_PATH,
   TOUR_FALLBACK_LABEL,
@@ -81,17 +82,19 @@ function isLinkActive(href: string, pathname: string, hash: string) {
 function MembershipLink({
   location,
   placement,
+  campaign,
   className,
   testId,
 }: {
   location: GymLocation
   placement: JoinPlacement
+  campaign: 'header' | 'mobile_menu'
   className?: string
   testId?: string
 }) {
   return (
     <a
-      href={location.joinLink}
+      href={joinUrl(location.id, campaign)}
       target="_blank"
       rel="noopener noreferrer"
       data-testid={testId}
@@ -239,6 +242,7 @@ export function Navbar() {
                     <MembershipLink
                       location={location}
                       placement="mobile_menu"
+                      campaign="mobile_menu"
                       testId="mobile-join"
                       className={cn(membershipClassName, 'w-full')}
                     />
@@ -297,6 +301,7 @@ export function Navbar() {
               <MembershipLink
                 location={location}
                 placement="header"
+                campaign="header"
                 testId="header-cta"
                 className={membershipClassName}
               />

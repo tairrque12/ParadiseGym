@@ -2,7 +2,7 @@ import '@/tests/mocks/react'
 import { describe, it, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { Pricing } from '@/components/sections/Pricing'
-import { HARLINGEN_JOIN_URL } from '@/lib/locations'
+import { joinUrl } from '@/lib/locations'
 
 describe('Pricing', () => {
   it('renders recurring and single payment columns with real Harlingen pricing', () => {
@@ -37,16 +37,16 @@ describe('Pricing', () => {
     const links = screen.getAllByRole('link')
     expect(links).toHaveLength(6)
 
-    for (const name of [
-      /12 month contract/i,
-      /month to month/i,
-      /1 year paid in full/i,
-      /one month/i,
-      /week pass/i,
-      /day pass/i,
-    ]) {
+    for (const [name, slug] of [
+      [/12 month contract/i, '12_month_contract'],
+      [/month to month/i, 'month_to_month'],
+      [/1 year paid in full/i, '1_year_paid_in_full'],
+      [/one month/i, 'one_month'],
+      [/week pass/i, 'week_pass'],
+      [/day pass/i, 'day_pass'],
+    ] as const) {
       const link = screen.getByRole('link', { name })
-      expect(link).toHaveAttribute('href', HARLINGEN_JOIN_URL)
+      expect(link).toHaveAttribute('href', joinUrl('harlingen', slug))
       expect(link).toHaveAttribute('target', '_blank')
       expect(link).toHaveAttribute('rel', 'noopener noreferrer')
     }

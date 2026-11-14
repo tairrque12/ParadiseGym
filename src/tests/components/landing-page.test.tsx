@@ -7,7 +7,7 @@ import { SECTION_IDS } from '@/lib/sections'
 import { Providers } from '@/components/providers'
 import {
   ABC_CHECKOUT_NOTE,
-  HARLINGEN_JOIN_URL,
+  joinUrl,
   LOCATIONS,
   MCALLEN_PATH,
 } from '@/lib/locations'
@@ -40,7 +40,7 @@ describe('Landing page', () => {
     const heroJoin = screen.getByTestId('hero-join')
     expect(heroJoin).toHaveTextContent('Join now')
     expect(heroJoin).toHaveClass('bg-neon')
-    expect(heroJoin).toHaveAttribute('href', HARLINGEN_JOIN_URL)
+    expect(heroJoin).toHaveAttribute('href', joinUrl('harlingen', 'hero'))
     expect(heroJoin).toHaveAttribute('target', '_blank')
     expect(heroJoin).toHaveAttribute('rel', 'noopener noreferrer')
     expect(screen.getAllByText(ABC_CHECKOUT_NOTE).length).toBeGreaterThan(0)

@@ -1,7 +1,7 @@
 import { ArrowUpRight } from 'lucide-react'
 import { GrainOverlay, SectionReveal } from '@/components/motion'
 import { TrackedPlanLink } from '@/components/tracked-plan-link'
-import { ABC_CHECKOUT_NOTE, LOCATIONS } from '@/lib/locations'
+import { ABC_CHECKOUT_NOTE, joinUrl, LOCATIONS } from '@/lib/locations'
 import { PRICING_DISCOUNT_NOTE } from '@/lib/membership-options'
 import { SECTION_IDS } from '@/lib/sections'
 
@@ -32,7 +32,7 @@ export function McAllenPricing() {
           {mcallen.membershipOptions.map((option) => (
             <TrackedPlanLink
               key={option.slug}
-              href={mcallen.joinLink}
+              href={joinUrl('mcallen', option.slug)}
               location="mcallen"
               plan={option.name}
               target="_blank"

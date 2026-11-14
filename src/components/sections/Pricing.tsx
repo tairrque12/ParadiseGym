@@ -8,7 +8,7 @@ import {
   PRICING_FOOTER_NOTE,
   type MembershipOption,
 } from '@/lib/membership-options'
-import { ABC_CHECKOUT_NOTE, LOCATIONS } from '@/lib/locations'
+import { ABC_CHECKOUT_NOTE, joinUrl, LOCATIONS } from '@/lib/locations'
 import { SECTION_IDS } from '@/lib/sections'
 import { cn } from '@/lib/utils'
 
@@ -22,16 +22,10 @@ function CategoryHeader({ label }: { label: string }) {
   )
 }
 
-function PricingRow({
-  option,
-  joinLink,
-}: {
-  option: MembershipOption
-  joinLink: string
-}) {
+function PricingRow({ option }: { option: MembershipOption }) {
   return (
     <TrackedPlanLink
-      href={joinLink}
+      href={joinUrl('harlingen', option.slug)}
       location="harlingen"
       plan={option.name}
       target="_blank"
@@ -77,18 +71,16 @@ function PricingRow({
 function PricingColumn({
   label,
   options,
-  joinLink,
 }: {
   label: string
   options: readonly MembershipOption[]
-  joinLink: string
 }) {
   return (
     <div className="flex flex-col border-t border-white/15 pt-6">
       <CategoryHeader label={label} />
       <div className="flex flex-col">
         {options.map((option) => (
-          <PricingRow key={option.slug} option={option} joinLink={joinLink} />
+          <PricingRow key={option.slug} option={option} />
         ))}
       </div>
     </div>
@@ -125,16 +117,8 @@ export function Pricing() {
         </SectionReveal>
 
         <div className="relative z-10 grid gap-10 lg:grid-cols-2 lg:gap-12">
-          <PricingColumn
-            label="Recurring"
-            options={recurring}
-            joinLink={harlingen.joinLink}
-          />
-          <PricingColumn
-            label="Single Payment"
-            options={singlePayment}
-            joinLink={harlingen.joinLink}
-          />
+          <PricingColumn label="Recurring" options={recurring} />
+          <PricingColumn label="Single Payment" options={singlePayment} />
         </div>
 
         <SectionReveal className="mt-10 border border-neon/20 bg-carbon/70 px-5 py-4 sm:px-6">

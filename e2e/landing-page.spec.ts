@@ -1,8 +1,5 @@
 import { test, expect, type Locator, type Page } from '@playwright/test'
 
-const MEMBERSHIP_JOIN_URL =
-  'https://onlinejoin.abcfitness.com/signup/plan?club=32265'
-
 // The "Get Directions" button also carries the city name, so scope to the switcher.
 function locationLink(page: Page, name: RegExp) {
   return page
@@ -128,7 +125,11 @@ test.describe('Landing page', () => {
       const count = await links.count()
       for (let index = 0; index < count; index++) {
         const link = links.nth(index)
-        await expect(link).toHaveAttribute('href', MEMBERSHIP_JOIN_URL)
+        const href = await link.getAttribute('href')
+        expect(href).toContain('club=32265')
+        expect(href).toContain('utm_source=website')
+        expect(href).toContain('utm_medium=cta')
+        expect(href).toContain('utm_campaign=harlingen-')
         await expect(link).toHaveAttribute('target', '_blank')
         await expect(link).toHaveAttribute('rel', 'noopener noreferrer')
       }

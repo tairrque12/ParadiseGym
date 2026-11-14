@@ -44,6 +44,16 @@ export const TOUR_FALLBACK_LABEL = 'Not ready? Book a free tour'
 export const ABC_CHECKOUT_NOTE =
   'Opens ABC Fitness secure checkout in a new tab.'
 
+/** ABC kept these query params from the plan step through the profile step on 14 Nov 2026. */
+export function joinUrl(locationId: LocationId, campaign: string): string {
+  const base = locationId === 'mcallen' ? MCALLEN_JOIN_URL : HARLINGEN_JOIN_URL
+  const url = new URL(base)
+  url.searchParams.set('utm_source', 'website')
+  url.searchParams.set('utm_medium', 'cta')
+  url.searchParams.set('utm_campaign', `${locationId}-${campaign}`)
+  return url.toString()
+}
+
 export const MCALLEN_PATH = '/mcallen'
 
 function optionsForSlugs(

@@ -6,7 +6,12 @@ import { Wordmark } from '@/components/Logo'
 import { NeonButton } from '@/components/NeonButton'
 import { GrainOverlay } from '@/components/motion'
 import { useModal } from '@/context/modal-context'
-import { ABC_CHECKOUT_NOTE, LOCATIONS, TOUR_FALLBACK_LABEL } from '@/lib/locations'
+import {
+  ABC_CHECKOUT_NOTE,
+  joinUrl,
+  LOCATIONS,
+  TOUR_FALLBACK_LABEL,
+} from '@/lib/locations'
 import { usePrefersReducedMotion } from '@/hooks/use-prefers-reduced-motion'
 
 export function Hero() {
@@ -41,7 +46,7 @@ export function Hero() {
           <div className="mt-8 flex flex-col items-start gap-4 sm:mt-10">
             <div className="flex flex-col items-start gap-2">
               <NeonButton
-                href={harlingen.joinLink}
+                href={joinUrl('harlingen', 'hero')}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="normal-case tracking-normal"

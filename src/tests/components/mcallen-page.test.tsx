@@ -1,9 +1,9 @@
 import '@/tests/mocks/react'
 import { describe, it, expect, vi } from 'vitest'
 import { render, screen, within } from '@testing-library/react'
-import McAllenPage from '@/app/mcallen/page'
+import McAllenPage, { metadata } from '@/app/mcallen/page'
 import { Providers } from '@/components/providers'
-import { LOCATIONS, MCALLEN_JOIN_URL } from '@/lib/locations'
+import { joinUrl, LOCATIONS } from '@/lib/locations'
 
 vi.mock('next/navigation', () => ({ usePathname: () => '/mcallen' }))
 
@@ -16,6 +16,12 @@ function renderMcAllen() {
 }
 
 describe('McAllen page', () => {
+  it('keeps the SEO title and description for McAllen', () => {
+    expect(metadata.title).toBe('Paradise Gym McAllen')
+    expect(metadata.description).toMatch(/Official Grand Opening Date — Coming Soon/i)
+    expect(metadata.description).not.toMatch(/sq ft/i)
+  })
+
   it('leads with a McAllen-specific hero', () => {
     renderMcAllen()
 
@@ -60,13 +66,13 @@ describe('McAllen page', () => {
     const links = pricing.getAllByRole('link')
     expect(links).toHaveLength(3)
 
-    for (const [name, price] of [
-      [/1 year paid in full/i, '$499.99'],
-      [/12 month contract/i, '$39.99/mo'],
-      [/month to month/i, '$49.99/mo'],
+    for (const [name, price, slug] of [
+      [/1 year paid in full/i, '$499.99', '1_year_paid_in_full'],
+      [/12 month contract/i, '$39.99/mo', '12_month_contract'],
+      [/month to month/i, '$49.99/mo', 'month_to_month'],
     ] as const) {
       const link = pricing.getByRole('link', { name })
-      expect(link).toHaveAttribute('href', MCALLEN_JOIN_URL)
+      expect(link).toHaveAttribute('href', joinUrl('mcallen', slug))
       expect(link).toHaveAttribute('target', '_blank')
       expect(link).toHaveAttribute('rel', 'noopener noreferrer')
       expect(link).toHaveTextContent(price)
@@ -83,7 +89,7 @@ describe('McAllen page', () => {
 
     const heroJoin = screen.getByTestId('hero-join')
     expect(heroJoin).toHaveTextContent('Join founding membership')
-    expect(heroJoin).toHaveAttribute('href', MCALLEN_JOIN_URL)
+    expect(heroJoin).toHaveAttribute('href', joinUrl('mcallen', 'hero'))
     expect(heroJoin).toHaveAttribute('target', '_blank')
     expect(
       screen.getAllByRole('button', { name: /book a free tour/i }).length
