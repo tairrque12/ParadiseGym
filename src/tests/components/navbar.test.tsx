@@ -74,6 +74,38 @@ describe('Navbar', () => {
     expect(mcallenCta).toHaveAttribute('href', joinUrl('mcallen', 'header'))
   })
 
+  it('keeps McAllen section links on the McAllen page, including reviews', () => {
+    usePathname.mockReturnValue('/mcallen')
+
+    render(
+      <Providers>
+        <Navbar />
+      </Providers>
+    )
+
+    const desktop = within(screen.getByTestId('desktop-nav'))
+    expect(desktop.getByRole('link', { name: 'Amenities' })).toHaveAttribute(
+      'href',
+      '/mcallen#amenities'
+    )
+    expect(desktop.getByRole('link', { name: 'Pricing' })).toHaveAttribute(
+      'href',
+      '/mcallen#pricing'
+    )
+    expect(desktop.getByRole('link', { name: 'Reviews' })).toHaveAttribute(
+      'href',
+      '/mcallen#reviews'
+    )
+    expect(desktop.getByRole('link', { name: 'Hours' })).toHaveAttribute(
+      'href',
+      '/mcallen#hours'
+    )
+    expect(desktop.getByRole('link', { name: 'Gallery' })).toHaveAttribute(
+      'href',
+      '/gallery'
+    )
+  })
+
   it('marks the gallery link as current on the gallery page', () => {
     usePathname.mockReturnValue('/gallery')
 
