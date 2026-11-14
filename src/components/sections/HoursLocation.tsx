@@ -1,11 +1,11 @@
 'use client'
 
 import { useCallback } from 'react'
-import { MapPin } from 'lucide-react'
 import { LOCATIONS, type GymLocation } from '@/lib/locations'
 import { detectMapsPlatform, getMapsUrl } from '@/lib/maps'
 import { SECTION_IDS } from '@/lib/sections'
-import { GrainOverlay, SectionReveal } from '@/components/motion'
+import { SectionReveal } from '@/components/motion'
+import { SectionHeading } from '@/components/section-heading'
 
 export function HoursLocation({
   location = LOCATIONS.harlingen,
@@ -23,89 +23,63 @@ export function HoursLocation({
   return (
     <section
       id={SECTION_IDS.hours}
-      className="relative scroll-mt-40 bg-[#0d0d0d] py-20 sm:py-28"
+      className="relative scroll-mt-32 bg-carbon py-24 sm:py-28 lg:py-32"
     >
-      <div id={SECTION_IDS.tour} className="scroll-mt-40" aria-hidden />
-      <GrainOverlay />
+      <div id={SECTION_IDS.tour} className="scroll-mt-32" aria-hidden />
 
-      <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <SectionReveal className="mb-12">
-          <p className="text-sm uppercase tracking-[0.22em] text-neon">
-            Visit Us
-          </p>
-          <h2 className="mt-3 font-heading text-4xl uppercase tracking-tight text-white sm:text-5xl">
-            Hours &amp; Location
-          </h2>
-          <p className="mt-3 text-sm uppercase tracking-[0.16em] text-white/45">
-            {location.name} · {location.sqft.toLocaleString('en-US')} sq ft
-          </p>
+      <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-10">
+        <SectionReveal>
+          <SectionHeading
+            eyebrow="Visit"
+            title="Hours & location"
+            description={`${location.name} · ${location.sqft.toLocaleString('en-US')} sq ft`}
+          />
         </SectionReveal>
 
-        <div className="grid gap-10 lg:grid-cols-2 lg:gap-16">
+        <div className="mt-14 grid gap-14 lg:mt-16 lg:grid-cols-2 lg:gap-24">
           <SectionReveal>
-            <h3 className="mb-6 text-sm uppercase tracking-[0.18em] text-white/50">
-              Gym Hours
-            </h3>
+            <h3 className="text-sm font-medium text-text-2">Gym hours</h3>
             {hours ? (
-              <table className="w-full text-left">
-                <tbody>
-                  {hours.map((row) => (
-                    <tr
-                      key={row.days}
-                      className="border-b border-white/10 last:border-0"
-                    >
-                      <th
-                        scope="row"
-                        className="py-4 pr-6 font-normal text-white/80"
-                      >
-                        {row.days}
-                      </th>
-                      <td className="py-4 font-heading text-lg tracking-tight text-white">
-                        {row.time}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+              <dl className="mt-5">
+                {hours.map((row) => (
+                  <div
+                    key={row.days}
+                    className="grid grid-cols-[minmax(7.5rem,1fr)_auto] items-baseline gap-6 border-b border-white/10 py-4"
+                  >
+                    <dt className="text-base text-text-2">{row.days}</dt>
+                    <dd className="text-right text-base font-medium tabular-nums text-white">
+                      {row.time}
+                    </dd>
+                  </div>
+                ))}
+              </dl>
             ) : (
-              <div className="border border-white/10 bg-carbon p-6">
-                <p className="font-heading text-xl uppercase tracking-tight text-white">
-                  Hours coming soon
-                </p>
-                <p className="mt-2 text-sm leading-relaxed text-white/65">
+              <div className="mt-5 border border-white/10 p-6">
+                <p className="text-xl font-medium tracking-tight text-white">Hours coming soon</p>
+                <p className="mt-2 text-sm leading-relaxed text-text-2">
                   Full schedule announced closer to opening day.
                 </p>
               </div>
             )}
           </SectionReveal>
 
-          <SectionReveal delay={0.1}>
-            <h3 className="mb-6 text-sm uppercase tracking-[0.18em] text-white/50">
-              Find Us
-            </h3>
+          <SectionReveal delay={0.08}>
+            <h3 className="text-sm font-medium text-text-2">Find us</h3>
+            <p className="mt-5 max-w-sm text-xl font-medium leading-snug tracking-tight text-white sm:text-2xl">
+              {address}
+            </p>
             <button
               type="button"
               onClick={openMaps}
-              className="group flex w-full items-start gap-4 border border-white/10 bg-carbon p-6 text-left transition-colors hover:border-neon/50"
+              className="mt-5 inline-flex min-h-11 items-center text-sm font-medium text-white underline decoration-white/30 underline-offset-4 transition-colors duration-200 hover:decoration-neon focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neon/70 motion-reduce:transition-none"
             >
-              <MapPin
-                className="mt-1 h-5 w-5 shrink-0 text-neon"
-                aria-hidden
-              />
-              <span>
-                <span className="block font-heading text-xl uppercase tracking-tight text-white group-hover:text-neon">
-                  Get Directions
-                </span>
-                <span className="mt-2 block text-sm leading-relaxed text-white/65">
-                  {address}
-                </span>
-              </span>
+              Get directions
             </button>
 
-            <div className="relative mt-6 aspect-[16/10] overflow-hidden border border-white/10 bg-carbon">
+            <div className="relative mt-8 aspect-[16/10] overflow-hidden ring-1 ring-white/15">
               <iframe
                 title={`Paradise Gym ${location.name} location map`}
-                className="h-full w-full grayscale invert opacity-80"
+                className="h-full w-full [filter:grayscale(1)_invert(0.9)_contrast(1.05)_brightness(1.55)]"
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
                 src={`https://maps.google.com/maps?q=${encodeURIComponent(address)}&output=embed`}

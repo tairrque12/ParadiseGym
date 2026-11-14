@@ -2,7 +2,8 @@
 
 import Image from 'next/image'
 import { GALLERY_IMAGES, GALLERY_IMAGE_SIZES } from '@/lib/gallery'
-import { GrainOverlay, SectionReveal } from '@/components/motion'
+import { SectionReveal } from '@/components/motion'
+import { SectionHeading } from '@/components/section-heading'
 import { TourPrompt } from '@/components/tour-prompt'
 import { cn } from '@/lib/utils'
 
@@ -20,7 +21,7 @@ function GalleryImage({
   return (
     <figure
       className={cn(
-        'group relative overflow-hidden border border-white/10 bg-[#111111]',
+        'group relative overflow-hidden bg-surface ring-1 ring-white/10',
         span === 'wide' && 'sm:col-span-2',
         span === 'tall' && 'sm:row-span-2'
       )}
@@ -36,7 +37,7 @@ function GalleryImage({
           alt={alt}
           fill
           priority={priority}
-          className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+          className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03] motion-reduce:transition-none motion-reduce:group-hover:scale-100"
           sizes={GALLERY_IMAGE_SIZES}
         />
         <div className="absolute inset-0 bg-gradient-to-t from-carbon/50 via-transparent to-transparent opacity-80 transition-opacity group-hover:opacity-100" />
@@ -47,18 +48,15 @@ function GalleryImage({
 
 export function Gallery() {
   return (
-    <section className="relative scroll-mt-40 overflow-hidden bg-carbon py-20 sm:py-28">
-      <GrainOverlay />
-      <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <SectionReveal className="mb-10 max-w-2xl md:mb-14">
-          <p className="text-sm uppercase tracking-[0.22em] text-neon">Inside Paradise</p>
-          <h1 className="mt-3 font-heading text-4xl uppercase tracking-tight text-white sm:text-5xl lg:text-6xl">
-            The Gym
-          </h1>
-          <p className="mt-4 text-sm leading-relaxed text-white/65 sm:text-base">
-            7,500 sq ft of custom-built equipment, neon-lit training space, and a floor
-            built for lifters who show up to work.
-          </p>
+    <section className="relative scroll-mt-32 overflow-hidden bg-carbon py-24 sm:py-28 lg:py-32">
+      <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-10">
+        <SectionReveal className="mb-12 max-w-2xl lg:mb-16">
+          <SectionHeading
+            titleAs="h1"
+            eyebrow="Inside Paradise"
+            title="The gym"
+            description="7,500 sq ft of custom-built equipment, neon-lit training space, and a floor built for lifters who show up to work."
+          />
         </SectionReveal>
 
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 sm:gap-5">

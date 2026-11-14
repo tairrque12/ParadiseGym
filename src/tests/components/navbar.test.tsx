@@ -50,7 +50,7 @@ describe('Navbar', () => {
     expect(harlingenCta).toHaveAttribute('href', joinUrl('harlingen', 'header'))
     expect(harlingenCta).toHaveAttribute('target', '_blank')
     expect(harlingenCta).toHaveAttribute('rel', 'noopener noreferrer')
-    expect(screen.getByTestId('header-tour')).toHaveTextContent('Book a tour')
+    expect(screen.getByTestId('header-tour')).toHaveTextContent('Book a Tour')
     expect(screen.getByTestId('header-tour')).not.toHaveClass('bg-neon')
     expect(screen.getByTestId('mobile-header-join')).toHaveTextContent('Join')
     expect(screen.getByTestId('mobile-header-join')).toHaveAttribute(
@@ -182,7 +182,7 @@ describe('Navbar', () => {
     let onChange: ((event: { matches: boolean }) => void) | undefined
     const desktopMedia = {
       matches: false,
-      media: '(min-width: 1280px)',
+      media: '(min-width: 1024px)',
       addEventListener: vi.fn(
         (event: string, callback: (event: { matches: boolean }) => void) => {
           if (event === 'change') onChange = callback
@@ -192,7 +192,7 @@ describe('Navbar', () => {
     }
     const originalMatchMedia = window.matchMedia
     window.matchMedia = vi.fn((query: string) => {
-      if (query === '(min-width: 1280px)') {
+      if (query === '(min-width: 1024px)') {
         return desktopMedia as unknown as MediaQueryList
       }
       return {

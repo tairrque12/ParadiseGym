@@ -1,8 +1,8 @@
 'use client'
 
-import Image from 'next/image'
 import { NeonButton } from '@/components/NeonButton'
-import { GrainOverlay } from '@/components/motion'
+import { HeroFrame } from '@/components/hero-frame'
+import { RevealOnMount } from '@/components/motion'
 import { useModal } from '@/context/modal-context'
 import {
   ABC_CHECKOUT_NOTE,
@@ -17,72 +17,54 @@ export function McAllenHero() {
   const mcallen = LOCATIONS.mcallen
 
   return (
-    <section className="relative isolate z-0 overflow-hidden bg-carbon">
-      <Image
-        src="/images/hero-gym-floor.png"
-        alt="Paradise Gym training floor with neon green equipment and lighting"
-        fill
-        priority
-        className="object-cover object-[center_30%]"
-        sizes="100vw"
-      />
+    <HeroFrame>
+      <RevealOnMount className="max-w-xl">
+        <p className="flex items-center gap-2 text-xs font-medium tracking-[0.08em] text-white/75">
+          <span aria-hidden className="size-1.5 shrink-0 rounded-full bg-neon" />
+          Pre-Sale Now Open
+        </p>
 
-      <div className="absolute inset-0 bg-gradient-to-b from-carbon/60 via-carbon/40 to-carbon/95" />
-      <GrainOverlay />
+        <h1 className="mt-4 font-sans text-[clamp(2.75rem,5.4vw,4.5rem)] font-medium leading-[1.02] tracking-[-0.03em] text-white">
+          Paradise Gym
+          <span className="block">McAllen</span>
+        </h1>
 
-      <div className="relative mx-auto max-w-7xl px-4 pb-16 pt-32 sm:px-6 sm:pb-20 sm:pt-40 lg:px-8">
-        <div className="max-w-4xl">
-          <span className="inline-flex items-center rounded-full bg-neon px-3 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-carbon">
-            Pre-Sale Now Open
-          </span>
+        <p className="mt-5 max-w-md text-base leading-relaxed text-white/80 sm:text-lg">
+          {mcallen.sqft.toLocaleString('en-US')} sq ft of custom-built training,
+          coming to {mcallen.address.split(',')[1]?.trim()}.
+        </p>
 
-          <h1 className="mt-5 font-heading text-[clamp(2.5rem,10vw,6rem)] uppercase leading-[0.9] tracking-[0.04em] text-white">
-            Paradise Gym
-            <span className="block text-neon">McAllen</span>
-          </h1>
+        <p
+          data-testid="grand-opening-note"
+          className="mt-3 max-w-md text-sm leading-relaxed text-white/55"
+        >
+          {mcallen.grandOpeningNote}
+        </p>
 
-          <p className="mt-4 max-w-xl text-lg text-white/75 sm:mt-6 sm:text-xl">
-            {mcallen.sqft.toLocaleString('en-US')} sq ft of custom-built
-            training, coming to {mcallen.address.split(',')[1]?.trim()}.
-          </p>
-
-          <p
-            data-testid="grand-opening-note"
-            className="mt-6 max-w-[17rem] font-heading text-lg uppercase leading-snug tracking-tight text-neon sm:max-w-none sm:text-3xl lg:text-4xl"
-          >
-            {mcallen.grandOpeningNote}
-          </p>
-
-          <div data-hero-cta="" className="mt-8 flex flex-col items-start gap-4 sm:mt-10">
-            <div className="flex flex-col items-start gap-2">
-              <NeonButton
-                href={joinUrl('mcallen', 'hero')}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="normal-case tracking-normal"
-                testId="hero-join"
-                membership={{ location: 'mcallen', placement: 'hero' }}
-              >
-                {mcallen.ctaLabel}
-              </NeonButton>
-              <p className="max-w-sm text-sm text-white/80">{ABC_CHECKOUT_NOTE}</p>
-            </div>
+        <div data-hero-cta="" className="mt-8 flex flex-col items-start gap-3">
+          <div className="flex flex-wrap items-center gap-3">
             <NeonButton
-              onClick={() => openTourModal('hero')}
-              variant="outline"
-              className="normal-case tracking-normal"
+              href={joinUrl('mcallen', 'hero')}
+              target="_blank"
+              rel="noopener noreferrer"
+              testId="hero-join"
+              membership={{ location: 'mcallen', placement: 'hero' }}
             >
+              {mcallen.ctaLabel}
+            </NeonButton>
+            <NeonButton variant="outline" onClick={() => openTourModal('hero')}>
               {TOUR_FALLBACK_LABEL}
             </NeonButton>
-            <a
-              href={`#${SECTION_IDS.pricing}`}
-              className="text-sm text-white/80 underline-offset-4 hover:underline"
-            >
-              View pre-sale pricing
-            </a>
           </div>
+          <a
+            href={`#${SECTION_IDS.pricing}`}
+            className="inline-flex min-h-11 items-center text-sm text-white/75 underline decoration-white/25 underline-offset-4 transition-colors duration-200 hover:text-white hover:decoration-white"
+          >
+            View pre-sale pricing
+          </a>
+          <p className="max-w-sm text-xs leading-relaxed text-white/75">{ABC_CHECKOUT_NOTE}</p>
         </div>
-      </div>
-    </section>
+      </RevealOnMount>
+    </HeroFrame>
   )
 }

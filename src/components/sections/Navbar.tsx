@@ -12,7 +12,6 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { Menu, Phone, X } from 'lucide-react'
 import { Logo } from '@/components/Logo'
-import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import {
   NavigationMenu,
@@ -55,7 +54,7 @@ import { GALLERY_PATH, NAV_LINKS } from '@/lib/sections'
 import { trackJoinOnlineClick, type JoinPlacement } from '@/lib/analytics'
 import { cn } from '@/lib/utils'
 
-const DESKTOP_NAV_QUERY = '(min-width: 1280px)'
+const DESKTOP_NAV_QUERY = '(min-width: 1024px)'
 
 const HEADER_LINKS = NAV_LINKS.filter((link) => link.href !== GALLERY_PATH)
 
@@ -112,7 +111,7 @@ function LocationToggle({
     <ToggleGroup
       value={[activeId]}
       className={cn(
-        'rounded-lg border border-line-strong bg-background p-0.5',
+        'rounded-none border border-white/15 bg-transparent p-0.5',
         className
       )}
       render={<nav aria-label="Gym locations" />}
@@ -122,8 +121,8 @@ function LocationToggle({
         nativeButton={false}
         aria-current={activeId === 'harlingen' ? 'page' : undefined}
         className={cn(
-          'rounded-md',
-          activeId === 'harlingen' && 'bg-white text-carbon'
+          'rounded-none px-2.5 text-[13px] font-medium tracking-normal text-white/75 transition-colors duration-200 hover:text-white motion-reduce:transition-none',
+          activeId === 'harlingen' && 'bg-white text-carbon hover:text-carbon'
         )}
         render={<Link href="/" onClick={onNavigate} />}
       >
@@ -134,21 +133,12 @@ function LocationToggle({
         nativeButton={false}
         aria-current={activeId === 'mcallen' ? 'page' : undefined}
         className={cn(
-          'gap-1.5 rounded-md',
-          activeId === 'mcallen' && 'bg-white text-carbon'
+          'rounded-none px-2.5 text-[13px] font-medium tracking-normal text-white/75 transition-colors duration-200 hover:text-white motion-reduce:transition-none',
+          activeId === 'mcallen' && 'bg-white text-carbon hover:text-carbon'
         )}
         render={<Link href={MCALLEN_PATH} onClick={onNavigate} />}
       >
         McAllen
-        <Badge
-          variant="outline"
-          className={cn(
-            'border-current',
-            activeId === 'mcallen' ? 'text-carbon' : 'text-white'
-          )}
-        >
-          Pre-sale
-        </Badge>
       </Toggle>
     </ToggleGroup>
   )
@@ -204,13 +194,13 @@ export function Navbar() {
   return (
     <header
       ref={headerRef}
-      className="fixed inset-x-0 top-0 z-50 h-[60px] border-b border-border bg-background/90 text-white backdrop-blur xl:h-[72px]"
+      className="fixed inset-x-0 top-0 z-50 h-[60px] border-b border-white/10 bg-carbon/85 text-white backdrop-blur-xl xl:h-[72px]"
     >
       <div className="mx-auto flex h-full max-w-7xl flex-nowrap items-center gap-2 px-3 xl:gap-3 xl:px-6">
         <Link
           href="/"
           aria-label="Paradise Gym home"
-          className="inline-flex size-11 shrink-0 items-center justify-center rounded-md"
+          className="inline-flex size-11 shrink-0 items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neon/70"
         >
           <Logo compact />
         </Link>
@@ -218,7 +208,7 @@ export function Navbar() {
         <NavigationMenu
           aria-label="Main"
           data-testid="desktop-nav"
-          className="ml-2 hidden min-w-0 xl:flex"
+          className="ml-2 hidden min-w-0 lg:flex"
         >
           <NavigationMenuList className="gap-1">
             {HEADER_LINKS.map((link) => {
@@ -230,8 +220,8 @@ export function Navbar() {
                     href={href}
                     active={active}
                     className={cn(
-                      active &&
-                        'underline decoration-neon decoration-2 underline-offset-8'
+                      'px-2 text-sm font-medium tracking-normal text-white/85 transition-colors duration-200 hover:text-white motion-reduce:transition-none',
+                      active && 'text-white shadow-[inset_0_-1px_0_0_rgba(255,255,255,0.85)]'
                     )}
                     onClick={(event) => onSectionClick(event, href)}
                   >
@@ -246,7 +236,7 @@ export function Navbar() {
         <div className="ml-auto flex shrink-0 flex-nowrap items-center gap-2">
           <LocationToggle
             activeId={location.id}
-            className="hidden xl:inline-flex"
+            className="hidden lg:inline-flex"
           />
 
           <TooltipProvider>
@@ -254,14 +244,16 @@ export function Navbar() {
               <TooltipTrigger
                 data-testid="header-phone"
                 aria-label="Call"
-                className="hidden size-11 items-center justify-center rounded-md text-white hover:bg-white/5 xl:inline-flex"
+                className="hidden size-11 items-center justify-center text-white/80 transition-colors duration-200 hover:bg-white/5 hover:text-white lg:inline-flex motion-reduce:transition-none"
                 render={<a href={CONTACT.phoneHref} />}
               >
                 <Phone className="size-5" />
               </TooltipTrigger>
               <TooltipPortal>
                 <TooltipPositioner sideOffset={8}>
-                  <TooltipPopup>{CONTACT.phone}</TooltipPopup>
+                  <TooltipPopup className="whitespace-nowrap tracking-normal">
+                    {CONTACT.phone}
+                  </TooltipPopup>
                 </TooltipPositioner>
               </TooltipPortal>
             </Tooltip>
@@ -270,17 +262,17 @@ export function Navbar() {
           <Button
             variant="outline"
             data-testid="header-tour"
-            className="hidden h-11 border-line-strong bg-transparent px-3 text-white hover:bg-white/5 xl:inline-flex"
+            className="hidden h-11 border-white/20 bg-transparent px-3 text-sm font-medium tracking-normal text-white hover:border-white/50 hover:bg-white/5 lg:inline-flex"
             onClick={() => openTour('header')}
           >
-            Book a tour
+            Book a Tour
           </Button>
 
           <Button
             size="sm"
             nativeButton={false}
             data-testid="header-cta"
-            className="hidden h-11 bg-neon px-3 text-carbon hover:bg-white xl:inline-flex"
+            className="hidden h-11 bg-neon px-3.5 text-sm font-semibold tracking-normal text-carbon hover:bg-white lg:inline-flex"
             render={
               <a
                 href={joinUrl(location.id, 'header')}
@@ -298,7 +290,7 @@ export function Navbar() {
               size="sm"
               nativeButton={false}
               data-testid="mobile-header-join"
-              className="h-11 bg-neon px-3 text-carbon hover:bg-white xl:hidden"
+              className="h-11 bg-neon px-3.5 text-[13px] font-semibold text-carbon hover:bg-white lg:hidden"
               render={
                 <a
                   href={joinUrl(location.id, 'header')}
@@ -313,7 +305,7 @@ export function Navbar() {
             <SheetTrigger
               data-testid="mobile-menu-button"
               aria-label="Open menu"
-              className="inline-flex size-11 items-center justify-center rounded-md text-white hover:bg-white/5 xl:hidden"
+              className="inline-flex size-11 items-center justify-center text-white transition-colors duration-200 hover:bg-white/5 lg:hidden motion-reduce:transition-none"
             >
               <Menu className="size-5" />
             </SheetTrigger>
@@ -340,7 +332,9 @@ export function Navbar() {
               </SheetHeader>
 
               <div className="flex min-h-0 flex-1 flex-col overflow-y-auto px-4 pb-4">
-                <p className="mt-4 text-sm text-white">McAllen pre-sale is open</p>
+                <p className="mt-8 text-xs font-medium tracking-normal text-text-3">
+                  McAllen pre-sale is open
+                </p>
                 <LocationToggle
                   activeId={location.id}
                   onNavigate={() => setMenuOpen(false)}
@@ -360,7 +354,7 @@ export function Navbar() {
                             aria-current={active ? 'page' : undefined}
                             onClick={(event) => onSectionClick(event, href)}
                             className={cn(
-                              'flex h-[52px] items-center border-l-2 px-4 text-lg text-white',
+                              'flex h-[52px] items-center border-l px-4 text-base font-medium text-white transition-colors duration-200 motion-reduce:transition-none',
                               active ? 'border-neon' : 'border-transparent'
                             )}
                           >

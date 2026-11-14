@@ -44,7 +44,7 @@ function NavigationMenuLink({
     <NavigationMenuPrimitive.Link
       data-slot="navigation-menu-link"
       className={cn(
-        "inline-flex h-11 items-center whitespace-nowrap px-2 text-sm font-medium text-white",
+        "inline-flex h-11 items-center whitespace-nowrap px-2.5 text-sm font-medium text-white/70 transition-colors duration-200 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neon/70 motion-reduce:transition-none",
         className
       )}
       {...props}
