@@ -25,11 +25,11 @@ export function HeroFrame({
   return (
     <section className="relative isolate min-h-[78svh] overflow-hidden bg-carbon md:min-h-[100svh]">
       <motion.div
-        className="absolute inset-x-0 -top-[8%] -bottom-[8%] will-change-transform"
+        className="absolute inset-x-0 -top-[10%] -bottom-[10%] will-change-transform md:-top-[26%] md:-bottom-[26%]"
         style={{ y }}
       >
         <motion.div
-          className="relative h-full w-full"
+          className="absolute inset-0 origin-center"
           initial={reducedMotion ? false : { scale: 1.15 }}
           animate={{ scale: 1 }}
           transition={
@@ -38,14 +38,14 @@ export function HeroFrame({
               : { duration: 1.6, ease: [0.16, 1, 0.3, 1] }
           }
         >
-        <Image
-          src="/images/hero-gym-floor.png"
-          alt="Paradise Gym training floor with neon green equipment and lighting"
-          fill
-          priority
-          className="object-cover object-[center_72%] md:object-[center_42%]"
-          sizes="100vw"
-        />
+          <Image
+            src="/images/hero-gym-floor.png"
+            alt="Paradise Gym training floor with neon green equipment and lighting"
+            fill
+            priority
+            className="object-cover object-[center_72%] md:object-[center_42%]"
+            sizes="100vw"
+          />
         </motion.div>
       </motion.div>
 

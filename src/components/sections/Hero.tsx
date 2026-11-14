@@ -3,7 +3,7 @@
 import { Wordmark } from '@/components/Logo'
 import { NeonButton } from '@/components/NeonButton'
 import { HeroFrame } from '@/components/hero-frame'
-import { NeonRule, RevealOnMount, Rise } from '@/components/motion'
+import { NeonRule, Rise } from '@/components/motion'
 import { useModal } from '@/context/modal-context'
 import { OpenTodayHours } from '@/components/open-today-hours'
 import {
@@ -23,9 +23,9 @@ export function Hero() {
 
   return (
     <HeroFrame>
-      <RevealOnMount className="max-w-xl">
+      <div className="max-w-xl">
         <p className="text-[13px] font-medium text-white/75">Harlingen</p>
-        <NeonRule className="mt-3" />
+        <NeonRule className="mt-3" trigger="mount" />
         <Wordmark className="mt-4" />
         <Rise delay={0.28}>
           <p className="mt-4 max-w-md text-[15px] leading-relaxed text-white/80 sm:text-lg">
@@ -40,30 +40,30 @@ export function Hero() {
           </ul>
         </Rise>
         <Rise delay={0.42}>
-        <div data-hero-cta="" className="mt-6 flex flex-col items-stretch gap-3 sm:items-start">
-          <div className="flex flex-col gap-2.5 sm:flex-row sm:flex-wrap sm:items-center">
-            <NeonButton
-              href={joinUrl('harlingen', 'hero')}
-              target="_blank"
-              rel="noopener noreferrer"
-              testId="hero-join"
-              membership={{ location: 'harlingen', placement: 'hero' }}
-              className="w-full sm:w-auto"
-            >
-              {harlingen.ctaLabel}
-            </NeonButton>
-            <NeonButton
-              variant="outline"
-              onClick={() => openTourModal('hero')}
-              className="w-full sm:w-auto"
-            >
-              {TOUR_FALLBACK_LABEL}
-            </NeonButton>
+          <div data-hero-cta="" className="mt-6 flex flex-col items-stretch gap-3 sm:items-start">
+            <div className="flex flex-col gap-2.5 sm:flex-row sm:flex-wrap sm:items-center">
+              <NeonButton
+                href={joinUrl('harlingen', 'hero')}
+                target="_blank"
+                rel="noopener noreferrer"
+                testId="hero-join"
+                membership={{ location: 'harlingen', placement: 'hero' }}
+                className="w-full sm:w-auto"
+              >
+                {harlingen.ctaLabel}
+              </NeonButton>
+              <NeonButton
+                variant="outline"
+                onClick={() => openTourModal('hero')}
+                className="w-full sm:w-auto"
+              >
+                {TOUR_FALLBACK_LABEL}
+              </NeonButton>
+            </div>
+            <p className="max-w-sm text-[13px] leading-relaxed text-white/70">{ABC_CHECKOUT_NOTE}</p>
           </div>
-          <p className="max-w-sm text-[13px] leading-relaxed text-white/70">{ABC_CHECKOUT_NOTE}</p>
-        </div>
         </Rise>
-      </RevealOnMount>
+      </div>
     </HeroFrame>
   )
 }

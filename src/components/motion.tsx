@@ -167,7 +167,9 @@ export function MaskedLine({
   const reducedMotion = usePrefersReducedMotion()
 
   return (
-    <span className={cn('block overflow-hidden', className)}>
+    <span
+      className={cn('block overflow-hidden pb-[0.12em] -mb-[0.12em]', className)}
+    >
       <motion.span
         className="block"
         initial={reducedMotion ? false : { y: '110%' }}
@@ -206,20 +208,28 @@ export function Rise({
 export function NeonRule({
   className,
   delay = 0,
+  trigger = 'view',
 }: {
   className?: string
   delay?: number
+  trigger?: 'mount' | 'view'
 }) {
   const reducedMotion = usePrefersReducedMotion()
+  const playback =
+    trigger === 'mount'
+      ? { animate: { scaleX: 1 } }
+      : {
+          whileInView: { scaleX: 1 },
+          viewport: { once: true, margin: '-40px' },
+        }
 
   return (
     <motion.span
       aria-hidden
       className={cn('block h-0.5 w-16 origin-left bg-neon', className)}
       initial={reducedMotion ? false : { scaleX: 0 }}
-      whileInView={{ scaleX: 1 }}
-      viewport={{ once: true, margin: '-40px' }}
       transition={enter(reducedMotion, delay, 0.6)}
+      {...playback}
     />
   )
 }

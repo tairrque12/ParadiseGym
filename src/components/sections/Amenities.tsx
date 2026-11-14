@@ -54,38 +54,36 @@ function AmenityRow({
   flip?: boolean
 }) {
   return (
-    <SectionReveal>
-      <article className="grid items-center gap-5 border-t border-white/10 py-8 lg:grid-cols-12 lg:gap-16 lg:py-16">
-        <ImageWipe
-          className={cn(
-            'group relative aspect-[16/10] bg-carbon ring-1 ring-white/10 lg:col-span-6 lg:aspect-[4/3]',
-            flip && 'lg:order-2'
-          )}
-        >
-          <Image
-            src={image.src}
-            alt={image.alt}
-            fill
-            className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.06] motion-reduce:transition-none motion-reduce:group-hover:scale-100"
-            sizes="(max-width: 1024px) 100vw, 42vw"
-          />
-        </ImageWipe>
-        <SlideReveal
-          from={flip ? 'left' : 'right'}
-          className={cn('lg:col-span-5', flip ? 'lg:order-1' : 'lg:col-start-8')}
-        >
-          <p className="text-xs font-medium tabular-nums text-text-3">{numeral}</p>
-          <h3 className="mt-2 font-sans text-[clamp(1.5rem,5vw,2rem)] font-medium leading-tight tracking-[-0.02em] text-white lg:text-[clamp(1.75rem,3vw,2.5rem)]">
-            {title}
-          </h3>
-          <p className="mt-4 max-w-md text-base leading-relaxed text-text-2">{description}</p>
-          <p className="mt-6 flex items-center gap-2 text-xs font-medium tracking-[0.08em] text-text-3">
-            <span aria-hidden className="size-1.5 rounded-full bg-neon" />
-            Included in Membership
-          </p>
-        </SlideReveal>
-      </article>
-    </SectionReveal>
+    <article className="grid items-center gap-5 border-t border-white/10 py-8 lg:grid-cols-12 lg:gap-16 lg:py-16">
+      <ImageWipe
+        className={cn(
+          'group relative aspect-[16/10] bg-carbon ring-1 ring-white/10 lg:col-span-6 lg:aspect-[4/3]',
+          flip && 'lg:order-2'
+        )}
+      >
+        <Image
+          src={image.src}
+          alt={image.alt}
+          fill
+          className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.06] motion-reduce:transition-none motion-reduce:group-hover:scale-100"
+          sizes="(max-width: 1024px) 100vw, 42vw"
+        />
+      </ImageWipe>
+      <SlideReveal
+        from={flip ? 'left' : 'right'}
+        className={cn('lg:col-span-5', flip ? 'lg:order-1' : 'lg:col-start-8')}
+      >
+        <p className="text-xs font-medium tabular-nums text-text-3">{numeral}</p>
+        <h3 className="mt-2 font-sans text-[clamp(1.5rem,5vw,2rem)] font-medium leading-tight tracking-[-0.02em] text-white lg:text-[clamp(1.75rem,3vw,2.5rem)]">
+          {title}
+        </h3>
+        <p className="mt-4 max-w-md text-base leading-relaxed text-text-2">{description}</p>
+        <p className="mt-6 flex items-center gap-2 text-xs font-medium tracking-[0.08em] text-text-3">
+          <span aria-hidden className="size-1.5 rounded-full bg-neon" />
+          Included in Membership
+        </p>
+      </SlideReveal>
+    </article>
   )
 }
 
