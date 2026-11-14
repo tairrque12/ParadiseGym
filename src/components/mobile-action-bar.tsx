@@ -31,7 +31,7 @@ export function MobileActionBar() {
         </a>
         <button
           type="button"
-          onClick={openTourModal}
+          onClick={() => openTourModal('sticky')}
           className="inline-flex min-h-11 flex-1 items-center justify-center border border-white/30 px-3 text-sm text-white"
         >
           Tour
