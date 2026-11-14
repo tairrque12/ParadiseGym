@@ -6,7 +6,6 @@ export const GALLERY_IMAGES = [
     src: '/images/gallery/gym-floor.png',
     alt: 'Paradise Gym weight floor with custom equipment and neon green accents',
     span: 'wide' as const,
-    priority: true,
   },
   {
     src: '/images/gallery/dumbbell-rack.png',

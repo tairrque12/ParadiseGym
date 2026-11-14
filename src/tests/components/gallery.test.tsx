@@ -29,7 +29,7 @@ describe('Gallery', () => {
     }
   })
 
-  it('loads the floor photo and the dumbbell rack immediately', () => {
+  it('loads the dumbbell rack immediately and lazy-loads the other photos', () => {
     render(
       <Providers>
         <Gallery />
