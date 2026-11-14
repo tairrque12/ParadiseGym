@@ -53,7 +53,7 @@ export function MobileActionBar() {
       data-testid="mobile-action-bar"
       hidden={!show}
       className={cn(
-        'fixed inset-x-0 bottom-0 z-40 border-t border-white/10 bg-carbon px-3 pt-2 pb-[max(0.75rem,env(safe-area-inset-bottom))] xl:hidden',
+        'fixed inset-x-0 bottom-0 z-40 border-t border-white/10 bg-carbon/95 px-3 pt-2.5 backdrop-blur-xl pb-[max(0.75rem,env(safe-area-inset-bottom))] lg:hidden',
         show && 'motion-safe:animate-mobile-bar-in motion-reduce:animate-none'
       )}
     >
@@ -62,14 +62,14 @@ export function MobileActionBar() {
           href={joinUrl(locationId, 'mobile_bar')}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex h-12 flex-1 items-center justify-center bg-neon px-3 text-sm font-semibold text-carbon"
+          className="inline-flex h-12 flex-1 items-center justify-center bg-neon px-3 text-sm font-semibold text-carbon transition-colors duration-200 hover:bg-white motion-reduce:transition-none"
         >
           Join
         </a>
         <button
           type="button"
           onClick={() => openTourModal('sticky')}
-          className="inline-flex h-12 flex-1 items-center justify-center border border-line-strong px-3 text-sm text-white"
+          className="inline-flex h-12 flex-1 items-center justify-center border border-white/20 px-3 text-sm font-medium text-white transition-colors duration-200 hover:border-white/50 hover:bg-white/5 motion-reduce:transition-none"
         >
           Tour
         </button>

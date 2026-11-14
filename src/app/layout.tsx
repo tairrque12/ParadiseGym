@@ -1,4 +1,4 @@
-import { Anton, Space_Grotesk } from 'next/font/google'
+import { Barlow_Condensed, Inter } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import { SpeedInsights } from '@vercel/speed-insights/next'
 import './globals.css'
@@ -6,15 +6,17 @@ import { cn } from '@/lib/utils'
 import { Providers } from '@/components/providers'
 import { rootMetadata } from '@/lib/seo'
 
-const anton = Anton({
+const display = Barlow_Condensed({
   subsets: ['latin'],
-  weight: '400',
+  weight: ['500', '600'],
   variable: '--font-heading',
+  display: 'swap',
 })
 
-const spaceGrotesk = Space_Grotesk({
+const sans = Inter({
   subsets: ['latin'],
   variable: '--font-sans',
+  display: 'swap',
 })
 
 export const metadata = rootMetadata
@@ -29,8 +31,8 @@ export default function RootLayout({
       <body
         className={cn(
           'min-h-screen bg-carbon font-sans text-white antialiased',
-          anton.variable,
-          spaceGrotesk.variable
+          display.variable,
+          sans.variable
         )}
       >
         <Providers>{children}</Providers>

@@ -10,7 +10,7 @@ export function TourPrompt({ children }: { children: ReactNode }) {
     <button
       type="button"
       onClick={() => openTourModal('section')}
-      className="inline-flex min-h-11 items-center justify-center border border-white/30 px-4 text-sm text-white transition-colors hover:border-white/60"
+      className="inline-flex min-h-11 items-center text-sm font-medium text-white underline decoration-white/30 underline-offset-4 transition-colors duration-200 hover:decoration-neon focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neon/70 motion-reduce:transition-none"
     >
       {children}
     </button>

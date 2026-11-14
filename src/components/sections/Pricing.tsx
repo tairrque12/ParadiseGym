@@ -1,7 +1,6 @@
-import {
-  GrainOverlay,
-  SectionReveal,
-} from '@/components/motion'
+import { ArrowUpRight } from 'lucide-react'
+import { SectionReveal } from '@/components/motion'
+import { SectionHeading } from '@/components/section-heading'
 import { TrackedPlanLink } from '@/components/tracked-plan-link'
 import {
   PRICING_DISCOUNT_NOTE,
@@ -18,21 +17,12 @@ import {
 import { SECTION_IDS } from '@/lib/sections'
 import { cn } from '@/lib/utils'
 
-function CategoryHeader({ label }: { label: string }) {
-  return (
-    <div className="mb-6 inline-flex items-center">
-      <span className="rounded-full border border-neon/40 bg-neon/10 px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.24em] text-neon">
-        {label}
-      </span>
-    </div>
-  )
-}
-
 function PricingRow({ option }: { option: MembershipOption }) {
   const feeSummary = feeDisclosureEnabled()
     ? planFeeSummary('harlingen', option.slug)
     : null
   const dueToday = feeSummary ? null : publicDueTodayLabel('harlingen', option.slug)
+  const recommended = option.slug === '12_month_contract'
 
   return (
     <TrackedPlanLink
@@ -42,49 +32,54 @@ function PricingRow({ option }: { option: MembershipOption }) {
       target="_blank"
       rel="noopener noreferrer"
       className={cn(
-        'group flex w-full items-center justify-between gap-4 border-t border-white/10 py-5 text-left transition-colors',
-        'hover:bg-white/[0.03] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neon/60'
+        'group flex flex-col gap-4 border border-white/10 bg-surface px-5 py-5 text-left transition-colors duration-200',
+        'hover:border-white/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neon/70 motion-reduce:transition-none',
+        'lg:grid lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center lg:gap-8 lg:px-6 lg:py-6',
+        recommended && 'border-l-[3px] border-l-neon'
       )}
     >
-      <div className="min-w-0 flex-1">
-        <span className="block font-medium text-white transition-colors group-hover:text-neon">
-          {option.name}
-          {option.slug === '12_month_contract' ? (
-            <span className="ml-2 inline-flex items-center rounded-full border border-white/40 px-2 py-0.5 align-middle text-xs font-medium normal-case tracking-normal text-white">
-              Recommended
+      <span className="min-w-0">
+        {recommended ? (
+          <span className="mb-2 block text-xs font-semibold text-neon">Recommended</span>
+        ) : null}
+        <span className="block text-base font-medium text-white">{option.name}</span>
+        {option.subLabel ? (
+          <span className="mt-1 block text-sm text-text-2">{option.subLabel}</span>
+        ) : null}
+      </span>
+
+      <span className="flex flex-col gap-3 lg:items-end">
+        <span>
+          <span className="block font-sans text-[2rem] font-medium leading-none tracking-tight text-white tabular-nums lg:text-[2.25rem]">
+            {option.price}
+          </span>
+          {option.priceNote ? (
+            <span className="mt-1.5 block text-sm text-text-2">{option.priceNote}</span>
+          ) : null}
+          {dueToday ? (
+            <span className="mt-2 block max-w-[16rem] text-sm leading-snug text-white lg:text-right">
+              {dueToday}
+            </span>
+          ) : null}
+          {feeSummary ? (
+            <span className="mt-2 block max-w-[16rem] text-sm leading-snug text-text-2 lg:text-right">
+              {feeSummary}
             </span>
           ) : null}
         </span>
-        {option.subLabel ? (
-          <span className="mt-1 block text-xs uppercase tracking-[0.14em] text-text-2">
-            {option.subLabel}
-          </span>
-        ) : null}
-      </div>
-
-      <div className="shrink-0 text-right">
-        <span className="font-heading text-xl font-bold tracking-tight text-neon sm:text-2xl">
-          {option.price}
+        <span
+          className={cn(
+            'inline-flex h-11 w-full items-center justify-center gap-1.5 px-4 text-sm font-semibold',
+            recommended
+              ? 'bg-neon text-carbon'
+              : 'border border-white/25 text-white',
+            'lg:w-auto lg:min-w-[7.5rem]'
+          )}
+        >
+          Join now
+          <ArrowUpRight className="size-4" aria-hidden />
         </span>
-        {option.priceNote ? (
-          <span className="ml-1 text-xs font-medium text-text-2">
-            {option.priceNote}
-          </span>
-        ) : null}
-        {dueToday ? (
-          <span className="mt-1 block max-w-[14rem] text-sm font-normal normal-case leading-snug tracking-normal text-white">
-            {dueToday}
-          </span>
-        ) : null}
-        {feeSummary ? (
-          <span className="mt-1 block max-w-[14rem] text-sm font-normal normal-case leading-snug tracking-normal text-white/80">
-            {feeSummary}
-          </span>
-        ) : null}
-        <span className="mt-1 block text-xs font-semibold uppercase tracking-[0.18em] text-text-2 transition-colors group-hover:text-neon">
-          Join Now
-        </span>
-      </div>
+      </span>
     </TrackedPlanLink>
   )
 }
@@ -97,9 +92,9 @@ function PricingColumn({
   options: readonly MembershipOption[]
 }) {
   return (
-    <div className="flex flex-col border-t border-white/15 pt-6">
-      <CategoryHeader label={label} />
-      <div className="flex flex-col">
+    <div>
+      <h3 className="text-sm font-medium text-text-2">{label}</h3>
+      <div className="mt-3 flex flex-col gap-3">
         {options.map((option) => (
           <PricingRow key={option.slug} option={option} />
         ))}
@@ -109,55 +104,39 @@ function PricingColumn({
 }
 
 export function Pricing() {
-  const harlingen = LOCATIONS.harlingen
-  const options = harlingen.membershipOptions
-
+  const options = LOCATIONS.harlingen.membershipOptions
   const recurring = options.filter((option) => option.category === 'recurring')
-  const singlePayment = options.filter(
-    (option) => option.category === 'single_payment'
-  )
+  const singlePayment = options.filter((option) => option.category === 'single_payment')
 
   return (
     <section
       id={SECTION_IDS.pricing}
-      className="relative isolate scroll-mt-40 overflow-hidden bg-[#0d0d0d] py-20 sm:py-28"
+      className="relative scroll-mt-24 bg-carbon py-16 sm:py-20 lg:py-28"
     >
-      <GrainOverlay />
-
-      <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <SectionReveal className="relative z-20 mb-12 bg-[#0d0d0d] md:mb-16">
-          <p className="text-sm uppercase tracking-[0.22em] text-neon">
-            Join The Floor
-          </p>
-          <h2
+      <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-10">
+        <SectionReveal>
+          <SectionHeading
             id="pricing-heading"
-            className="mt-3 max-w-3xl font-heading text-4xl uppercase tracking-tight text-white sm:text-5xl"
-          >
-            Membership Options
-          </h2>
+            eyebrow="Harlingen"
+            title="Membership options"
+            description="Monthly plans, or pay once and walk in."
+          />
         </SectionReveal>
 
-        <div className="relative z-10 grid gap-10 lg:grid-cols-2 lg:gap-12">
+        <div className="mt-10 grid items-start gap-10 lg:mt-14 lg:grid-cols-2 lg:gap-16">
           <PricingColumn label="Recurring" options={recurring} />
           <PricingColumn label="Single Payment" options={singlePayment} />
         </div>
 
-        <SectionReveal className="mt-10 border border-neon/20 bg-carbon/70 px-5 py-4 sm:px-6">
-          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-neon">
-            Discounts Available
-          </p>
-          <p className="mt-2 text-sm leading-relaxed text-white/70">
-            {PRICING_DISCOUNT_NOTE}
-          </p>
-        </SectionReveal>
-
-        <SectionReveal className="mt-6 space-y-2">
-          <p className="text-sm leading-relaxed text-white/80">{ABC_CHECKOUT_NOTE}</p>
-          <TourPrompt>Not ready to join? Book a free tour</TourPrompt>
-          <p className="text-sm leading-relaxed text-white/80">
-            {PRICING_FOOTER_NOTE}
-          </p>
-        </SectionReveal>
+        <div className="mt-10 grid gap-4 border-t border-white/10 pt-6 sm:grid-cols-[11rem_1fr] sm:gap-10">
+          <p className="text-xs font-medium text-text-3">Discounts available</p>
+          <div className="space-y-4">
+            <p className="max-w-xl text-base leading-relaxed text-text-2">{PRICING_DISCOUNT_NOTE}</p>
+            <p className="text-sm leading-relaxed text-text-2">{ABC_CHECKOUT_NOTE}</p>
+            <TourPrompt>Not ready to join? Book a free tour</TourPrompt>
+            <p className="text-sm leading-relaxed text-text-3">{PRICING_FOOTER_NOTE}</p>
+          </div>
+        </div>
       </div>
     </section>
   )

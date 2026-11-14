@@ -1,3 +1,4 @@
+import Image from 'next/image'
 import { cn } from '@/lib/utils'
 
 type LogoProps = {
@@ -6,31 +7,22 @@ type LogoProps = {
 }
 
 export function Logo({ compact = false, className }: LogoProps) {
-  if (compact) {
-    return (
-      <div className={cn('flex items-center gap-2', className)}>
-        <span
-          aria-hidden
-          className="flex h-9 w-9 items-center justify-center rounded-sm border border-neon/60 bg-carbon font-heading text-sm font-bold tracking-tight text-neon"
-        >
-          PG
-        </span>
-        <span className="sr-only">Paradise Gym</span>
-      </div>
-    )
-  }
-
   return (
     <div className={cn('flex items-center gap-3', className)}>
-      <span
-        aria-hidden
-        className="flex h-10 w-10 items-center justify-center rounded-sm border border-neon/50 bg-carbon font-heading text-base font-bold tracking-tight text-neon shadow-neon-sm"
-      >
-        PG
-      </span>
-      <span className="font-heading text-lg uppercase tracking-[0.12em] text-white sm:text-xl">
-        Paradise Gym
-      </span>
+      <Image
+        src="/images/paradise-mark.png"
+        alt="Paradise Gym"
+        width={327}
+        height={368}
+        className={cn('w-auto object-contain', compact ? 'h-8' : 'h-10')}
+      />
+      {compact ? (
+        <span className="sr-only">Paradise Gym</span>
+      ) : (
+        <span className="text-sm font-medium tracking-[0.01em] text-white">
+          Paradise Gym
+        </span>
+      )}
     </div>
   )
 }
@@ -39,11 +31,12 @@ export function Wordmark({ className }: { className?: string }) {
   return (
     <h1
       className={cn(
-        'font-heading text-[clamp(2.75rem,12vw,7rem)] uppercase leading-[0.9] tracking-[0.06em] text-white',
+        'font-heading text-[clamp(3.5rem,7vw,5.75rem)] font-medium leading-[0.92] tracking-[-0.025em] text-white',
         className
       )}
     >
-      Paradise Gym
+      Paradise
+      <span className="block">Gym</span>
     </h1>
   )
 }

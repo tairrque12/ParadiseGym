@@ -32,10 +32,10 @@ type TourRequestModalProps = {
 }
 
 const fieldClassName =
-  'h-11 rounded-sm border-white/15 bg-[#141414] text-white focus-visible:border-neon focus-visible:ring-neon/40'
+  'h-12 rounded-none border-white/15 bg-white/[0.03] px-3 text-white transition-colors duration-200 placeholder:text-white/30 focus-visible:border-neon/80 focus-visible:ring-1 focus-visible:ring-neon/40 motion-reduce:transition-none'
 
 const choiceClassName =
-  'inline-flex min-h-11 items-center justify-center rounded-sm border border-white/20 px-3 text-sm text-white aria-pressed:border-neon aria-pressed:bg-neon aria-pressed:text-carbon'
+  'inline-flex min-h-11 items-center justify-center border border-white/15 px-3 text-sm text-white/85 transition-colors duration-200 hover:border-white/40 aria-pressed:border-neon aria-pressed:bg-neon aria-pressed:text-carbon motion-reduce:transition-none'
 
 function locationCopy(location: LocationId) {
   if (location === 'mcallen') {
@@ -139,19 +139,19 @@ export function TourRequestModal({
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent
         showCloseButton={status !== 'submitting'}
-        className="max-h-[92svh] overflow-y-auto border border-white/10 bg-[#0A0A0A] text-white sm:max-h-none sm:max-w-lg sm:rounded-sm md:top-1/2 md:max-w-xl"
+        className="max-h-[92svh] overflow-y-auto sm:max-h-[min(92svh,44rem)] sm:max-w-lg md:max-w-xl"
       >
         {status === 'success' ? (
-          <div role="status" aria-live="polite" className="space-y-4 py-6 text-center">
-            <h2 className="font-heading text-3xl uppercase tracking-tight text-neon">
+          <div role="status" aria-live="polite" className="px-2 py-10 text-center">
+            <h2 className="text-[clamp(1.75rem,3vw,2.25rem)] font-medium tracking-[-0.02em] text-white">
               Tour requested
             </h2>
-            <p className="text-sm text-white/80">
+            <p className="mt-3 text-sm leading-relaxed text-text-2">
               We&apos;ll text you to confirm your tour.
             </p>
             <button
               type="button"
-              className="mt-2 inline-flex min-h-11 items-center justify-center bg-neon px-6 text-sm font-semibold text-carbon"
+              className="mt-8 inline-flex h-11 items-center justify-center bg-neon px-8 text-sm font-semibold text-carbon transition-colors duration-200 hover:bg-white motion-reduce:transition-none"
               onClick={() => onOpenChange(false)}
             >
               Done
@@ -159,20 +159,20 @@ export function TourRequestModal({
           </div>
         ) : (
           <>
-            <DialogHeader>
-              <DialogTitle className="font-heading text-3xl uppercase tracking-tight text-white">
+            <DialogHeader className="pr-10">
+              <DialogTitle className="text-[clamp(1.75rem,3vw,2.25rem)] font-medium tracking-[-0.02em] text-white">
                 Book a free tour
               </DialogTitle>
-              <DialogDescription className="text-white/70">
+              <DialogDescription className="text-sm leading-relaxed text-text-2">
                 {locationCopy(location)}
               </DialogDescription>
             </DialogHeader>
 
-            <form onSubmit={onSubmit} className="grid gap-4">
+            <form onSubmit={onSubmit} className="grid gap-5">
               <input type="hidden" {...register('location')} />
               <div className="grid gap-4 sm:grid-cols-2">
                 <div className="space-y-2">
-                  <Label htmlFor="tour-first-name">First name</Label>
+                  <Label htmlFor="tour-first-name" className="text-xs font-medium text-text-3">First name</Label>
                   <Input
                     id="tour-first-name"
                     className={fieldClassName}
@@ -184,7 +184,7 @@ export function TourRequestModal({
                   )}
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="tour-last-name">Last name</Label>
+                  <Label htmlFor="tour-last-name" className="text-xs font-medium text-text-3">Last name</Label>
                   <Input
                     id="tour-last-name"
                     className={fieldClassName}
@@ -198,7 +198,7 @@ export function TourRequestModal({
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="tour-phone">Phone</Label>
+                <Label htmlFor="tour-phone" className="text-xs font-medium text-text-3">Phone</Label>
                 <Input
                   id="tour-phone"
                   type="tel"
@@ -212,7 +212,7 @@ export function TourRequestModal({
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="tour-email">Email (optional)</Label>
+                <Label htmlFor="tour-email" className="text-xs font-medium text-text-3">Email (optional)</Label>
                 <Input
                   id="tour-email"
                   type="email"
@@ -230,7 +230,7 @@ export function TourRequestModal({
                 name="preferred_date"
                 render={({ field }) => (
                   <div className="space-y-2">
-                    <Label id="tour-preferred-day-label">Preferred day</Label>
+                    <Label id="tour-preferred-day-label" className="text-xs font-medium text-text-3">Preferred day</Label>
                     <div
                       role="group"
                       aria-labelledby="tour-preferred-day-label"
@@ -260,7 +260,7 @@ export function TourRequestModal({
                 name="preferred_time"
                 render={({ field }) => (
                   <div className="space-y-2">
-                    <Label id="tour-preferred-time-label">Preferred time</Label>
+                    <Label id="tour-preferred-time-label" className="text-xs font-medium text-text-3">Preferred time</Label>
                     {preferredDate ? (
                       <div
                         role="group"
@@ -269,7 +269,7 @@ export function TourRequestModal({
                       >
                         {timeSlotGroups.map((group) => (
                           <div key={group.label}>
-                            <p className="mb-2 text-sm text-white/70">{group.label}</p>
+                            <p className="mb-2 text-xs font-medium text-text-3">{group.label}</p>
                             <div className="flex flex-wrap gap-2">
                               {group.slots.map((slot) => (
                                 <button
@@ -296,7 +296,7 @@ export function TourRequestModal({
                 )}
               />
 
-              <p className="text-sm text-white/80">
+              <p className="text-sm leading-relaxed text-text-2">
                 We&apos;ll text you to confirm your tour.
               </p>
 
@@ -309,7 +309,7 @@ export function TourRequestModal({
               <button
                 type="submit"
                 disabled={status === 'submitting'}
-                className="mt-2 inline-flex min-h-11 w-full items-center justify-center bg-neon px-4 text-sm font-semibold text-carbon transition hover:shadow-neon disabled:cursor-not-allowed disabled:opacity-60"
+                className="mt-1 inline-flex h-12 w-full items-center justify-center bg-neon px-4 text-sm font-semibold text-carbon transition-colors duration-200 hover:bg-white disabled:cursor-not-allowed disabled:opacity-60 motion-reduce:transition-none"
               >
                 {status === 'submitting' ? 'Submitting...' : 'Request tour'}
               </button>

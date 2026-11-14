@@ -41,7 +41,7 @@ function TooltipPopup({
     <TooltipPrimitive.Popup
       data-slot="tooltip-popup"
       className={cn(
-        "rounded-md bg-white px-2 py-1 text-sm font-medium text-carbon",
+        "rounded-none bg-white px-2.5 py-1.5 text-xs font-medium tracking-wide text-carbon",
         className
       )}
       {...props}
