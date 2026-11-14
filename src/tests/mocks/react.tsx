@@ -4,10 +4,24 @@ vi.mock('next/image', () => ({
   default: function MockImage({
     src,
     alt,
+    priority,
+    loading,
     ...props
-  }: React.ImgHTMLAttributes<HTMLImageElement> & { src: string }) {
-    // eslint-disable-next-line @next/next/no-img-element
-    return <img src={src} alt={alt ?? ''} {...props} />
+  }: React.ImgHTMLAttributes<HTMLImageElement> & {
+    src: string
+    priority?: boolean
+  }) {
+    const eager = priority === true
+    return (
+      // eslint-disable-next-line @next/next/no-img-element
+      <img
+        src={src}
+        alt={alt ?? ''}
+        {...props}
+        fetchPriority={eager ? 'high' : undefined}
+        loading={eager ? undefined : (loading ?? 'lazy')}
+      />
+    )
   },
 }))
 

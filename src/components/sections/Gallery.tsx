@@ -9,10 +9,12 @@ function GalleryImage({
   src,
   alt,
   span,
+  priority = false,
 }: {
   src: string
   alt: string
   span: 'default' | 'wide' | 'tall'
+  priority?: boolean
 }) {
   return (
     <figure
@@ -32,6 +34,7 @@ function GalleryImage({
           src={src}
           alt={alt}
           fill
+          priority={priority}
           className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
         />
@@ -58,9 +61,14 @@ export function Gallery() {
         </SectionReveal>
 
         <StaggerContainer className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 sm:gap-5">
-          {GALLERY_IMAGES.map((image) => (
+          {GALLERY_IMAGES.map((image, index) => (
             <StaggerItem key={image.src}>
-              <GalleryImage src={image.src} alt={image.alt} span={image.span} />
+              <GalleryImage
+                src={image.src}
+                alt={image.alt}
+                span={image.span}
+                priority={index === 0}
+              />
             </StaggerItem>
           ))}
         </StaggerContainer>
