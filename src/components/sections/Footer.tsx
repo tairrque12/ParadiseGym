@@ -72,13 +72,13 @@ export function Footer({
                   href={CONTACT.phoneHref}
                   location={location.id}
                   placement="footer"
-                  className="hover:text-neon"
+                  className="inline-flex min-h-11 items-center hover:text-neon"
                 >
                   {CONTACT.phone}
                 </TrackedPhoneLink>
               </li>
               <li>
-                <span className="text-white/50">{location.name}: </span>
+                <span className="text-text-2">{location.name}: </span>
                 {location.address}
               </li>
             </ul>
@@ -92,7 +92,7 @@ export function Footer({
               <ul className="mt-4 space-y-2 text-sm text-white/70">
                 {location.hours.map((row) => (
                   <li key={row.days}>
-                    <span className="text-white/50">{row.days}: </span>
+                    <span className="text-text-2">{row.days}: </span>
                     {row.time}
                   </li>
                 ))}
@@ -114,7 +114,7 @@ export function Footer({
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Paradise Gym on Instagram"
-                className="text-white/70 transition-colors hover:text-neon"
+                className="inline-flex size-11 items-center justify-center text-white transition-colors hover:text-neon"
               >
                 <InstagramIcon className="h-5 w-5" />
               </Link>
@@ -123,7 +123,7 @@ export function Footer({
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Paradise Gym on TikTok"
-                className="text-white/70 transition-colors hover:text-neon"
+                className="inline-flex size-11 items-center justify-center text-white transition-colors hover:text-neon"
               >
                 <TikTokIcon className="h-5 w-5" />
               </Link>
@@ -133,7 +133,7 @@ export function Footer({
 
         <div className="my-10 h-px bg-white/10" role="separator" />
 
-        <p className="text-center text-xs text-white/40">
+        <p className="text-center text-xs text-text-2">
           &copy; {year} Paradise Gym. All rights reserved.
         </p>
       </div>

@@ -56,7 +56,7 @@ function PricingRow({ option }: { option: MembershipOption }) {
           ) : null}
         </span>
         {option.subLabel ? (
-          <span className="mt-1 block text-xs uppercase tracking-[0.14em] text-white/45">
+          <span className="mt-1 block text-xs uppercase tracking-[0.14em] text-text-2">
             {option.subLabel}
           </span>
         ) : null}
@@ -67,7 +67,7 @@ function PricingRow({ option }: { option: MembershipOption }) {
           {option.price}
         </span>
         {option.priceNote ? (
-          <span className="ml-1 text-xs font-medium text-white/50">
+          <span className="ml-1 text-xs font-medium text-text-2">
             {option.priceNote}
           </span>
         ) : null}
@@ -81,7 +81,7 @@ function PricingRow({ option }: { option: MembershipOption }) {
             {feeSummary}
           </span>
         ) : null}
-        <span className="mt-1 block text-[10px] font-semibold uppercase tracking-[0.18em] text-white/35 transition-colors group-hover:text-neon/70">
+        <span className="mt-1 block text-xs font-semibold uppercase tracking-[0.18em] text-text-2 transition-colors group-hover:text-neon">
           Join Now
         </span>
       </div>
