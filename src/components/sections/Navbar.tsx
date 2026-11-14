@@ -130,6 +130,13 @@ export function Navbar() {
   }, [])
 
   useEffect(() => {
+    document.body.style.overflow = menuOpen ? 'hidden' : ''
+    return () => {
+      document.body.style.overflow = ''
+    }
+  }, [menuOpen])
+
+  useEffect(() => {
     const media = window.matchMedia(DESKTOP_NAV_QUERY)
     const closeOnDesktop = () => {
       if (media.matches) setMenuOpen(false)
@@ -168,7 +175,7 @@ export function Navbar() {
             <Logo className="hidden sm:flex" />
           </Link>
 
-          <Sheet open={menuOpen} onOpenChange={setMenuOpen}>
+          <Sheet open={menuOpen} onOpenChange={setMenuOpen} modal={false}>
             <SheetTrigger
               className={cn(
                 'inline-flex h-10 w-10 items-center justify-center rounded-sm text-white transition-colors duration-200 hover:bg-white/5 xl:hidden motion-reduce:transition-none',

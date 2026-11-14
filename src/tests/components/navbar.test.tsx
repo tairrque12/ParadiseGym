@@ -201,6 +201,33 @@ describe('Navbar', () => {
     }
   })
 
+  it('lets the header location switcher dismiss the open menu', async () => {
+    const user = userEvent.setup()
+    render(
+      <Providers>
+        <Navbar />
+      </Providers>
+    )
+
+    const menuButton = screen.getByTestId('mobile-menu-button')
+    await user.click(menuButton)
+    await waitFor(() => {
+      expect(menuButton).toHaveAttribute('aria-expanded', 'true')
+    })
+
+    await user.click(
+      within(screen.getByRole('navigation', { name: /gym locations/i })).getByRole(
+        'link',
+        { name: /mcallen/i }
+      )
+    )
+
+    await waitFor(() => {
+      expect(menuButton).toHaveAttribute('aria-expanded', 'false')
+    })
+    expect(screen.queryByRole('navigation', { name: /mobile/i })).not.toBeInTheDocument()
+  })
+
   it('closes the mobile menu after a link is chosen', async () => {
     const user = userEvent.setup()
     render(
