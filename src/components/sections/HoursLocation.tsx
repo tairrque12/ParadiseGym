@@ -32,7 +32,11 @@ export function HoursLocation({
           <SectionHeading
             eyebrow="Visit"
             title="Hours & location"
-            description={`${location.name} · ${location.sqft.toLocaleString('en-US')} sq ft`}
+            description={
+              location.status === 'presale'
+                ? `${location.name} opens soon`
+                : location.name
+            }
           />
         </SectionReveal>
 
