@@ -60,21 +60,18 @@ describe('Landing page', () => {
     ).toBeInTheDocument()
   })
 
-  it('routes to the McAllen page from the marquee banner and the switcher', () => {
+  it('routes to the McAllen page from the header location toggle', () => {
     renderHome()
 
-    const announcement = screen.getByTestId('location-announcement')
-    expect(announcement).toHaveAttribute('href', MCALLEN_PATH)
-    expect(document.querySelector('header')?.firstElementChild).toBe(announcement)
-
+    expect(screen.queryByTestId('location-announcement')).not.toBeInTheDocument()
     const switcher = within(
-      screen.getByRole('navigation', { name: /gym locations/i })
+      screen.getAllByRole('group', { name: /gym locations/i })[0]
     )
-    expect(switcher.getByRole('link', { name: /mcallen/i })).toHaveAttribute(
+    expect(switcher.getByRole('button', { name: /mcallen/i })).toHaveAttribute(
       'href',
       MCALLEN_PATH
     )
-    expect(switcher.getByRole('link', { name: /harlingen/i })).toHaveAttribute(
+    expect(switcher.getByRole('button', { name: /harlingen/i })).toHaveAttribute(
       'aria-current',
       'page'
     )

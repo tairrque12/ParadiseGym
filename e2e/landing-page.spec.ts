@@ -3,8 +3,8 @@ import { test, expect, type Locator, type Page } from '@playwright/test'
 // The "Get Directions" button also carries the city name, so scope to the switcher.
 function locationLink(page: Page, name: RegExp) {
   return page
-    .getByRole('navigation', { name: /gym locations/i })
-    .getByRole('link', { name })
+    .getByRole('group', { name: /gym locations/i })
+    .getByRole('button', { name })
 }
 
 async function scrollToSelector(page: Page, selector: string) {
@@ -75,7 +75,7 @@ test.describe('Landing page', () => {
     await page.goto('/')
 
     await page
-      .getByRole('navigation', { name: 'Main' })
+      .getByRole('navigation', { name: 'Footer' })
       .getByRole('link', { name: 'Gallery', exact: true })
       .click()
 
@@ -191,8 +191,8 @@ test.describe('Landing page', () => {
       const heading = page.getByRole('heading', { name: /membership options/i })
       const recurringBadge = page.getByText('Recurring', { exact: true })
       const singlePaymentBadge = page.getByText('Single Payment', { exact: true })
-      const firstRecurringPrice = page.getByText('$39.99/mo')
-      const firstSinglePaymentPrice = page.getByText('$499.99')
+      const firstRecurringPrice = pricing.getByText('$39.99/mo')
+      const firstSinglePaymentPrice = pricing.getByText('$499.99')
 
       await expect(heading).toBeVisible()
       await expect(recurringBadge).toBeVisible()
@@ -350,9 +350,12 @@ test.describe('Landing page', () => {
     await page.goto('/')
 
     const bar = page.getByTestId('mobile-action-bar')
-    await expect(bar.getByRole('link', { name: 'Join now' })).toBeVisible()
+    await expect(bar).toBeHidden()
+    await page.locator('[data-hero-cta]').scrollIntoViewIfNeeded()
+    await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight))
+    await expect(bar.getByRole('link', { name: 'Join', exact: true })).toBeVisible()
     await expect(bar.getByRole('button', { name: 'Tour' })).toBeVisible()
-    await expect(bar.getByRole('link', { name: 'Call' })).toBeVisible()
+    await expect(bar.getByRole('link', { name: 'Call' })).toHaveCount(0)
 
     await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight))
     const phone = page.locator('footer').getByRole('link', { name: '956-990-5277' })

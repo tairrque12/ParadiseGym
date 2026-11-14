@@ -55,7 +55,7 @@ export function Hero() {
             <li>{harlingen.address}</li>
             {fromPrice ? <li>From {fromPrice}</li> : null}
           </ul>
-          <div className="mt-8 flex flex-col items-start gap-4 sm:mt-10">
+          <div data-hero-cta="" className="mt-8 flex flex-col items-start gap-4 sm:mt-10">
             <div className="flex flex-col items-start gap-2">
               <NeonButton
                 href={joinUrl('harlingen', 'hero')}

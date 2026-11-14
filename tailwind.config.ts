@@ -66,6 +66,10 @@ const config: Config = {
         'neon-sm': '0 0 12px rgba(57, 255, 20, 0.25)',
       },
       keyframes: {
+        'mobile-bar-in': {
+          from: { transform: 'translateY(100%)' },
+          to: { transform: 'translateY(0)' },
+        },
         'neon-pulse': {
           '0%, 100%': {
             opacity: '1',
@@ -78,6 +82,7 @@ const config: Config = {
         },
       },
       animation: {
+        'mobile-bar-in': 'mobile-bar-in 180ms ease-out',
         'neon-pulse': 'neon-pulse 2.8s ease-in-out infinite',
       },
     },

@@ -3,6 +3,7 @@ import { Logo } from '@/components/Logo'
 import { TrackedPhoneLink } from '@/components/tracked-phone-link'
 import { CONTACT } from '@/lib/contact'
 import { LOCATIONS, type GymLocation } from '@/lib/locations'
+import { GALLERY_PATH } from '@/lib/sections'
 
 function InstagramIcon({ className }: { className?: string }) {
   return (
@@ -51,6 +52,14 @@ export function Footer({
               The Rio Grande Valley&apos;s premium training floor — built for
               lifters who demand more from their gym.
             </p>
+            <nav aria-label="Footer" className="mt-4">
+              <Link
+                href={GALLERY_PATH}
+                className="inline-flex min-h-11 items-center text-sm text-white"
+              >
+                Gallery
+              </Link>
+            </nav>
           </div>
 
           <div>

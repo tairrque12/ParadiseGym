@@ -114,14 +114,14 @@ describe('McAllen page', () => {
     renderMcAllen()
 
     const switcher = within(
-      screen.getByRole('navigation', { name: /gym locations/i })
+      screen.getAllByRole('group', { name: /gym locations/i })[0]
     )
-    expect(switcher.getByRole('link', { name: /mcallen/i })).toHaveAttribute(
+    expect(switcher.getByRole('button', { name: /mcallen/i })).toHaveAttribute(
       'aria-current',
       'page'
     )
     expect(
-      switcher.getByRole('link', { name: /harlingen/i })
+      switcher.getByRole('button', { name: /harlingen/i })
     ).not.toHaveAttribute('aria-current')
   })
 

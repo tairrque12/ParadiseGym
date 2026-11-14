@@ -2,8 +2,8 @@ import { test, expect, type Locator, type Page } from '@playwright/test'
 
 function locationLink(page: Page, name: RegExp) {
   return page
-    .getByRole('navigation', { name: /gym locations/i })
-    .getByRole('link', { name })
+    .getByRole('group', { name: /gym locations/i })
+    .getByRole('button', { name })
 }
 
 async function getBoundingRect(locator: Locator) {
@@ -14,12 +14,12 @@ async function getBoundingRect(locator: Locator) {
 }
 
 test.describe('McAllen page', () => {
-  test('is reachable from the homepage marquee banner', async ({ page }) => {
+  test('is reachable from the homepage location toggle', async ({ page }) => {
     await page.emulateMedia({ reducedMotion: 'reduce' })
     await page.setViewportSize({ width: 1280, height: 800 })
     await page.goto('/')
 
-    await page.getByTestId('location-announcement').click()
+    await locationLink(page, /mcallen/i).click()
 
     await expect(page).toHaveURL(/\/mcallen$/)
     await expect(
@@ -145,7 +145,9 @@ test.describe('McAllen page', () => {
     await page.setViewportSize({ width: 375, height: 812 })
     await page.goto('/mcallen')
 
+    await page.getByTestId('mobile-menu-button').click()
     await expect(locationLink(page, /mcallen/i)).toBeVisible()
+    await page.keyboard.press('Escape')
     await expect(page.getByTestId('grand-opening-note')).toBeVisible()
 
     const cards = page.locator('#pricing a')
