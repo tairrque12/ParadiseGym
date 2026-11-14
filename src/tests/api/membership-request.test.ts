@@ -98,6 +98,32 @@ describe('POST /api/membership-request', () => {
     )
   })
 
+  it('returns 200 when a schema error blocks the insert and the notification email sends', async () => {
+    const schemaError = {
+      code: 'PGRST205',
+      details: null,
+      hint: null,
+      message: "Could not find the table 'public.membership_requests' in the schema cache",
+    }
+    mockInsert.mockResolvedValue({ error: schemaError })
+
+    const response = await handleMembershipRequest(createRequest(validPayload))
+    const data = await response.json()
+
+    expect(response.status).toBe(200)
+    expect(data.success).toBe(true)
+    expect(mockInsert).toHaveBeenCalledOnce()
+    expect(mockSendEmail).toHaveBeenCalledOnce()
+    expect(mockSendEmail.mock.calls[0][0].subject).toBe(
+      'New Paradise Gym Membership Request'
+    )
+    expect(mockSendEmail.mock.calls[0][0].replyTo).toBe('marcus@example.com')
+    expect(console.error).toHaveBeenCalledWith(
+      'Membership insert failed:',
+      schemaError
+    )
+  })
+
   it('returns 500 when the database and the notification email both fail', async () => {
     mockInsert.mockResolvedValue({
       error: { message: 'TypeError: fetch failed' },

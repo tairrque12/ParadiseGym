@@ -106,6 +106,28 @@ describe('POST /api/tour-request', () => {
     )
   })
 
+  it('returns 200 when the location column is missing and the notification email sends', async () => {
+    const schemaError = {
+      code: 'PGRST204',
+      details: null,
+      hint: null,
+      message: "Could not find the 'location' column of 'tour_requests' in the schema cache",
+    }
+    mockInsert.mockResolvedValue({ error: schemaError })
+
+    const response = await handleTourRequest(createRequest(validPayload))
+    const data = await response.json()
+
+    expect(response.status).toBe(200)
+    expect(data.success).toBe(true)
+    expect(mockInsert).toHaveBeenCalledOnce()
+    expect(mockSendEmail).toHaveBeenCalledOnce()
+    expect(mockSendEmail.mock.calls[0][0].subject).toBe('New Paradise Gym Tour Request')
+    expect(mockSendEmail.mock.calls[0][0].replyTo).toBe('elena@example.com')
+    expect(mockSendEmail.mock.calls[0][0].text).toContain('location: mcallen')
+    expect(console.error).toHaveBeenCalledWith('Tour insert failed:', schemaError)
+  })
+
   it('returns 500 when the database and the notification email both fail', async () => {
     mockInsert.mockResolvedValue({
       error: { message: 'TypeError: fetch failed' },
