@@ -47,7 +47,7 @@ describe('locations data', () => {
     expect(harlingen.grandOpeningNote).toBeUndefined()
   })
 
-  it('describes McAllen as a pre-sale location with no hours or opening date yet', () => {
+  it('describes McAllen as a pre-sale location opening Nov 28', () => {
     const mcallen = LOCATIONS.mcallen
 
     expect(mcallen).toMatchObject({
@@ -59,7 +59,7 @@ describe('locations data', () => {
       hours: null,
       joinLink: 'https://onlinejoin.abcfitness.com/signup/plan?club=32367',
       ctaLabel: 'Join founding membership',
-      grandOpeningNote: 'Official Grand Opening Date — Coming Soon',
+      grandOpeningNote: 'Official Grand Opening: Nov 28',
     })
     expect(mcallen.presaleNote).toMatch(/founding member pricing/i)
   })

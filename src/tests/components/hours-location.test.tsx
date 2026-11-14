@@ -22,11 +22,11 @@ describe('HoursLocation', () => {
 
     expect(screen.getByText(/hours coming soon/i)).toBeInTheDocument()
     expect(
-      screen.getByText(/full schedule announced closer to opening day/i)
+      screen.getByText(/full schedule announced closer to the nov 28 opening/i)
     ).toBeInTheDocument()
     expect(screen.queryByText('Mon – Fri')).not.toBeInTheDocument()
     expect(screen.getByText(LOCATIONS.mcallen.address)).toBeInTheDocument()
-    expect(screen.getByText(/20,000 sq ft/i)).toBeInTheDocument()
+    expect(screen.getByText(/20,000 sq ft, opens nov 28/i)).toBeInTheDocument()
 
     const map = screen.getByTitle('Paradise Gym McAllen location map')
     expect(map).toHaveAttribute(

@@ -97,8 +97,8 @@ export const LOCATIONS: Record<LocationId, GymLocation> = {
       'month_to_month',
     ]),
     presaleNote:
-      'Founding member pricing available now — location opening soon.',
-    grandOpeningNote: 'Official Grand Opening Date — Coming Soon',
+      'Founding member pricing available now — grand opening Nov 28.',
+    grandOpeningNote: 'Official Grand Opening: Nov 28',
   },
 }
 
