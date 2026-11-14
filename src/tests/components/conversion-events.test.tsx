@@ -37,8 +37,13 @@ function renderMcAllen() {
 async function fillTourForm(user: ReturnType<typeof userEvent.setup>) {
   await user.type(screen.getByLabelText(/first name/i), 'Elena')
   await user.type(screen.getByLabelText(/last name/i), 'Rivera')
-  await user.type(screen.getByLabelText(/^email$/i), 'elena@example.com')
+  await user.type(screen.getByLabelText(/email/i), 'elena@example.com')
   await user.type(screen.getByLabelText(/phone/i), '956-244-6692')
+  const days = within(screen.getByRole('group', { name: /preferred day/i })).getAllByRole(
+    'button'
+  )
+  await user.click(days[days.length - 1])
+  await user.click(screen.getByRole('button', { name: '10:00 AM' }))
 }
 
 describe('conversion events', () => {

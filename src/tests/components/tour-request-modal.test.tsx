@@ -68,7 +68,7 @@ describe('TourRequestModal', () => {
     })
     expect(track).toHaveBeenCalledTimes(1)
     expect(track).toHaveBeenCalledWith('tour_form_submit', {
-      location: 'harlingen',
+      location: 'mcallen',
     })
   })
 
@@ -84,8 +84,13 @@ describe('TourRequestModal', () => {
 
     await user.type(screen.getByLabelText(/first name/i), 'Elena')
     await user.type(screen.getByLabelText(/last name/i), 'Rivera')
-    await user.type(screen.getByLabelText(/^email$/i), 'elena@example.com')
+    await user.type(screen.getByLabelText(/email/i), 'elena@example.com')
     await user.type(screen.getByLabelText(/phone/i), '956-244-6692')
+    const days = within(screen.getByRole('group', { name: /preferred day/i })).getAllByRole(
+      'button'
+    )
+    await user.click(days[days.length - 1])
+    await user.click(screen.getByRole('button', { name: '10:00 AM' }))
     await user.click(screen.getByRole('button', { name: /request tour/i }))
 
     await waitFor(() => {
@@ -97,7 +102,7 @@ describe('TourRequestModal', () => {
 
   it('does not record a submit when validation fails', async () => {
     const user = userEvent.setup()
-    render(<TourRequestModal open onOpenChange={vi.fn()} />)
+    render(<TourRequestModal open location="harlingen" onOpenChange={vi.fn()} />)
 
     await user.click(screen.getByRole('button', { name: /request tour/i }))
 
@@ -112,12 +117,17 @@ describe('TourRequestModal', () => {
       new Response(JSON.stringify({ error: 'nope' }), { status: 500 })
     )
 
-    render(<TourRequestModal open onOpenChange={vi.fn()} />)
+    render(<TourRequestModal open location="harlingen" onOpenChange={vi.fn()} />)
 
     await user.type(screen.getByLabelText(/first name/i), 'Elena')
     await user.type(screen.getByLabelText(/last name/i), 'Rivera')
-    await user.type(screen.getByLabelText(/^email$/i), 'elena@example.com')
+    await user.type(screen.getByLabelText(/email/i), 'elena@example.com')
     await user.type(screen.getByLabelText(/phone/i), '956-244-6692')
+    const days = within(screen.getByRole('group', { name: /preferred day/i })).getAllByRole(
+      'button'
+    )
+    await user.click(days[days.length - 1])
+    await user.click(screen.getByRole('button', { name: '10:00 AM' }))
     await user.click(screen.getByRole('button', { name: /request tour/i }))
 
     expect(await screen.findByText(/something went wrong/i)).toBeInTheDocument()
