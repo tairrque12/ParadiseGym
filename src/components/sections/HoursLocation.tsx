@@ -34,7 +34,7 @@ export function HoursLocation({
             title="Hours & location"
             description={
               location.status === 'presale'
-                ? `${location.name} opens soon`
+                ? `${location.sqft.toLocaleString('en-US')} sq ft, opening soon`
                 : location.name
             }
           />
