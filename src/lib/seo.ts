@@ -220,13 +220,10 @@ export function harlingenPageCopy(): PageCopy {
 
 export function mcallenPageCopy(): PageCopy {
   const location = LOCATIONS.mcallen
-  const opening = location.grandOpeningNote
 
   return {
     title: `${SITE_NAME} ${location.name}`,
-    description: opening
-      ? `${SITE_NAME} at ${location.address}. Opens Nov 28. ${opening}.`
-      : `${SITE_NAME} at ${location.address}. Opens Nov 28.`,
+    description: `${SITE_NAME} at ${location.address}. Opens Nov 28.`,
     path: location.href,
   }
 }

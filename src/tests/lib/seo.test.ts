@@ -147,7 +147,7 @@ describe('page metadata', () => {
 
   it('describes McAllen with the Nov 28 opening and without hours', () => {
     expect(mcallenPageCopy().description).toBe(
-      'Paradise Gym at 1001 N. Jackson Road, McAllen, TX 78501. Opens Nov 28. Official Grand Opening Date — Coming Soon.'
+      'Paradise Gym at 1001 N. Jackson Road, McAllen, TX 78501. Opens Nov 28.'
     )
     expect(mcallenMetadata.openGraph?.description).toBe(mcallenPageCopy().description)
     expect(mcallenPageCopy().description).not.toMatch(/5am|midnight|sq ft|shower/i)

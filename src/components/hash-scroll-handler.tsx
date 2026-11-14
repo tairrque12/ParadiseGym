@@ -15,7 +15,7 @@ export function HashScrollHandler() {
 
     if (sectionId.toLowerCase() === 'tour') {
       const next = pathname === MCALLEN_PATH ? MCALLEN_PATH : '/'
-      window.history.replaceState(null, '', next)
+      window.history.replaceState(null, '', `${next}${window.location.search}`)
       return
     }
 
