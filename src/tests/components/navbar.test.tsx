@@ -144,6 +144,63 @@ describe('Navbar', () => {
     )
   })
 
+  it('closes the mobile menu when the viewport reaches desktop width', async () => {
+    const user = userEvent.setup()
+    let onChange: ((event: { matches: boolean }) => void) | undefined
+    const desktopMedia = {
+      matches: false,
+      media: '(min-width: 1280px)',
+      addEventListener: vi.fn(
+        (event: string, callback: (event: { matches: boolean }) => void) => {
+          if (event === 'change') onChange = callback
+        }
+      ),
+      removeEventListener: vi.fn(),
+    }
+    const originalMatchMedia = window.matchMedia
+    window.matchMedia = vi.fn((query: string) => {
+      if (query === '(min-width: 1280px)') {
+        return desktopMedia as unknown as MediaQueryList
+      }
+      return {
+        matches: false,
+        media: query,
+        addEventListener: vi.fn(),
+        removeEventListener: vi.fn(),
+      } as unknown as MediaQueryList
+    }) as unknown as typeof window.matchMedia
+
+    try {
+      render(
+        <Providers>
+          <Navbar />
+        </Providers>
+      )
+
+      const menuButton = screen.getByTestId('mobile-menu-button')
+      await user.click(menuButton)
+      await waitFor(() => {
+        expect(menuButton).toHaveAttribute('aria-expanded', 'true')
+      })
+
+      desktopMedia.matches = false
+      onChange?.({ matches: false })
+      expect(menuButton).toHaveAttribute('aria-expanded', 'true')
+
+      desktopMedia.matches = true
+      onChange?.({ matches: true })
+
+      await waitFor(() => {
+        expect(menuButton).toHaveAttribute('aria-expanded', 'false')
+      })
+      expect(
+        screen.queryByRole('navigation', { name: /mobile/i })
+      ).not.toBeInTheDocument()
+    } finally {
+      window.matchMedia = originalMatchMedia
+    }
+  })
+
   it('closes the mobile menu after a link is chosen', async () => {
     const user = userEvent.setup()
     render(

@@ -34,6 +34,8 @@ import { handleSectionNavClick } from '@/lib/section-nav'
 import { NAV_LINKS } from '@/lib/sections'
 import { cn } from '@/lib/utils'
 
+const DESKTOP_NAV_QUERY = '(min-width: 1280px)'
+
 const focusRing =
   'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neon/70 focus-visible:ring-offset-2 focus-visible:ring-offset-carbon'
 
@@ -125,6 +127,16 @@ export function Navbar() {
       window.removeEventListener('hashchange', sync)
       window.removeEventListener('popstate', sync)
     }
+  }, [])
+
+  useEffect(() => {
+    const media = window.matchMedia(DESKTOP_NAV_QUERY)
+    const closeOnDesktop = () => {
+      if (media.matches) setMenuOpen(false)
+    }
+    closeOnDesktop()
+    media.addEventListener('change', closeOnDesktop)
+    return () => media.removeEventListener('change', closeOnDesktop)
   }, [])
 
   function onSectionClick(event: MouseEvent<HTMLAnchorElement>, href: string) {
