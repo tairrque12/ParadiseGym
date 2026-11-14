@@ -8,12 +8,8 @@ import { MCALLEN_PATH } from '@/lib/locations'
 import { isMcAllenOpen } from '@/lib/mcallen-opening'
 import { cn } from '@/lib/utils'
 
-const PRE_OPEN_LABEL = {
-  mobile: 'McAllen grand opening Nov 28 · Tap for McAllen location',
-  desktop: 'McAllen grand opening Nov 28 · See the McAllen location',
-  accessible:
-    'McAllen grand opening November 28. See the McAllen location.',
-} as const
+const PRE_OPEN_LABEL =
+  'McAllen Grand Opening Nov 28- Click Here to See The McAllen Location'
 
 const OPEN_LABEL = {
   visible: 'McAllen now open',
@@ -30,7 +26,7 @@ export function McallenOpeningBanner({ collapsed }: { collapsed: boolean }) {
 
   if (pathname === MCALLEN_PATH) return null
 
-  const accessible = open ? OPEN_LABEL.accessible : PRE_OPEN_LABEL.accessible
+  const accessible = open ? OPEN_LABEL.accessible : PRE_OPEN_LABEL
 
   return (
     <div
@@ -48,22 +44,15 @@ export function McallenOpeningBanner({ collapsed }: { collapsed: boolean }) {
           className="flex min-h-12 w-full items-stretch bg-[#0a0a0a] text-sm text-white"
         >
           <span className="flex min-w-0 flex-1 items-center px-4 py-2.5 text-left leading-snug">
-            {open ? (
-              OPEN_LABEL.visible
-            ) : (
-              <>
-                <span className="lg:hidden">{PRE_OPEN_LABEL.mobile}</span>
-                <span className="hidden lg:inline">{PRE_OPEN_LABEL.desktop}</span>
-              </>
-            )}
+            {open ? OPEN_LABEL.visible : PRE_OPEN_LABEL}
           </span>
           <span
             aria-hidden
             data-testid="opening-banner-arrow"
-            className="flex w-14 shrink-0 items-center justify-center bg-neon text-carbon shadow-neon"
+            className="flex w-14 shrink-0 items-center justify-center self-stretch bg-neon text-carbon shadow-neon lg:my-1.5 lg:size-9 lg:self-center"
           >
             <ChevronRight
-              className="size-8 motion-safe:animate-banner-nudge"
+              className="size-8 motion-safe:animate-banner-nudge lg:size-5"
               strokeWidth={2.75}
             />
           </span>
