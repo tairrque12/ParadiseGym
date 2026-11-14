@@ -62,13 +62,13 @@ export function Gallery() {
         </SectionReveal>
 
         <StaggerContainer className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 sm:gap-5">
-          {GALLERY_IMAGES.map((image, index) => (
+          {GALLERY_IMAGES.map((image) => (
             <StaggerItem key={image.src}>
               <GalleryImage
                 src={image.src}
                 alt={image.alt}
                 span={image.span}
-                priority={index === 0}
+                priority={image.priority}
               />
             </StaggerItem>
           ))}

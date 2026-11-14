@@ -29,23 +29,23 @@ describe('Gallery', () => {
     }
   })
 
-  it('loads the first photo immediately and leaves the rest lazy', () => {
+  it('prioritizes the dumbbell rack and lazy-loads the other photos', () => {
     render(
       <Providers>
         <Gallery />
       </Providers>
     )
 
-    const images = GALLERY_IMAGES.map((image) =>
-      screen.getByRole('img', { name: image.alt })
-    )
+    const rack = screen.getByRole('img', {
+      name: /premier dumbbell rack/i,
+    })
+    expect(rack).toHaveAttribute('fetchpriority', 'high')
+    expect(rack).not.toHaveAttribute('loading', 'lazy')
 
-    expect(images[0]).toHaveAttribute('fetchpriority', 'high')
-    expect(images[0]).not.toHaveAttribute('loading', 'lazy')
-
-    for (const image of images.slice(1)) {
-      expect(image).toHaveAttribute('loading', 'lazy')
-      expect(image).not.toHaveAttribute('fetchpriority')
+    for (const image of GALLERY_IMAGES.filter((entry) => !entry.priority)) {
+      const photo = screen.getByRole('img', { name: image.alt })
+      expect(photo).toHaveAttribute('loading', 'lazy')
+      expect(photo).not.toHaveAttribute('fetchpriority')
     }
   })
 })
