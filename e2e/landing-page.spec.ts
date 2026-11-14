@@ -123,10 +123,15 @@ test.describe('Landing page', () => {
       /week pass/i,
       /day pass/i,
     ]) {
-      const link = page.getByRole('link', { name })
-      await expect(link).toHaveAttribute('href', MEMBERSHIP_JOIN_URL)
-      await expect(link).toHaveAttribute('target', '_blank')
-      await expect(link).toHaveAttribute('rel', 'noopener noreferrer')
+      const links = page.getByRole('link', { name })
+      expect(await links.count()).toBeGreaterThan(0)
+      const count = await links.count()
+      for (let index = 0; index < count; index++) {
+        const link = links.nth(index)
+        await expect(link).toHaveAttribute('href', MEMBERSHIP_JOIN_URL)
+        await expect(link).toHaveAttribute('target', '_blank')
+        await expect(link).toHaveAttribute('rel', 'noopener noreferrer')
+      }
     }
   })
 

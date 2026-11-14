@@ -22,7 +22,7 @@ test.describe('McAllen page', () => {
     await page.setViewportSize({ width: 1280, height: 800 })
     await page.goto('/')
 
-    await page.getByTestId('new-location-marquee').click()
+    await page.getByTestId('location-announcement').click()
 
     await expect(page).toHaveURL(/\/mcallen$/)
     await expect(
@@ -47,7 +47,7 @@ test.describe('McAllen page', () => {
     await locationLink(page, /harlingen/i).click()
     await expect(page).toHaveURL(/\/$/)
     await expect(
-      page.getByRole('link', { name: 'Request Membership' })
+      page.getByRole('link', { name: 'Request Membership' }).first()
     ).toBeVisible()
     await expect(page.getByText('Week Pass')).toBeVisible()
   })

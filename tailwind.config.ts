@@ -70,16 +70,9 @@ const config: Config = {
             textShadow: '0 0 26px rgba(57, 255, 20, 0.75)',
           },
         },
-        // Both runs shift by their own width, so the second lands exactly where
-        // the first started — seamless regardless of viewport width.
-        marquee: {
-          from: { transform: 'translateX(0)' },
-          to: { transform: 'translateX(-100%)' },
-        },
       },
       animation: {
         'neon-pulse': 'neon-pulse 2.8s ease-in-out infinite',
-        marquee: 'marquee 30s linear infinite',
       },
     },
   },

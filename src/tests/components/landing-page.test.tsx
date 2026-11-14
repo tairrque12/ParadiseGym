@@ -32,12 +32,15 @@ describe('Landing page', () => {
     const user = userEvent.setup()
     renderHome()
 
-    const membershipLink = screen.getByRole('link', {
+    const membershipLinks = screen.getAllByRole('link', {
       name: 'Request Membership',
     })
-    expect(membershipLink).toHaveAttribute('href', HARLINGEN_JOIN_URL)
-    expect(membershipLink).toHaveAttribute('target', '_blank')
-    expect(membershipLink).toHaveAttribute('rel', 'noopener noreferrer')
+    expect(membershipLinks.length).toBeGreaterThan(0)
+    for (const membershipLink of membershipLinks) {
+      expect(membershipLink).toHaveAttribute('href', HARLINGEN_JOIN_URL)
+      expect(membershipLink).toHaveAttribute('target', '_blank')
+      expect(membershipLink).toHaveAttribute('rel', 'noopener noreferrer')
+    }
 
     await user.click(screen.getByRole('button', { name: 'Free Gym Tour' }))
     expect(screen.getByRole('dialog')).toBeInTheDocument()
@@ -49,9 +52,9 @@ describe('Landing page', () => {
   it('routes to the McAllen page from the marquee banner and the switcher', () => {
     renderHome()
 
-    const marquee = screen.getByTestId('new-location-marquee')
-    expect(marquee).toHaveAttribute('href', MCALLEN_PATH)
-    expect(document.querySelector('header')?.firstElementChild).toBe(marquee)
+    const announcement = screen.getByTestId('location-announcement')
+    expect(announcement).toHaveAttribute('href', MCALLEN_PATH)
+    expect(document.querySelector('header')?.firstElementChild).toBe(announcement)
 
     const switcher = within(
       screen.getByRole('navigation', { name: /gym locations/i })

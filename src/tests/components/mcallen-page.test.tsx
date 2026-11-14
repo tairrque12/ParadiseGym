@@ -117,7 +117,7 @@ describe('McAllen page', () => {
     renderMcAllen()
 
     expect(
-      screen.queryByTestId('new-location-marquee')
+      screen.queryByTestId('location-announcement')
     ).not.toBeInTheDocument()
   })
 

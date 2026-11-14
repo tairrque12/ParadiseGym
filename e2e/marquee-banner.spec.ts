@@ -11,16 +11,17 @@ function navRow(page: Page) {
   return page.locator('header > div').first()
 }
 
-test.describe('New location marquee banner', () => {
+test.describe('McAllen announcement bar', () => {
   for (const width of [375, 1440] as const) {
-    test(`renders above the navbar without clipping at ${width}px`, async ({
+    test(`renders a slim bar above the navbar without clipping at ${width}px`, async ({
       page,
     }) => {
       await page.setViewportSize({ width, height: 812 })
       await page.goto('/')
 
-      const banner = page.getByTestId('new-location-marquee')
+      const banner = page.getByTestId('location-announcement')
       await expect(banner).toBeVisible()
+      await expect(banner).toHaveAttribute('href', '/mcallen')
 
       const bannerBox = await getBoundingRect(banner)
       const navBox = await getBoundingRect(navRow(page))
@@ -28,14 +29,12 @@ test.describe('New location marquee banner', () => {
         page.getByLabel('Paradise Gym home')
       )
 
-      // Pinned to the very top, full width, and slim.
       expect(bannerBox.y).toBe(0)
       expect(bannerBox.x).toBe(0)
       expect(bannerBox.width).toBe(width)
       expect(bannerBox.height).toBeGreaterThanOrEqual(32)
       expect(bannerBox.height).toBeLessThanOrEqual(44)
 
-      // The nav row starts below the banner, and the logo is not crowded.
       expect(navBox.y).toBeGreaterThanOrEqual(bannerBox.height)
       expect(logo.y).toBeGreaterThanOrEqual(navBox.y + 4)
       expect(logo.y + logo.height).toBeLessThanOrEqual(
@@ -46,6 +45,11 @@ test.describe('New location marquee banner', () => {
         parseFloat(getComputedStyle(element).fontSize)
       )
       expect(fontSize).toBeGreaterThanOrEqual(12)
+
+      const animationName = await banner.evaluate(
+        (element) => getComputedStyle(element).animationName
+      )
+      expect(animationName).toBe('none')
 
       const documentWidth = await page.evaluate(
         () => document.documentElement.scrollWidth
@@ -58,25 +62,7 @@ test.describe('New location marquee banner', () => {
     await page.setViewportSize({ width: 375, height: 812 })
     await page.goto('/')
 
-    const banner = page.getByTestId('new-location-marquee')
-
-    const animation = await page
-      .getByTestId('marquee-run')
-      .first()
-      .evaluate((element) => {
-        const style = getComputedStyle(element)
-        return {
-          name: style.animationName,
-          duration: style.animationDuration,
-          timing: style.animationTimingFunction,
-          iterations: style.animationIterationCount,
-        }
-      })
-    expect(animation.name).not.toBe('none')
-    expect(animation.timing).toBe('linear')
-    expect(animation.iterations).toBe('infinite')
-    expect(parseFloat(animation.duration)).toBeGreaterThanOrEqual(20)
-
+    const banner = page.getByTestId('location-announcement')
     await page.evaluate(() => window.scrollTo(0, 2200))
     await page.waitForTimeout(300)
 
@@ -84,52 +70,11 @@ test.describe('New location marquee banner', () => {
     expect((await getBoundingRect(banner)).y).toBe(0)
   })
 
-  for (const width of [375, 1440] as const) {
-    test(`loops with no blank gap at any point in the cycle at ${width}px`, async ({
-      page,
-    }) => {
-      await page.setViewportSize({ width, height: 812 })
-      await page.goto('/')
-      await expect(page.getByTestId('marquee-run').first()).toBeVisible()
-
-      // Negative animation delays step deterministically through the loop.
-      const worst = await page.evaluate(() => {
-        const runs = Array.from(
-          document.querySelectorAll('[data-testid=marquee-run]')
-        ) as HTMLElement[]
-        const duration = Math.round(
-          parseFloat(getComputedStyle(runs[0]).animationDuration)
-        )
-
-        let smallestRightMargin = Infinity
-        for (let second = 0; second <= duration; second++) {
-          runs.forEach((run) => {
-            run.style.animationDelay = `-${second}s`
-          })
-          const right = Math.max(
-            ...runs.map((run) => run.getBoundingClientRect().right)
-          )
-          smallestRightMargin = Math.min(
-            smallestRightMargin,
-            right - window.innerWidth
-          )
-        }
-        runs.forEach((run) => {
-          run.style.animationDelay = ''
-        })
-        return smallestRightMargin
-      })
-
-      // The trailing run always reaches past the right edge, so no gap appears.
-      expect(worst).toBeGreaterThan(0)
-    })
-  }
-
   test('navigates to the McAllen page when tapped', async ({ page }) => {
     await page.setViewportSize({ width: 375, height: 812 })
     await page.goto('/')
 
-    await page.getByTestId('new-location-marquee').click()
+    await page.getByTestId('location-announcement').click()
 
     await expect(page).toHaveURL(/\/mcallen$/)
     await expect(
@@ -141,35 +86,38 @@ test.describe('New location marquee banner', () => {
     await page.setViewportSize({ width: 375, height: 812 })
     await page.goto('/mcallen')
 
-    await expect(page.getByTestId('new-location-marquee')).toHaveCount(0)
+    await expect(page.getByTestId('location-announcement')).toHaveCount(0)
     await expect(page.locator('header > div').first()).toBeVisible()
   })
 
   test.describe('reduced motion', () => {
     for (const width of [320, 375, 1440] as const) {
-      test(`renders static, single-line copy inside the viewport at ${width}px`, async ({
+      test(`renders a single static line inside the viewport at ${width}px`, async ({
         page,
       }) => {
         await page.emulateMedia({ reducedMotion: 'reduce' })
         await page.setViewportSize({ width, height: 812 })
         await page.goto('/')
 
-        await expect(page.getByTestId('marquee-track')).toBeHidden()
+        const banner = page.getByTestId('location-announcement')
+        await expect(banner).toBeVisible()
 
-        const fallback = page.getByTestId('marquee-static')
-        await expect(fallback).toBeVisible()
-
-        const line = await fallback.evaluate((element) => {
-          const visible = Array.from(element.querySelectorAll('span')).find(
-            (span) => getComputedStyle(span).display !== 'none'
-          ) as HTMLElement
-          const rect = visible.getBoundingClientRect()
-          const lineHeight = parseFloat(getComputedStyle(visible).lineHeight)
+        const line = await banner.evaluate((element) => {
+          const visible = Array.from(element.querySelectorAll('span')).filter(
+            (span) =>
+              span.childElementCount === 0 &&
+              getComputedStyle(span).display !== 'none'
+          ) as HTMLElement[]
+          const first = visible[0]
+          const last = visible[visible.length - 1]
+          const lineHeight = parseFloat(getComputedStyle(first).lineHeight)
+          const firstRect = first.getBoundingClientRect()
+          const lastRect = last.getBoundingClientRect()
           return {
-            text: visible.textContent?.trim() ?? '',
-            left: rect.left,
-            right: rect.right,
-            lines: Math.round(rect.height / lineHeight),
+            text: visible.map((span) => span.textContent?.trim() ?? '').join(' '),
+            left: firstRect.left,
+            right: lastRect.right,
+            lines: Math.round(firstRect.height / lineHeight),
           }
         })
 
@@ -177,6 +125,7 @@ test.describe('New location marquee banner', () => {
         expect(line.left).toBeGreaterThanOrEqual(12)
         expect(width - line.right).toBeGreaterThanOrEqual(12)
         expect(line.text).toMatch(/mcallen/i)
+        expect(line.text).toMatch(/presale/i)
 
         const documentWidth = await page.evaluate(
           () => document.documentElement.scrollWidth
