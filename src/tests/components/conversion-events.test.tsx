@@ -72,22 +72,21 @@ describe('conversion events', () => {
       )
     )
 
-    expect(track).toHaveBeenCalledWith('membership_click', {
+    expect(track).toHaveBeenCalledWith('join_online_click', {
       location: 'harlingen',
       placement: 'hero',
     })
-    expect(track).toHaveBeenCalledWith('membership_click', {
+    expect(track).toHaveBeenCalledWith('join_online_click', {
       location: 'harlingen',
       placement: 'header',
     })
-    expect(track).toHaveBeenCalledWith('membership_click', {
+    expect(track).toHaveBeenCalledWith('join_online_click', {
       location: 'harlingen',
       placement: 'mobile_menu',
     })
-    expect(track).toHaveBeenCalledWith('membership_click', {
+    expect(track).toHaveBeenCalledWith('plan_click', {
+      plan: '12 Month Contract',
       location: 'harlingen',
-      placement: 'pricing',
-      plan: '12_month_contract',
     })
     expect(track).toHaveBeenCalledWith('phone_click', {
       location: 'harlingen',
@@ -162,22 +161,21 @@ describe('conversion events', () => {
     await user.click(screen.getByTestId('mobile-menu-button'))
     await user.click(screen.getByTestId('mobile-membership-cta'))
 
-    expect(track).toHaveBeenCalledWith('membership_click', {
+    expect(track).toHaveBeenCalledWith('join_online_click', {
       location: 'mcallen',
       placement: 'hero',
     })
-    expect(track).toHaveBeenCalledWith('membership_click', {
+    expect(track).toHaveBeenCalledWith('join_online_click', {
       location: 'mcallen',
       placement: 'header',
     })
-    expect(track).toHaveBeenCalledWith('membership_click', {
+    expect(track).toHaveBeenCalledWith('join_online_click', {
       location: 'mcallen',
       placement: 'mobile_menu',
     })
-    expect(track).toHaveBeenCalledWith('membership_click', {
+    expect(track).toHaveBeenCalledWith('plan_click', {
+      plan: 'Month to Month',
       location: 'mcallen',
-      placement: 'pricing',
-      plan: 'month_to_month',
     })
     expect(track).toHaveBeenCalledWith('phone_click', {
       location: 'mcallen',

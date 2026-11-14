@@ -32,7 +32,7 @@ import {
 } from '@/lib/locations'
 import { handleSectionNavClick } from '@/lib/section-nav'
 import { NAV_LINKS } from '@/lib/sections'
-import { trackMembershipClick, type MembershipPlacement } from '@/lib/analytics'
+import { trackJoinOnlineClick, type JoinPlacement } from '@/lib/analytics'
 import { cn } from '@/lib/utils'
 
 const DESKTOP_NAV_QUERY = '(min-width: 1280px)'
@@ -87,7 +87,7 @@ function MembershipLink({
   testId,
 }: {
   location: GymLocation
-  placement: MembershipPlacement
+  placement: JoinPlacement
   className?: string
   testId?: string
 }) {
@@ -99,7 +99,7 @@ function MembershipLink({
       data-testid={testId}
       className={className}
       onClick={() =>
-        trackMembershipClick({
+        trackJoinOnlineClick({
           location: location.id,
           placement,
         })

@@ -2,9 +2,9 @@
 
 import { cn } from '@/lib/utils'
 import {
-  trackMembershipClick,
+  trackJoinOnlineClick,
   type AnalyticsLocation,
-  type MembershipPlacement,
+  type JoinPlacement,
 } from '@/lib/analytics'
 
 const base =
@@ -31,8 +31,7 @@ export function NeonButton({
   className?: string
   membership?: {
     location: AnalyticsLocation
-    placement: MembershipPlacement
-    plan?: string
+    placement: JoinPlacement
   }
 }) {
   const classes = cn(
@@ -61,7 +60,7 @@ export function NeonButton({
         rel={rel}
         className={classes}
         onClick={() => {
-          if (membership) trackMembershipClick(membership)
+          if (membership) trackJoinOnlineClick(membership)
           onClick?.()
         }}
       >

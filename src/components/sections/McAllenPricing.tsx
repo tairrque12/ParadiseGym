@@ -1,6 +1,6 @@
 import { ArrowUpRight } from 'lucide-react'
 import { GrainOverlay, SectionReveal } from '@/components/motion'
-import { TrackedMembershipLink } from '@/components/tracked-membership-link'
+import { TrackedPlanLink } from '@/components/tracked-plan-link'
 import { LOCATIONS } from '@/lib/locations'
 import { PRICING_DISCOUNT_NOTE } from '@/lib/membership-options'
 import { SECTION_IDS } from '@/lib/sections'
@@ -30,12 +30,11 @@ export function McAllenPricing() {
 
         <div className="grid gap-5 md:grid-cols-3 md:gap-6">
           {mcallen.membershipOptions.map((option) => (
-            <TrackedMembershipLink
+            <TrackedPlanLink
               key={option.slug}
               href={mcallen.joinLink}
               location="mcallen"
-              placement="pricing"
-              plan={option.slug}
+              plan={option.name}
               target="_blank"
               rel="noopener noreferrer"
               className="group flex flex-col justify-between border border-white/12 bg-carbon/60 p-6 transition-colors hover:border-neon/60 hover:bg-white/[0.03] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neon/60 sm:p-8"
@@ -66,7 +65,7 @@ export function McAllenPricing() {
                 Join Now
                 <ArrowUpRight className="h-4 w-4" aria-hidden />
               </span>
-            </TrackedMembershipLink>
+            </TrackedPlanLink>
           ))}
         </div>
 
