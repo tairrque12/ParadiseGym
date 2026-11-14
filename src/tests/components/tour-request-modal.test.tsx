@@ -24,7 +24,7 @@ describe('TourRequestModal', () => {
     const onOpenChange = vi.fn()
     const user = userEvent.setup()
 
-    render(<TourRequestModal open onOpenChange={onOpenChange} />)
+    render(<TourRequestModal open location="harlingen" onOpenChange={onOpenChange} />)
 
     expect(screen.getByRole('dialog')).toBeInTheDocument()
     await user.click(screen.getByRole('button', { name: /close/i }))
@@ -40,23 +40,31 @@ describe('TourRequestModal', () => {
       return new Response(JSON.stringify({ success: true }), { status: 200 })
     })
 
-    render(<TourRequestModal open onOpenChange={vi.fn()} />)
+    render(<TourRequestModal open location="mcallen" onOpenChange={vi.fn()} />)
 
     await user.type(screen.getByLabelText(/first name/i), 'Elena')
     await user.type(screen.getByLabelText(/last name/i), 'Rivera')
-    await user.type(screen.getByLabelText(/^email$/i), 'elena@example.com')
+    await user.type(screen.getByLabelText(/email/i), 'elena@example.com')
     await user.type(screen.getByLabelText(/phone/i), '956-244-6692')
+    const days = within(screen.getByRole('group', { name: /preferred day/i })).getAllByRole(
+      'button'
+    )
+    await user.click(days[days.length - 1])
+    await user.click(screen.getByRole('button', { name: '10:00 AM' }))
     await user.click(screen.getByRole('button', { name: /request tour/i }))
 
     await waitFor(() => {
-      expect(screen.getByText(/tour requested/i)).toBeInTheDocument()
+      expect(screen.getByRole('status')).toHaveTextContent(/tour requested/i)
     })
+    expect(screen.getByRole('dialog')).toBeInTheDocument()
 
     expect(capturedBody).toMatchObject({
+      location: 'mcallen',
       first_name: 'Elena',
       last_name: 'Rivera',
       email: 'elena@example.com',
       phone: '956-244-6692',
+      preferred_time: '10:00 AM',
     })
     expect(track).toHaveBeenCalledTimes(1)
     expect(track).toHaveBeenCalledWith('tour_form_submit', {
@@ -116,40 +124,33 @@ describe('TourRequestModal', () => {
     expect(track).not.toHaveBeenCalled()
   })
 
-  it('keeps preferred time disabled until a date is selected', () => {
-    render(<TourRequestModal open onOpenChange={vi.fn()} />)
+  it('asks for a day before showing times', () => {
+    render(<TourRequestModal open location="harlingen" onOpenChange={vi.fn()} />)
 
-    expect(screen.getByLabelText(/preferred time/i)).toBeDisabled()
-    expect(screen.getByText(/select a date first/i)).toBeInTheDocument()
+    expect(screen.getByText(/choose a day first/i)).toBeInTheDocument()
+    expect(screen.getByText(/we'll text you to confirm your tour/i)).toBeInTheDocument()
+    expect(screen.getByText(/harlingen gym/i)).toBeInTheDocument()
   })
 
-  it('populates morning time options after a weekday date is selected', async () => {
-    const user = userEvent.setup()
+  it('names the Harlingen floor when the tour starts on McAllen', () => {
+    render(<TourRequestModal open location="mcallen" onOpenChange={vi.fn()} />)
 
-    render(<TourRequestModal open onOpenChange={vi.fn()} />)
-
-    await user.type(screen.getByLabelText(/preferred date/i), '2026-07-06')
-
-    const timeSelect = screen.getByLabelText(/preferred time/i)
-    expect(timeSelect).toBeEnabled()
-    expect(within(timeSelect).getByRole('option', { name: '5:00 AM' })).toBeInTheDocument()
-    expect(within(timeSelect).getByRole('option', { name: '10:00 AM' })).toBeInTheDocument()
+    expect(screen.getByText(/open harlingen floor/i)).toBeInTheDocument()
   })
 
-  it('clears an incompatible preferred time when the date changes', async () => {
+  it('clears a time that the next day does not offer', async () => {
     const user = userEvent.setup()
+    render(<TourRequestModal open location="harlingen" onOpenChange={vi.fn()} />)
 
-    render(<TourRequestModal open onOpenChange={vi.fn()} />)
+    await user.click(screen.getByRole('button', { name: /^Mon/ }))
+    await user.click(screen.getByRole('button', { name: '5:00 AM' }))
+    expect(screen.getByRole('button', { name: '5:00 AM' })).toHaveAttribute(
+      'aria-pressed',
+      'true'
+    )
 
-    await user.type(screen.getByLabelText(/preferred date/i), '2026-07-12')
-    await user.selectOptions(screen.getByLabelText(/preferred time/i), '10:00 AM')
+    await user.click(screen.getByRole('button', { name: /^Sun/ }))
 
-    expect(screen.getByLabelText(/preferred time/i)).toHaveValue('10:00 AM')
-
-    await user.clear(screen.getByLabelText(/preferred date/i))
-    await user.type(screen.getByLabelText(/preferred date/i), '2026-07-11')
-    await user.selectOptions(screen.getByLabelText(/preferred time/i), '8:00 AM')
-
-    expect(screen.getByLabelText(/preferred time/i)).toHaveValue('8:00 AM')
+    expect(screen.queryByRole('button', { name: '5:00 AM' })).not.toBeInTheDocument()
   })
 })

@@ -32,12 +32,13 @@ export async function handleTourRequest(request: Request) {
   }
 
   const { error: insertError } = await supabase.from('tour_requests').insert({
+    location: data.location,
     first_name: data.first_name,
     last_name: data.last_name,
-    email: data.email,
+    email: data.email || null,
     phone: data.phone,
-    preferred_date: data.preferred_date || null,
-    preferred_time: data.preferred_time || null,
+    preferred_date: data.preferred_date,
+    preferred_time: data.preferred_time,
     status: 'new',
   })
 
@@ -47,12 +48,13 @@ export async function handleTourRequest(request: Request) {
   }
 
   const fields = {
+    location: data.location,
     first_name: data.first_name,
     last_name: data.last_name,
-    email: data.email,
+    email: data.email || null,
     phone: data.phone,
-    preferred_date: data.preferred_date ?? null,
-    preferred_time: data.preferred_time ?? null,
+    preferred_date: data.preferred_date,
+    preferred_time: data.preferred_time,
   }
 
   try {
@@ -62,7 +64,7 @@ export async function handleTourRequest(request: Request) {
       subject: 'New Paradise Gym Tour Request',
       html,
       text,
-      replyTo: data.email,
+      replyTo: data.email || undefined,
     })
 
     if (emailResult.error) {

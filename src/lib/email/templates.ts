@@ -242,7 +242,7 @@ export function formatTourRequestEmail(
   const options: EmailTemplateOptions = {
     heading: 'New Tour Request',
     fields,
-    highlightFields: ['preferred_date', 'preferred_time'],
+    highlightFields: ['location', 'preferred_date', 'preferred_time'],
     highlightOnlyWhenPresent: true,
     submittedAt,
   }

@@ -297,12 +297,16 @@ test.describe('Landing page', () => {
 
     await dialog.getByLabel(/first name/i).fill('Elena')
     await dialog.getByLabel(/last name/i).fill('Rivera')
-    await dialog.getByLabel(/email/i).fill('elena@example.com')
     await dialog.getByLabel(/phone/i).fill('956-244-6692')
+    const days = dialog.getByRole('group', { name: /preferred day/i }).getByRole('button')
+    await days.last().click()
+    await dialog.getByRole('button', { name: '10:00 AM' }).click()
     await dialog.getByRole('button', { name: /request tour/i }).click()
 
     await expect(dialog.getByText(/tour requested/i)).toBeVisible()
-    await expect(dialog).toBeHidden({ timeout: 5000 })
+    await expect(dialog).toBeVisible()
+    await dialog.getByRole('button', { name: 'Done' }).click()
+    await expect(dialog).toBeHidden()
   })
 
   test('escape closes an open modal', async ({ page }) => {
@@ -325,14 +329,19 @@ test.describe('Landing page', () => {
 
     const dialog = page.getByRole('dialog')
     await expect(dialog).toBeVisible()
-    await expect(dialog.getByLabel(/preferred time/i)).toBeDisabled()
+    await expect(dialog.getByText(/choose a day first/i)).toBeVisible()
 
-    await dialog.getByLabel(/preferred date/i).fill('2026-07-12')
-    await expect(dialog.getByLabel(/preferred time/i)).toBeEnabled()
+    await dialog
+      .getByRole('group', { name: /preferred day/i })
+      .getByRole('button')
+      .last()
+      .click()
+    await dialog.getByRole('button', { name: '10:00 AM' }).click()
 
-    await dialog.getByLabel(/preferred time/i).selectOption('10:00 AM')
-
-    await expect(dialog.getByLabel(/preferred time/i)).toHaveValue('10:00 AM')
+    await expect(dialog.getByRole('button', { name: '10:00 AM' })).toHaveAttribute(
+      'aria-pressed',
+      'true'
+    )
   })
 
   test('footer lists phone and address without a public email', async ({

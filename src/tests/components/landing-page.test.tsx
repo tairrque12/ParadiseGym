@@ -49,7 +49,7 @@ describe('Landing page', () => {
     await user.click(screen.getAllByRole('button', { name: /book a free tour/i })[0])
     expect(screen.getByRole('dialog')).toBeInTheDocument()
     expect(
-      screen.getByRole('heading', { name: /free gym tour/i })
+      screen.getByRole('heading', { name: /book a free tour/i })
     ).toBeInTheDocument()
   })
 

@@ -12,13 +12,14 @@ import {
 } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { cn } from '@/lib/utils'
 import {
-  getAvailableTimeSlotsForDate,
+  formatTourDateLabel,
   groupTimeSlots,
-  isValidTimeSlotForDate,
+  tourTimeChoices,
+  upcomingTourDates,
 } from '@/lib/gym-hours'
-import { trackTourFormSubmit, type AnalyticsLocation } from '@/lib/analytics'
+import { trackTourFormSubmit } from '@/lib/analytics'
+import type { LocationId } from '@/lib/locations'
 import {
   tourRequestSchema,
   type TourRequestInput,
@@ -26,23 +27,33 @@ import {
 
 type TourRequestModalProps = {
   open: boolean
+  location: LocationId
   onOpenChange: (open: boolean) => void
-  location?: AnalyticsLocation
 }
-
-const SUCCESS_CLOSE_DELAY_MS = 1500
 
 const fieldClassName =
   'h-11 rounded-sm border-white/15 bg-[#141414] text-white focus-visible:border-neon focus-visible:ring-neon/40'
 
+const choiceClassName =
+  'inline-flex min-h-11 items-center justify-center rounded-sm border border-white/20 px-3 text-sm text-white aria-pressed:border-neon aria-pressed:bg-neon aria-pressed:text-carbon'
+
+function locationCopy(location: LocationId) {
+  if (location === 'mcallen') {
+    return 'This request is for McAllen. That gym is not open yet, so the tour is of the open Harlingen floor.'
+  }
+
+  return 'This tour is for the Harlingen gym.'
+}
+
 export function TourRequestModal({
   open,
+  location,
   onOpenChange,
-  location = 'harlingen',
 }: TourRequestModalProps) {
   const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>(
     'idle'
   )
+  const tourDays = useMemo(() => upcomingTourDates(), [])
 
   const {
     register,
@@ -55,6 +66,7 @@ export function TourRequestModal({
   } = useForm<TourRequestInput>({
     resolver: zodResolver(tourRequestSchema),
     defaultValues: {
+      location,
       first_name: '',
       last_name: '',
       email: '',
@@ -66,13 +78,9 @@ export function TourRequestModal({
 
   const preferredDate = useWatch({ control, name: 'preferred_date' })
   const timeSlotGroups = useMemo(
-    () =>
-      preferredDate
-        ? groupTimeSlots(getAvailableTimeSlotsForDate(preferredDate))
-        : [],
+    () => (preferredDate ? groupTimeSlots(tourTimeChoices(preferredDate)) : []),
     [preferredDate]
   )
-  const hasTimeSlots = timeSlotGroups.some((group) => group.slots.length > 0)
 
   useEffect(() => {
     if (!open) {
@@ -81,6 +89,7 @@ export function TourRequestModal({
     }
 
     reset({
+      location,
       first_name: '',
       last_name: '',
       email: '',
@@ -88,33 +97,16 @@ export function TourRequestModal({
       preferred_date: '',
       preferred_time: '',
     })
-  }, [open, reset])
+  }, [open, location, reset])
 
   useEffect(() => {
     const currentTime = getValues('preferred_time')
-
-    if (!preferredDate) {
-      if (currentTime) {
-        setValue('preferred_time', '', { shouldValidate: true })
-      }
-      return
-    }
-
-    if (currentTime && !isValidTimeSlotForDate(preferredDate, currentTime)) {
+    if (!preferredDate || !currentTime) return
+    const stillValid = tourTimeChoices(preferredDate).includes(currentTime)
+    if (!stillValid) {
       setValue('preferred_time', '', { shouldValidate: true })
     }
   }, [preferredDate, getValues, setValue])
-
-  useEffect(() => {
-    if (status !== 'success') return
-
-    const timer = window.setTimeout(() => {
-      onOpenChange(false)
-      setStatus('idle')
-    }, SUCCESS_CLOSE_DELAY_MS)
-
-    return () => window.clearTimeout(timer)
-  }, [status, onOpenChange])
 
   const handleOpenChange = (next: boolean) => {
     if (!next && status === 'submitting') return
@@ -124,17 +116,11 @@ export function TourRequestModal({
   const onSubmit = handleSubmit(async (values) => {
     setStatus('submitting')
 
-    const payload = {
-      ...values,
-      preferred_date: values.preferred_date || undefined,
-      preferred_time: values.preferred_time || undefined,
-    }
-
     try {
       const response = await fetch('/api/tour-request', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
+        body: JSON.stringify(values),
       })
 
       if (!response.ok) {
@@ -156,16 +142,16 @@ export function TourRequestModal({
         className="max-h-[92svh] overflow-y-auto border border-white/10 bg-[#0A0A0A] text-white sm:max-h-none sm:max-w-lg sm:rounded-sm md:top-1/2 md:max-w-xl"
       >
         {status === 'success' ? (
-          <div className="space-y-4 py-6 text-center">
+          <div role="status" aria-live="polite" className="space-y-4 py-6 text-center">
             <h2 className="font-heading text-3xl uppercase tracking-tight text-neon">
-              Tour Requested
+              Tour requested
             </h2>
-            <p className="text-sm text-white/70">
-              We&apos;ll be in touch to schedule your visit to Paradise Gym.
+            <p className="text-sm text-white/80">
+              We&apos;ll text you to confirm your tour.
             </p>
             <button
               type="button"
-              className="mt-2 inline-flex items-center justify-center bg-neon px-6 py-3 text-sm font-semibold uppercase tracking-wider text-carbon"
+              className="mt-2 inline-flex min-h-11 items-center justify-center bg-neon px-6 text-sm font-semibold text-carbon"
               onClick={() => onOpenChange(false)}
             >
               Done
@@ -175,14 +161,15 @@ export function TourRequestModal({
           <>
             <DialogHeader>
               <DialogTitle className="font-heading text-3xl uppercase tracking-tight text-white">
-                Free Gym Tour
+                Book a free tour
               </DialogTitle>
-              <DialogDescription className="text-white/60">
-                Book a walkthrough of the gym and see the floor for yourself.
+              <DialogDescription className="text-white/70">
+                {locationCopy(location)}
               </DialogDescription>
             </DialogHeader>
 
             <form onSubmit={onSubmit} className="grid gap-4">
+              <input type="hidden" {...register('location')} />
               <div className="grid gap-4 sm:grid-cols-2">
                 <div className="space-y-2">
                   <Label htmlFor="tour-first-name">First name</Label>
@@ -211,20 +198,6 @@ export function TourRequestModal({
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="tour-email">Email</Label>
-                <Input
-                  id="tour-email"
-                  type="email"
-                  className={fieldClassName}
-                  aria-invalid={!!errors.email}
-                  {...register('email')}
-                />
-                {errors.email && (
-                  <p className="text-xs text-red-400">{errors.email.message}</p>
-                )}
-              </div>
-
-              <div className="space-y-2">
                 <Label htmlFor="tour-phone">Phone</Label>
                 <Input
                   id="tour-phone"
@@ -238,59 +211,94 @@ export function TourRequestModal({
                 )}
               </div>
 
-              <div className="grid gap-4 sm:grid-cols-2">
-                <div className="space-y-2">
-                  <Label htmlFor="tour-preferred-date">Preferred date (optional)</Label>
-                  <Input
-                    id="tour-preferred-date"
-                    type="date"
-                    className={fieldClassName}
-                    aria-invalid={!!errors.preferred_date}
-                    {...register('preferred_date')}
-                  />
-                  {errors.preferred_date && (
-                    <p className="text-xs text-red-400">
-                      {errors.preferred_date.message}
-                    </p>
-                  )}
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="tour-preferred-time">Preferred time (optional)</Label>
-                  <Controller
-                    control={control}
-                    name="preferred_time"
-                    render={({ field }) => (
-                      <select
-                        id="tour-preferred-time"
-                        aria-label="Preferred time"
-                        className={cn(fieldClassName, 'w-full px-3')}
-                        disabled={!preferredDate || !hasTimeSlots}
-                        aria-invalid={!!errors.preferred_time}
-                        value={field.value ?? ''}
-                        onChange={(event) => field.onChange(event.target.value)}
-                      >
-                        <option value="">
-                          {preferredDate ? 'Select a time' : 'Select a date first'}
-                        </option>
-                        {timeSlotGroups.map((group) => (
-                          <optgroup key={group.label} label={group.label}>
-                            {group.slots.map((slot) => (
-                              <option key={slot} value={slot}>
-                                {slot}
-                              </option>
-                            ))}
-                          </optgroup>
-                        ))}
-                      </select>
-                    )}
-                  />
-                  {errors.preferred_time && (
-                    <p className="text-xs text-red-400">
-                      {errors.preferred_time.message}
-                    </p>
-                  )}
-                </div>
+              <div className="space-y-2">
+                <Label htmlFor="tour-email">Email (optional)</Label>
+                <Input
+                  id="tour-email"
+                  type="email"
+                  className={fieldClassName}
+                  aria-invalid={!!errors.email}
+                  {...register('email')}
+                />
+                {errors.email && (
+                  <p className="text-xs text-red-400">{errors.email.message}</p>
+                )}
               </div>
+
+              <Controller
+                control={control}
+                name="preferred_date"
+                render={({ field }) => (
+                  <div className="space-y-2">
+                    <Label id="tour-preferred-day-label">Preferred day</Label>
+                    <div
+                      role="group"
+                      aria-labelledby="tour-preferred-day-label"
+                      className="flex flex-wrap gap-2"
+                    >
+                      {tourDays.map((day) => (
+                        <button
+                          key={day}
+                          type="button"
+                          aria-pressed={field.value === day}
+                          className={choiceClassName}
+                          onClick={() => field.onChange(day)}
+                        >
+                          {formatTourDateLabel(day)}
+                        </button>
+                      ))}
+                    </div>
+                    {errors.preferred_date && (
+                      <p className="text-xs text-red-400">{errors.preferred_date.message}</p>
+                    )}
+                  </div>
+                )}
+              />
+
+              <Controller
+                control={control}
+                name="preferred_time"
+                render={({ field }) => (
+                  <div className="space-y-2">
+                    <Label id="tour-preferred-time-label">Preferred time</Label>
+                    {preferredDate ? (
+                      <div
+                        role="group"
+                        aria-labelledby="tour-preferred-time-label"
+                        className="grid gap-3"
+                      >
+                        {timeSlotGroups.map((group) => (
+                          <div key={group.label}>
+                            <p className="mb-2 text-sm text-white/70">{group.label}</p>
+                            <div className="flex flex-wrap gap-2">
+                              {group.slots.map((slot) => (
+                                <button
+                                  key={slot}
+                                  type="button"
+                                  aria-pressed={field.value === slot}
+                                  className={choiceClassName}
+                                  onClick={() => field.onChange(slot)}
+                                >
+                                  {slot}
+                                </button>
+                              ))}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <p className="text-sm text-white/70">Choose a day first.</p>
+                    )}
+                    {errors.preferred_time && (
+                      <p className="text-xs text-red-400">{errors.preferred_time.message}</p>
+                    )}
+                  </div>
+                )}
+              />
+
+              <p className="text-sm text-white/80">
+                We&apos;ll text you to confirm your tour.
+              </p>
 
               {status === 'error' && (
                 <p className="text-sm text-red-400">
@@ -301,9 +309,9 @@ export function TourRequestModal({
               <button
                 type="submit"
                 disabled={status === 'submitting'}
-                className="mt-2 inline-flex w-full items-center justify-center bg-neon px-4 py-3 text-sm font-semibold uppercase tracking-wider text-carbon transition hover:shadow-neon disabled:cursor-not-allowed disabled:opacity-60"
+                className="mt-2 inline-flex min-h-11 w-full items-center justify-center bg-neon px-4 text-sm font-semibold text-carbon transition hover:shadow-neon disabled:cursor-not-allowed disabled:opacity-60"
               >
-                {status === 'submitting' ? 'Submitting...' : 'Request Tour'}
+                {status === 'submitting' ? 'Submitting...' : 'Request tour'}
               </button>
             </form>
           </>

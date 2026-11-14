@@ -268,6 +268,8 @@ describe('Navbar', () => {
     await user.click(tour)
 
     expect(screen.getByRole('dialog')).toBeInTheDocument()
-    expect(screen.getByText(/free gym tour/i)).toBeInTheDocument()
+    expect(
+      screen.getByRole('heading', { name: /book a free tour/i })
+    ).toBeInTheDocument()
   })
 })
