@@ -1,5 +1,6 @@
 import '@/tests/mocks/react'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { renderToString } from 'react-dom/server'
 import { render, screen } from '@testing-library/react'
 import { GymFacts } from '@/components/sections/GymFacts'
 
@@ -23,6 +24,16 @@ describe('GymFacts', () => {
     expect(screen.getByText('7,500')).toBeInTheDocument()
     expect(screen.getByText('70+')).toBeInTheDocument()
     expect(screen.getByText('Custom-Built Equipment')).toBeInTheDocument()
+  })
+
+  it('renders the final stat numbers in the server HTML', () => {
+    const html = renderToString(<GymFacts />)
+
+    expect(html).toContain('>7,500<')
+    expect(html).toContain('>70+<')
+    expect(html).not.toContain('>0<')
+    expect(html).not.toContain('>0+<')
+    expect(html).not.toContain('0 SQ FT')
   })
 
   it('renders stat labels', () => {

@@ -2,8 +2,6 @@
 
 import { formatCountDisplay } from '@/lib/count-up'
 import { GYM_STATS } from '@/lib/contact'
-import { useCountUp } from '@/hooks/use-count-up'
-import { usePrefersReducedMotion } from '@/hooks/use-prefers-reduced-motion'
 import { GrainOverlay } from '@/components/motion'
 
 function CountStat({
@@ -15,20 +13,10 @@ function CountStat({
   suffix: string
   label: string
 }) {
-  const reducedMotion = usePrefersReducedMotion()
-  const { ref, value: count } = useCountUp(value)
-
-  const display = reducedMotion
-    ? formatCountDisplay(value, { suffix })
-    : formatCountDisplay(count, { suffix })
-
   return (
     <div className="text-center md:text-left">
-      <span
-        ref={ref}
-        className="block font-heading text-4xl tracking-tight text-white sm:text-5xl lg:text-6xl"
-      >
-        {display}
+      <span className="block font-heading text-4xl tracking-tight text-white sm:text-5xl lg:text-6xl">
+        {formatCountDisplay(value, { suffix })}
       </span>
       <span className="mt-2 block text-xs uppercase tracking-[0.2em] text-neon sm:text-sm">
         {label}
