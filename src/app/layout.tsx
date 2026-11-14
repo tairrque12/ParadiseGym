@@ -1,10 +1,10 @@
-import type { Metadata } from 'next'
 import { Anton, Space_Grotesk } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import { SpeedInsights } from '@vercel/speed-insights/next'
 import './globals.css'
 import { cn } from '@/lib/utils'
 import { Providers } from '@/components/providers'
+import { rootMetadata } from '@/lib/seo'
 
 const anton = Anton({
   subsets: ['latin'],
@@ -17,11 +17,7 @@ const spaceGrotesk = Space_Grotesk({
   variable: '--font-sans',
 })
 
-export const metadata: Metadata = {
-  title: 'Paradise Gym | Where Strength Meets Aesthetics',
-  description:
-    'Premium gym in Harlingen, TX — 7,500 sq ft of custom-built equipment, infrared saunas, and a posing room included with every membership.',
-}
+export const metadata = rootMetadata
 
 export default function RootLayout({
   children,
