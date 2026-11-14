@@ -2,7 +2,7 @@
 
 import { NeonButton } from '@/components/NeonButton'
 import { HeroFrame } from '@/components/hero-frame'
-import { RevealOnMount } from '@/components/motion'
+import { MaskedLine, NeonRule, RevealOnMount, Rise } from '@/components/motion'
 import { useModal } from '@/context/modal-context'
 import {
   ABC_CHECKOUT_NOTE,
@@ -23,12 +23,14 @@ export function McAllenHero() {
           <span aria-hidden className="size-1.5 shrink-0 rounded-full bg-neon" />
           Pre-Sale Now Open
         </p>
+        <NeonRule className="mt-3" />
 
-        <h1 className="mt-3 font-sans text-[clamp(2.75rem,11vw,3.5rem)] font-medium leading-[1.04] tracking-[-0.03em] text-white md:text-[clamp(3.5rem,5vw,4.5rem)]">
-          Paradise Gym
-          <span className="block">McAllen</span>
+        <h1 className="mt-4 font-sans text-[clamp(2.75rem,11vw,3.5rem)] font-medium leading-[1.04] tracking-[-0.03em] text-white md:text-[clamp(3.5rem,5vw,4.5rem)]">
+          <MaskedLine>Paradise Gym</MaskedLine>
+          <MaskedLine delay={0.12}>McAllen</MaskedLine>
         </h1>
 
+        <Rise delay={0.28}>
         <p className="mt-4 max-w-md text-[15px] leading-relaxed text-white/80 sm:text-lg">
           {mcallen.sqft.toLocaleString('en-US')} sq ft of custom-built training,
           coming to {mcallen.address.split(',')[1]?.trim()}.
@@ -78,6 +80,7 @@ export function McAllenHero() {
             Photo from our Harlingen gym. McAllen is opening soon.
           </p>
         </div>
+        </Rise>
       </RevealOnMount>
     </HeroFrame>
   )

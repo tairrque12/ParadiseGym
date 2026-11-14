@@ -3,7 +3,7 @@
 import { Wordmark } from '@/components/Logo'
 import { NeonButton } from '@/components/NeonButton'
 import { HeroFrame } from '@/components/hero-frame'
-import { RevealOnMount } from '@/components/motion'
+import { NeonRule, RevealOnMount, Rise } from '@/components/motion'
 import { useModal } from '@/context/modal-context'
 import { OpenTodayHours } from '@/components/open-today-hours'
 import {
@@ -25,17 +25,21 @@ export function Hero() {
     <HeroFrame>
       <RevealOnMount className="max-w-xl">
         <p className="text-[13px] font-medium text-white/75">Harlingen</p>
-        <Wordmark className="mt-3" />
-        <p className="mt-4 max-w-md text-[15px] leading-relaxed text-white/80 sm:text-lg">
-          Where Strength Meets Aesthetics
-        </p>
-        <ul className="mt-5 space-y-1 text-[15px] leading-relaxed text-white/75">
-          <li>
-            <OpenTodayHours />
-          </li>
-          <li>{harlingen.address}</li>
-          {fromPrice ? <li>From {fromPrice}</li> : null}
-        </ul>
+        <NeonRule className="mt-3" />
+        <Wordmark className="mt-4" />
+        <Rise delay={0.28}>
+          <p className="mt-4 max-w-md text-[15px] leading-relaxed text-white/80 sm:text-lg">
+            Where Strength Meets Aesthetics
+          </p>
+          <ul className="mt-5 space-y-1 text-[15px] leading-relaxed text-white/75">
+            <li>
+              <OpenTodayHours />
+            </li>
+            <li>{harlingen.address}</li>
+            {fromPrice ? <li>From {fromPrice}</li> : null}
+          </ul>
+        </Rise>
+        <Rise delay={0.42}>
         <div data-hero-cta="" className="mt-6 flex flex-col items-stretch gap-3 sm:items-start">
           <div className="flex flex-col gap-2.5 sm:flex-row sm:flex-wrap sm:items-center">
             <NeonButton
@@ -58,6 +62,7 @@ export function Hero() {
           </div>
           <p className="max-w-sm text-[13px] leading-relaxed text-white/70">{ABC_CHECKOUT_NOTE}</p>
         </div>
+        </Rise>
       </RevealOnMount>
     </HeroFrame>
   )

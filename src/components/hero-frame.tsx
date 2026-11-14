@@ -3,7 +3,10 @@
 import Image from 'next/image'
 import { motion, useScroll, useTransform } from 'framer-motion'
 import { GrainOverlay } from '@/components/motion'
-import { usePrefersReducedMotion } from '@/hooks/use-prefers-reduced-motion'
+import {
+  useMinWidth,
+  usePrefersReducedMotion,
+} from '@/hooks/use-prefers-reduced-motion'
 import { cn } from '@/lib/utils'
 
 export function HeroFrame({
@@ -14,8 +17,10 @@ export function HeroFrame({
   className?: string
 }) {
   const reducedMotion = usePrefersReducedMotion()
+  const desktop = useMinWidth('(min-width: 768px)')
   const { scrollY } = useScroll()
-  const y = useTransform(scrollY, [0, 800], ['0%', reducedMotion ? '0%' : '2%'])
+  const travel = reducedMotion ? '0%' : desktop ? '15%' : '6%'
+  const y = useTransform(scrollY, [0, 800], ['0%', travel])
 
   return (
     <section className="relative isolate min-h-[78svh] overflow-hidden bg-carbon md:min-h-[100svh]">
@@ -23,6 +28,16 @@ export function HeroFrame({
         className="absolute inset-x-0 -top-[8%] -bottom-[8%] will-change-transform"
         style={{ y }}
       >
+        <motion.div
+          className="relative h-full w-full"
+          initial={reducedMotion ? false : { scale: 1.15 }}
+          animate={{ scale: 1 }}
+          transition={
+            reducedMotion
+              ? { duration: 0 }
+              : { duration: 1.6, ease: [0.16, 1, 0.3, 1] }
+          }
+        >
         <Image
           src="/images/hero-gym-floor.png"
           alt="Paradise Gym training floor with neon green equipment and lighting"
@@ -31,6 +46,7 @@ export function HeroFrame({
           className="object-cover object-[center_72%] md:object-[center_42%]"
           sizes="100vw"
         />
+        </motion.div>
       </motion.div>
 
       <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(10,10,10,0.78)_0%,rgba(10,10,10,0.46)_34%,rgba(10,10,10,0.22)_68%,rgba(10,10,10,0.4)_100%)] md:bg-[linear-gradient(180deg,rgba(10,10,10,0.72)_0%,rgba(10,10,10,0.16)_22%,rgba(10,10,10,0.08)_58%,rgba(10,10,10,0.9)_100%)]" />

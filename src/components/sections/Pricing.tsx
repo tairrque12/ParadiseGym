@@ -1,5 +1,5 @@
 import { ArrowUpRight } from 'lucide-react'
-import { SectionReveal } from '@/components/motion'
+import { NeonRule, SectionReveal } from '@/components/motion'
 import { SectionHeading } from '@/components/section-heading'
 import { TrackedPlanLink } from '@/components/tracked-plan-link'
 import {
@@ -40,7 +40,10 @@ function PricingRow({ option }: { option: MembershipOption }) {
     >
       <span className="min-w-0">
         {recommended ? (
-          <span className="mb-2 block text-xs font-semibold text-neon">Recommended</span>
+          <span className="mb-3 block">
+            <span className="block text-xs font-semibold text-neon">Recommended</span>
+            <NeonRule className="mt-2" />
+          </span>
         ) : null}
         <span className="block text-base font-medium text-white">{option.name}</span>
         {option.subLabel ? (

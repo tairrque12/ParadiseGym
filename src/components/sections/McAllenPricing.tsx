@@ -1,5 +1,5 @@
 import { ArrowUpRight } from 'lucide-react'
-import { SectionReveal } from '@/components/motion'
+import { NeonRule, SectionReveal } from '@/components/motion'
 import { SectionHeading } from '@/components/section-heading'
 import { TourPrompt } from '@/components/tour-prompt'
 import { TrackedPlanLink } from '@/components/tracked-plan-link'
@@ -61,6 +61,7 @@ export function McAllenPricing() {
                     </span>
                   ) : null}
                 </span>
+                {recommended ? <NeonRule className="mt-3" /> : null}
 
                 <span className="mt-5 block font-sans text-[2.75rem] font-medium leading-none tracking-tight text-white tabular-nums">
                   {option.price}

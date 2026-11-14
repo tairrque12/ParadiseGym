@@ -2,7 +2,7 @@
 
 import Image from 'next/image'
 import { SECTION_IDS } from '@/lib/sections'
-import { SectionReveal } from '@/components/motion'
+import { ImageWipe, SectionReveal, SlideReveal } from '@/components/motion'
 import { SectionHeading } from '@/components/section-heading'
 import { TourPrompt } from '@/components/tour-prompt'
 import { cn } from '@/lib/utils'
@@ -56,18 +56,24 @@ function AmenityRow({
   return (
     <SectionReveal>
       <article className="grid items-center gap-5 border-t border-white/10 py-8 lg:grid-cols-12 lg:gap-16 lg:py-16">
-        <div className={cn('lg:col-span-6', flip && 'lg:order-2')}>
-          <div className="group relative aspect-[16/10] overflow-hidden bg-carbon ring-1 ring-white/10 lg:aspect-[4/3]">
-            <Image
-              src={image.src}
-              alt={image.alt}
-              fill
-              className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03] motion-reduce:transition-none motion-reduce:group-hover:scale-100"
-              sizes="(max-width: 1024px) 100vw, 42vw"
-            />
-          </div>
-        </div>
-        <div className={cn('lg:col-span-5', flip ? 'lg:order-1' : 'lg:col-start-8')}>
+        <ImageWipe
+          className={cn(
+            'group relative aspect-[16/10] bg-carbon ring-1 ring-white/10 lg:col-span-6 lg:aspect-[4/3]',
+            flip && 'lg:order-2'
+          )}
+        >
+          <Image
+            src={image.src}
+            alt={image.alt}
+            fill
+            className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.06] motion-reduce:transition-none motion-reduce:group-hover:scale-100"
+            sizes="(max-width: 1024px) 100vw, 42vw"
+          />
+        </ImageWipe>
+        <SlideReveal
+          from={flip ? 'left' : 'right'}
+          className={cn('lg:col-span-5', flip ? 'lg:order-1' : 'lg:col-start-8')}
+        >
           <p className="text-xs font-medium tabular-nums text-text-3">{numeral}</p>
           <h3 className="mt-2 font-sans text-[clamp(1.5rem,5vw,2rem)] font-medium leading-tight tracking-[-0.02em] text-white lg:text-[clamp(1.75rem,3vw,2.5rem)]">
             {title}
@@ -77,7 +83,7 @@ function AmenityRow({
             <span aria-hidden className="size-1.5 rounded-full bg-neon" />
             Included in Membership
           </p>
-        </div>
+        </SlideReveal>
       </article>
     </SectionReveal>
   )

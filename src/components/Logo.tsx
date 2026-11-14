@@ -1,4 +1,5 @@
 import Image from 'next/image'
+import { MaskedLine } from '@/components/motion'
 import { cn } from '@/lib/utils'
 
 type LogoProps = {
@@ -35,8 +36,8 @@ export function Wordmark({ className }: { className?: string }) {
         className
       )}
     >
-      Paradise
-      <span className="block">Gym</span>
+      <MaskedLine>Paradise</MaskedLine>
+      <MaskedLine delay={0.12}>Gym</MaskedLine>
     </h1>
   )
 }
