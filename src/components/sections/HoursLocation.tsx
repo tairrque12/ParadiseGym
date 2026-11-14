@@ -1,6 +1,7 @@
 'use client'
 
-import { useCallback } from 'react'
+import { useCallback, useEffect, useState } from 'react'
+import { isMcAllenOpen } from '@/lib/mcallen-opening'
 import { LOCATIONS, type GymLocation } from '@/lib/locations'
 import { detectMapsPlatform, getMapsUrl } from '@/lib/maps'
 import { SECTION_IDS } from '@/lib/sections'
@@ -13,6 +14,11 @@ export function HoursLocation({
   location?: GymLocation
 }) {
   const { address, hours } = location
+  const [open, setOpen] = useState(false)
+
+  useEffect(() => {
+    if (location.status === 'presale') setOpen(isMcAllenOpen())
+  }, [location.status])
 
   const openMaps = useCallback(() => {
     const platform = detectMapsPlatform(navigator.userAgent)
@@ -32,7 +38,7 @@ export function HoursLocation({
             title="Hours & location"
             description={
               location.status === 'presale'
-                ? `${location.sqft.toLocaleString('en-US')} sq ft, opening soon`
+                ? `${location.sqft.toLocaleString('en-US')} sq ft, ${open ? 'now open' : 'opens Nov 28'}`
                 : location.name
             }
           />
@@ -59,7 +65,9 @@ export function HoursLocation({
               <div className="mt-5 border border-white/10 p-6">
                 <p className="text-xl font-medium tracking-tight text-white">Hours coming soon</p>
                 <p className="mt-2 text-sm leading-relaxed text-text-2">
-                  Full schedule announced closer to opening day.
+                  {open
+                    ? 'Full schedule still to be posted.'
+                    : 'Full schedule announced closer to the Nov 28 opening.'}
                 </p>
               </div>
             )}

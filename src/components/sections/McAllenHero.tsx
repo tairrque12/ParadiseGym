@@ -73,7 +73,10 @@ export function McAllenHero() {
             </a>
             <p className="max-w-sm text-[13px] leading-relaxed text-white/70">{ABC_CHECKOUT_NOTE}</p>
             <p className="text-[13px] leading-relaxed text-white/70" data-testid="hero-photo-caption">
-              Photo from our Harlingen gym. McAllen is opening soon.
+              Photo from our Harlingen gym.{' '}
+              {openingLabel === MCALLEN_NOW_OPEN_LABEL
+                ? 'McAllen is now open.'
+                : 'McAllen opens Nov 28.'}
             </p>
           </div>
         </Rise>

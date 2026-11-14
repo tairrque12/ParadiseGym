@@ -106,7 +106,7 @@ describe('McAllen page', () => {
     expect(screen.queryByRole('heading', { name: 'Showers' })).not.toBeInTheDocument()
     expect(screen.getAllByText(LOCATIONS.mcallen.presaleNote!).length).toBeGreaterThan(0)
     expect(screen.getByTestId('hero-photo-caption')).toHaveTextContent(
-      'Photo from our Harlingen gym. McAllen is opening soon.'
+      'Photo from our Harlingen gym. McAllen opens Nov 28.'
     )
     expect(heroJoin).not.toHaveTextContent(/due today/i)
   })
