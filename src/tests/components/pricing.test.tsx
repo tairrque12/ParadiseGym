@@ -13,12 +13,8 @@ describe('Pricing', () => {
     expect(screen.getByText('12 Month Contract')).toBeInTheDocument()
     expect(screen.getByText('Recommended')).toBeInTheDocument()
     expect(screen.getByText('$39.99/mo')).toBeInTheDocument()
-    expect(
-      screen.getByText('Due today $75.76 · Maintenance fee $43.29')
-    ).toBeInTheDocument()
-    expect(
-      screen.getByText('Due today $54.11 · Upcoming fees $0.00')
-    ).toBeInTheDocument()
+    expect(screen.queryByText(/due today/i)).not.toBeInTheDocument()
+    expect(screen.queryByText(/maintenance fee/i)).not.toBeInTheDocument()
     expect(screen.queryByText(/\$30\.00 enrollment/i)).not.toBeInTheDocument()
     const dayPass = screen.getByRole('link', { name: /day pass/i })
     expect(dayPass).toHaveTextContent('$17.99')

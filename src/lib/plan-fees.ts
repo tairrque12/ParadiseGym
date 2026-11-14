@@ -76,6 +76,11 @@ export const PLAN_FEES: Record<
   },
 }
 
+/** Off unless NEXT_PUBLIC_SHOW_FEE_DISCLOSURE=true. Fee numbers must not render otherwise. */
+export function feeDisclosureEnabled(): boolean {
+  return process.env.NEXT_PUBLIC_SHOW_FEE_DISCLOSURE === 'true'
+}
+
 export function planFeeSummary(
   location: LocationId,
   slug: MembershipType

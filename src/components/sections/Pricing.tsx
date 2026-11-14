@@ -9,7 +9,7 @@ import {
   type MembershipOption,
 } from '@/lib/membership-options'
 import { ABC_CHECKOUT_NOTE, joinUrl, LOCATIONS } from '@/lib/locations'
-import { planFeeSummary } from '@/lib/plan-fees'
+import { feeDisclosureEnabled, planFeeSummary } from '@/lib/plan-fees'
 import { SECTION_IDS } from '@/lib/sections'
 import { cn } from '@/lib/utils'
 
@@ -24,7 +24,9 @@ function CategoryHeader({ label }: { label: string }) {
 }
 
 function PricingRow({ option }: { option: MembershipOption }) {
-  const feeSummary = planFeeSummary('harlingen', option.slug)
+  const feeSummary = feeDisclosureEnabled()
+    ? planFeeSummary('harlingen', option.slug)
+    : null
 
   return (
     <TrackedPlanLink

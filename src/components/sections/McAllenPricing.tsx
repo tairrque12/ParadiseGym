@@ -2,7 +2,7 @@ import { ArrowUpRight } from 'lucide-react'
 import { GrainOverlay, SectionReveal } from '@/components/motion'
 import { TrackedPlanLink } from '@/components/tracked-plan-link'
 import { ABC_CHECKOUT_NOTE, joinUrl, LOCATIONS } from '@/lib/locations'
-import { planFeeSummary } from '@/lib/plan-fees'
+import { feeDisclosureEnabled, planFeeSummary } from '@/lib/plan-fees'
 import { PRICING_DISCOUNT_NOTE } from '@/lib/membership-options'
 import { SECTION_IDS } from '@/lib/sections'
 
@@ -31,7 +31,9 @@ export function McAllenPricing() {
 
         <div className="grid gap-5 md:grid-cols-3 md:gap-6">
           {mcallen.membershipOptions.map((option) => {
-            const feeSummary = planFeeSummary('mcallen', option.slug)
+            const feeSummary = feeDisclosureEnabled()
+              ? planFeeSummary('mcallen', option.slug)
+              : null
 
             return (
             <TrackedPlanLink

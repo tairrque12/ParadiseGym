@@ -1,8 +1,18 @@
-import { describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 import { MEMBERSHIP_OPTIONS } from '@/lib/membership-options'
-import { planFeeSummary } from '@/lib/plan-fees'
+import { feeDisclosureEnabled, planFeeSummary } from '@/lib/plan-fees'
 
 describe('plan fee disclosure', () => {
+  afterEach(() => {
+    vi.unstubAllEnvs()
+  })
+
+  it('stays off unless the public flag is exactly true', () => {
+    expect(feeDisclosureEnabled()).toBe(false)
+    vi.stubEnv('NEXT_PUBLIC_SHOW_FEE_DISCLOSURE', 'true')
+    expect(feeDisclosureEnabled()).toBe(true)
+  })
+
   it('does not repeat the published plan price inside the checkout line', () => {
     for (const option of MEMBERSHIP_OPTIONS) {
       const summary = planFeeSummary('harlingen', option.slug) ?? ''
