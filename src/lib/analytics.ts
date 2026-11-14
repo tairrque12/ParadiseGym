@@ -3,7 +3,7 @@
 import { track } from '@vercel/analytics'
 
 export type AnalyticsLocation = 'harlingen' | 'mcallen'
-export type TourPlacement = 'hero' | 'header' | 'mobile_menu'
+export type TourPlacement = 'hero' | 'header' | 'mobile_menu' | 'sticky' | 'section'
 export type JoinPlacement = 'hero' | 'header' | 'mobile_menu'
 export type PhonePlacement = 'footer'
 

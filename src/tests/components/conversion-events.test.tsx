@@ -37,8 +37,13 @@ function renderMcAllen() {
 async function fillTourForm(user: ReturnType<typeof userEvent.setup>) {
   await user.type(screen.getByLabelText(/first name/i), 'Elena')
   await user.type(screen.getByLabelText(/last name/i), 'Rivera')
-  await user.type(screen.getByLabelText(/^email$/i), 'elena@example.com')
+  await user.type(screen.getByLabelText(/email/i), 'elena@example.com')
   await user.type(screen.getByLabelText(/phone/i), '956-244-6692')
+  const days = within(screen.getByRole('group', { name: /preferred day/i })).getAllByRole(
+    'button'
+  )
+  await user.click(days[days.length - 1])
+  await user.click(screen.getByRole('button', { name: '10:00 AM' }))
 }
 
 describe('conversion events', () => {
@@ -53,7 +58,7 @@ describe('conversion events', () => {
 
     await user.click(
       within(screen.getByRole('main')).getByRole('link', {
-        name: 'Request Membership',
+        name: 'Join now',
       })
     )
     await user.click(screen.getByTestId('header-cta'))
@@ -68,7 +73,7 @@ describe('conversion events', () => {
     await user.click(screen.getByTestId('mobile-menu-button'))
     await user.click(
       within(screen.getByRole('navigation', { name: /mobile/i })).getByTestId(
-        'mobile-membership-cta'
+        'mobile-join'
       )
     )
 
@@ -98,7 +103,11 @@ describe('conversion events', () => {
     const user = userEvent.setup()
     renderHome()
 
-    await user.click(screen.getByRole('button', { name: 'Free Gym Tour' }))
+    await user.click(
+      within(screen.getByRole('main')).getAllByRole('button', {
+        name: 'Not ready? Book a free tour',
+      })[0]
+    )
     await user.click(screen.getByRole('button', { name: /close/i }))
     await user.click(screen.getByTestId('header-tour'))
     await user.click(screen.getByRole('button', { name: /close/i }))
@@ -148,7 +157,7 @@ describe('conversion events', () => {
     renderMcAllen()
 
     await user.click(
-      screen.getByRole('link', { name: /lock in founding member pricing/i })
+      screen.getByRole('link', { name: /join founding membership/i })
     )
     await user.click(screen.getByTestId('header-cta'))
     await user.click(
@@ -159,7 +168,7 @@ describe('conversion events', () => {
     )
     await user.click(screen.getByRole('link', { name: CONTACT.phone }))
     await user.click(screen.getByTestId('mobile-menu-button'))
-    await user.click(screen.getByTestId('mobile-membership-cta'))
+    await user.click(screen.getByTestId('mobile-join'))
 
     expect(track).toHaveBeenCalledWith('join_online_click', {
       location: 'mcallen',

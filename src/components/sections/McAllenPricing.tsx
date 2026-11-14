@@ -1,7 +1,9 @@
 import { ArrowUpRight } from 'lucide-react'
 import { GrainOverlay, SectionReveal } from '@/components/motion'
+import { TourPrompt } from '@/components/tour-prompt'
 import { TrackedPlanLink } from '@/components/tracked-plan-link'
-import { LOCATIONS } from '@/lib/locations'
+import { ABC_CHECKOUT_NOTE, joinUrl, LOCATIONS } from '@/lib/locations'
+import { feeDisclosureEnabled, planFeeSummary } from '@/lib/plan-fees'
 import { PRICING_DISCOUNT_NOTE } from '@/lib/membership-options'
 import { SECTION_IDS } from '@/lib/sections'
 
@@ -29,10 +31,15 @@ export function McAllenPricing() {
         </SectionReveal>
 
         <div className="grid gap-5 md:grid-cols-3 md:gap-6">
-          {mcallen.membershipOptions.map((option) => (
+          {mcallen.membershipOptions.map((option) => {
+            const feeSummary = feeDisclosureEnabled()
+              ? planFeeSummary('mcallen', option.slug)
+              : null
+
+            return (
             <TrackedPlanLink
               key={option.slug}
-              href={mcallen.joinLink}
+              href={joinUrl('mcallen', option.slug)}
               location="mcallen"
               plan={option.name}
               target="_blank"
@@ -59,6 +66,12 @@ export function McAllenPricing() {
                     {option.subLabel}
                   </span>
                 ) : null}
+
+                {feeSummary ? (
+                  <span className="mt-4 block text-sm font-normal normal-case leading-snug tracking-normal text-white/80">
+                    {feeSummary}
+                  </span>
+                ) : null}
               </div>
 
               <span className="mt-8 inline-flex items-center justify-center gap-2 rounded-sm bg-neon px-5 py-3 text-sm font-semibold uppercase tracking-wider text-carbon transition-shadow group-hover:shadow-neon">
@@ -66,7 +79,13 @@ export function McAllenPricing() {
                 <ArrowUpRight className="h-4 w-4" aria-hidden />
               </span>
             </TrackedPlanLink>
-          ))}
+            )
+          })}
+        </div>
+
+        <p className="mt-8 text-sm leading-relaxed text-white/80">{ABC_CHECKOUT_NOTE}</p>
+        <div className="mt-4">
+          <TourPrompt>Not ready to join? Book a free tour</TourPrompt>
         </div>
 
         <SectionReveal className="mt-10 border border-neon/20 bg-carbon/70 px-5 py-4 sm:px-6">

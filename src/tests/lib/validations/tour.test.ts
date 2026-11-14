@@ -2,10 +2,13 @@ import { describe, it, expect, vi, afterEach } from 'vitest'
 import { tourRequestSchema } from '@/lib/validations/tour'
 
 const validPayload = {
+  location: 'harlingen' as const,
   first_name: 'Elena',
   last_name: 'Rivera',
   email: 'elena@example.com',
   phone: '9562446692',
+  preferred_date: '2027-01-04',
+  preferred_time: '10:00 AM',
 }
 
 describe('tourRequestSchema', () => {
@@ -13,8 +16,14 @@ describe('tourRequestSchema', () => {
     vi.useRealTimers()
   })
 
-  it('accepts a valid payload without optional fields', () => {
+  it('accepts a valid payload and an empty email', () => {
+    vi.useFakeTimers()
+    vi.setSystemTime(new Date('2026-07-02T12:00:00Z'))
+
     expect(tourRequestSchema.safeParse(validPayload).success).toBe(true)
+    expect(
+      tourRequestSchema.safeParse({ ...validPayload, email: '' }).success
+    ).toBe(true)
   })
 
   it('requires first and last name', () => {
@@ -45,7 +54,7 @@ describe('tourRequestSchema', () => {
     ).toBe(true)
   })
 
-  it('allows optional preferred_date and preferred_time', () => {
+  it('requires a day and a valid time slot', () => {
     vi.useFakeTimers()
     vi.setSystemTime(new Date('2026-07-02T12:00:00Z'))
 
@@ -102,9 +111,19 @@ describe('tourRequestSchema', () => {
     expect(result.success).toBe(true)
   })
 
+  it('rejects a request with no location', () => {
+    const result = tourRequestSchema.safeParse({
+      ...validPayload,
+      location: undefined,
+    })
+
+    expect(result.success).toBe(false)
+  })
+
   it('rejects preferred_time without a preferred_date', () => {
     const result = tourRequestSchema.safeParse({
       ...validPayload,
+      preferred_date: '',
       preferred_time: '10:00 AM',
     })
 

@@ -14,6 +14,7 @@ const membershipFields = {
 }
 
 const tourFields = {
+  location: 'harlingen',
   first_name: 'Elena',
   last_name: 'Rivera',
   email: 'elena@example.com',

@@ -1,12 +1,23 @@
 import '@/tests/mocks/react'
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { Gallery } from '@/components/sections/Gallery'
+import { Providers } from '@/components/providers'
 import { GALLERY_IMAGES } from '@/lib/gallery'
+
+vi.mock('next/navigation', () => ({ usePathname: () => '/gallery' }))
 
 describe('Gallery', () => {
   it('renders the gallery section with all photos', () => {
-    render(<Gallery />)
+    render(
+      <Providers>
+        <Gallery />
+      </Providers>
+    )
+
+    expect(
+      screen.getByRole('button', { name: /book a free tour/i })
+    ).toBeInTheDocument()
 
     expect(screen.getAllByRole('heading', { level: 1 })).toHaveLength(1)
     expect(
@@ -19,7 +30,11 @@ describe('Gallery', () => {
   })
 
   it('loads the first photo immediately and leaves the rest lazy', () => {
-    render(<Gallery />)
+    render(
+      <Providers>
+        <Gallery />
+      </Providers>
+    )
 
     const images = GALLERY_IMAGES.map((image) =>
       screen.getByRole('img', { name: image.alt })

@@ -5,7 +5,12 @@ import userEvent from '@testing-library/user-event'
 import Home from '@/app/page'
 import { SECTION_IDS } from '@/lib/sections'
 import { Providers } from '@/components/providers'
-import { HARLINGEN_JOIN_URL, LOCATIONS, MCALLEN_PATH } from '@/lib/locations'
+import {
+  ABC_CHECKOUT_NOTE,
+  joinUrl,
+  LOCATIONS,
+  MCALLEN_PATH,
+} from '@/lib/locations'
 
 vi.mock('next/navigation', () => ({ usePathname: () => '/' }))
 
@@ -32,20 +37,19 @@ describe('Landing page', () => {
     const user = userEvent.setup()
     renderHome()
 
-    const membershipLinks = screen.getAllByRole('link', {
-      name: 'Request Membership',
-    })
-    expect(membershipLinks.length).toBeGreaterThan(0)
-    for (const membershipLink of membershipLinks) {
-      expect(membershipLink).toHaveAttribute('href', HARLINGEN_JOIN_URL)
-      expect(membershipLink).toHaveAttribute('target', '_blank')
-      expect(membershipLink).toHaveAttribute('rel', 'noopener noreferrer')
-    }
+    const heroJoin = screen.getByTestId('hero-join')
+    expect(heroJoin).toHaveTextContent('Join now')
+    expect(heroJoin).toHaveClass('bg-neon')
+    expect(heroJoin).toHaveAttribute('href', joinUrl('harlingen', 'hero'))
+    expect(heroJoin).toHaveAttribute('target', '_blank')
+    expect(heroJoin).toHaveAttribute('rel', 'noopener noreferrer')
+    expect(screen.getAllByText(ABC_CHECKOUT_NOTE).length).toBeGreaterThan(0)
+    expect(screen.queryByRole('link', { name: /request membership/i })).not.toBeInTheDocument()
 
-    await user.click(screen.getByRole('button', { name: 'Free Gym Tour' }))
+    await user.click(screen.getAllByRole('button', { name: /book a free tour/i })[0])
     expect(screen.getByRole('dialog')).toBeInTheDocument()
     expect(
-      screen.getByRole('heading', { name: /free gym tour/i })
+      screen.getByRole('heading', { name: /book a free tour/i })
     ).toBeInTheDocument()
   })
 

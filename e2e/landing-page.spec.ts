@@ -1,8 +1,5 @@
 import { test, expect, type Locator, type Page } from '@playwright/test'
 
-const MEMBERSHIP_JOIN_URL =
-  'https://onlinejoin.abcfitness.com/signup/plan?club=32265'
-
 // The "Get Directions" button also carries the city name, so scope to the switcher.
 function locationLink(page: Page, name: RegExp) {
   return page
@@ -115,7 +112,7 @@ test.describe('Landing page', () => {
     await page.goto('/')
 
     for (const name of [
-      /request membership/i,
+      /join now/i,
       /12 month contract/i,
       /month to month/i,
       /1 year paid in full/i,
@@ -128,7 +125,11 @@ test.describe('Landing page', () => {
       const count = await links.count()
       for (let index = 0; index < count; index++) {
         const link = links.nth(index)
-        await expect(link).toHaveAttribute('href', MEMBERSHIP_JOIN_URL)
+        const href = await link.getAttribute('href')
+        expect(href).toContain('club=32265')
+        expect(href).toContain('utm_source=website')
+        expect(href).toContain('utm_medium=cta')
+        expect(href).toContain('utm_campaign=harlingen-')
         await expect(link).toHaveAttribute('target', '_blank')
         await expect(link).toHaveAttribute('rel', 'noopener noreferrer')
       }
@@ -296,17 +297,21 @@ test.describe('Landing page', () => {
 
     await dialog.getByLabel(/first name/i).fill('Elena')
     await dialog.getByLabel(/last name/i).fill('Rivera')
-    await dialog.getByLabel(/email/i).fill('elena@example.com')
     await dialog.getByLabel(/phone/i).fill('956-244-6692')
+    const days = dialog.getByRole('group', { name: /preferred day/i }).getByRole('button')
+    await days.last().click()
+    await dialog.getByRole('button', { name: '10:00 AM' }).click()
     await dialog.getByRole('button', { name: /request tour/i }).click()
 
     await expect(dialog.getByText(/tour requested/i)).toBeVisible()
-    await expect(dialog).toBeHidden({ timeout: 5000 })
+    await expect(dialog).toBeVisible()
+    await dialog.getByRole('button', { name: 'Done' }).click()
+    await expect(dialog).toBeHidden()
   })
 
   test('escape closes an open modal', async ({ page }) => {
     await page.goto('/')
-    await page.getByRole('button', { name: /free gym tour/i }).first().click()
+    await page.getByRole('button', { name: /book a free tour/i }).first().click()
     await expect(page.getByRole('dialog')).toBeVisible()
 
     await page.keyboard.press('Escape')
@@ -320,18 +325,46 @@ test.describe('Landing page', () => {
     await page.goto('/')
 
     await page.getByTestId('mobile-menu-button').click()
-    await page.getByRole('button', { name: /free tour/i }).click()
+    await page.getByTestId('mobile-tour').click()
 
     const dialog = page.getByRole('dialog')
     await expect(dialog).toBeVisible()
-    await expect(dialog.getByLabel(/preferred time/i)).toBeDisabled()
+    await expect(dialog.getByText(/choose a day first/i)).toBeVisible()
 
-    await dialog.getByLabel(/preferred date/i).fill('2026-07-12')
-    await expect(dialog.getByLabel(/preferred time/i)).toBeEnabled()
+    await dialog
+      .getByRole('group', { name: /preferred day/i })
+      .getByRole('button')
+      .last()
+      .click()
+    await dialog.getByRole('button', { name: '10:00 AM' }).click()
 
-    await dialog.getByLabel(/preferred time/i).selectOption('10:00 AM')
+    await expect(dialog.getByRole('button', { name: '10:00 AM' })).toHaveAttribute(
+      'aria-pressed',
+      'true'
+    )
+  })
 
-    await expect(dialog.getByLabel(/preferred time/i)).toHaveValue('10:00 AM')
+  test('mobile bar stays above the footer phone', async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: 'reduce' })
+    await page.setViewportSize({ width: 390, height: 844 })
+    await page.goto('/')
+
+    const bar = page.getByTestId('mobile-action-bar')
+    await expect(bar.getByRole('link', { name: 'Join now' })).toBeVisible()
+    await expect(bar.getByRole('button', { name: 'Tour' })).toBeVisible()
+    await expect(bar.getByRole('link', { name: 'Call' })).toBeVisible()
+
+    await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight))
+    const phone = page.locator('footer').getByRole('link', { name: '956-990-5277' })
+    const phoneBox = await phone.boundingBox()
+    const barBox = await bar.boundingBox()
+    expect(phoneBox).toBeTruthy()
+    expect(barBox).toBeTruthy()
+    expect(phoneBox!.y + phoneBox!.height).toBeLessThanOrEqual(barBox!.y + 1)
+
+    await bar.getByRole('button', { name: 'Tour' }).click()
+    await expect(page.getByRole('dialog')).toBeVisible()
+    await expect(bar).toBeHidden()
   })
 
   test('footer lists phone and address without a public email', async ({

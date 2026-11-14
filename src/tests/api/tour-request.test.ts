@@ -3,6 +3,7 @@ import { NextRequest } from 'next/server'
 import { handleTourRequest } from '@/lib/api/tour-request'
 
 const validPayload = {
+  location: 'mcallen',
   first_name: 'Elena',
   last_name: 'Rivera',
   email: 'elena@example.com',
@@ -60,7 +61,13 @@ describe('POST /api/tour-request', () => {
 
     expect(response.status).toBe(200)
     expect(data.success).toBe(true)
-    expect(mockInsert).toHaveBeenCalledOnce()
+    expect(mockInsert).toHaveBeenCalledWith(
+      expect.objectContaining({
+        location: 'mcallen',
+        email: 'elena@example.com',
+        preferred_date: '2026-08-01',
+      })
+    )
     expect(mockSendEmail).toHaveBeenCalledOnce()
     expect(mockSendEmail.mock.calls[0][0].subject).toMatch(/Tour Request/i)
     expect(mockSendEmail.mock.calls[0][0].replyTo).toBe('elena@example.com')

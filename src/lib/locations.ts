@@ -37,6 +37,23 @@ export const HARLINGEN_JOIN_URL =
 export const MCALLEN_JOIN_URL =
   'https://onlinejoin.abcfitness.com/signup/plan?club=32367'
 
+export const JOIN_NOW_LABEL = 'Join now'
+
+export const TOUR_FALLBACK_LABEL = 'Not ready? Book a free tour'
+
+export const ABC_CHECKOUT_NOTE =
+  'Opens ABC Fitness secure checkout in a new tab.'
+
+/** ABC kept these query params from the plan step through the profile step on 14 Nov 2026. */
+export function joinUrl(locationId: LocationId, campaign: string): string {
+  const base = locationId === 'mcallen' ? MCALLEN_JOIN_URL : HARLINGEN_JOIN_URL
+  const url = new URL(base)
+  url.searchParams.set('utm_source', 'website')
+  url.searchParams.set('utm_medium', 'cta')
+  url.searchParams.set('utm_campaign', `${locationId}-${campaign}`)
+  return url.toString()
+}
+
 export const MCALLEN_PATH = '/mcallen'
 
 function optionsForSlugs(
@@ -61,7 +78,7 @@ export const LOCATIONS: Record<LocationId, GymLocation> = {
     sqft: 7500,
     hours: HOURS,
     joinLink: HARLINGEN_JOIN_URL,
-    ctaLabel: 'Request Membership',
+    ctaLabel: JOIN_NOW_LABEL,
     membershipOptions: MEMBERSHIP_OPTIONS,
   },
   mcallen: {
@@ -73,7 +90,7 @@ export const LOCATIONS: Record<LocationId, GymLocation> = {
     sqft: 20000,
     hours: null,
     joinLink: MCALLEN_JOIN_URL,
-    ctaLabel: 'Lock In Founding Member Pricing',
+    ctaLabel: 'Join founding membership',
     membershipOptions: optionsForSlugs([
       '1_year_paid_in_full',
       '12_month_contract',

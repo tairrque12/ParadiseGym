@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import {
   HARLINGEN_JOIN_URL,
+  joinUrl,
   LOCATIONS,
   LOCATION_IDS,
   LOCATION_LIST,
@@ -34,7 +35,7 @@ describe('locations data', () => {
       address: '6201 FM 106 UNIT 16A, Harlingen, TX 78550',
       sqft: 7500,
       joinLink: HARLINGEN_JOIN_URL,
-      ctaLabel: 'Request Membership',
+      ctaLabel: 'Join now',
     })
     expect(harlingen.membershipOptions).toEqual(MEMBERSHIP_OPTIONS)
     expect(harlingen.membershipOptions).toHaveLength(6)
@@ -57,7 +58,7 @@ describe('locations data', () => {
       sqft: 20000,
       hours: null,
       joinLink: 'https://onlinejoin.abcfitness.com/signup/plan?club=32367',
-      ctaLabel: 'Lock In Founding Member Pricing',
+      ctaLabel: 'Join founding membership',
       grandOpeningNote: 'Official Grand Opening Date — Coming Soon',
     })
     expect(mcallen.presaleNote).toMatch(/founding member pricing/i)
@@ -93,5 +94,22 @@ describe('locations data', () => {
       )
       expect(location.joinLink).not.toMatch(/placeholder/i)
     }
+  })
+
+  it('adds UTM params ABC kept through checkout', () => {
+    const url = new URL(joinUrl('harlingen', '12_month_contract'))
+    expect(url.origin + url.pathname).toBe(
+      'https://onlinejoin.abcfitness.com/signup/plan'
+    )
+    expect(url.searchParams.get('club')).toBe('32265')
+    expect(url.searchParams.get('utm_source')).toBe('website')
+    expect(url.searchParams.get('utm_medium')).toBe('cta')
+    expect(url.searchParams.get('utm_campaign')).toBe(
+      'harlingen-12_month_contract'
+    )
+
+    const mcallen = new URL(joinUrl('mcallen', 'hero'))
+    expect(mcallen.searchParams.get('club')).toBe('32367')
+    expect(mcallen.searchParams.get('utm_campaign')).toBe('mcallen-hero')
   })
 })

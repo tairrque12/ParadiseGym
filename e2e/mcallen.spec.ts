@@ -1,8 +1,5 @@
 import { test, expect, type Locator, type Page } from '@playwright/test'
 
-const MCALLEN_JOIN_URL =
-  'https://onlinejoin.abcfitness.com/signup/plan?club=32367'
-
 function locationLink(page: Page, name: RegExp) {
   return page
     .getByRole('navigation', { name: /gym locations/i })
@@ -47,7 +44,7 @@ test.describe('McAllen page', () => {
     await locationLink(page, /harlingen/i).click()
     await expect(page).toHaveURL(/\/$/)
     await expect(
-      page.getByRole('link', { name: 'Request Membership' }).first()
+      page.getByTestId('header-cta')
     ).toBeVisible()
     await expect(page.getByText('Week Pass')).toBeVisible()
   })
@@ -67,9 +64,10 @@ test.describe('McAllen page', () => {
     await expect(page.getByTestId('presale-countdown')).toHaveCount(0)
     await expect(page.getByText(/opening in/i)).toHaveCount(0)
 
-    await expect(
-      page.getByRole('link', { name: /lock in founding member pricing/i })
-    ).toHaveAttribute('href', MCALLEN_JOIN_URL)
+    await expect(page.getByTestId('hero-join')).toHaveAttribute(
+      'href',
+      /club=32367.*utm_campaign=mcallen-hero/
+    )
 
     await expect(page.locator('#hours').getByText(/hours coming soon/i)).toBeVisible()
     await expect(
@@ -111,7 +109,10 @@ test.describe('McAllen page', () => {
       [/month to month/i, '$49.99/mo'],
     ] as const) {
       const card = page.locator('#pricing').getByRole('link', { name })
-      await expect(card).toHaveAttribute('href', MCALLEN_JOIN_URL)
+      await expect(card).toHaveAttribute(
+        'href',
+        /club=32367.*utm_source=website.*utm_campaign=mcallen-/
+      )
       await expect(card).toHaveAttribute('target', '_blank')
       await expect(card).toHaveAttribute('rel', 'noopener noreferrer')
       await expect(card).toContainText(price)

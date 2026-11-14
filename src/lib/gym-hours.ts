@@ -159,6 +159,53 @@ export function groupTimeSlots(slots: string[]): TimeSlotGroup[] {
     .filter((group) => group.slots.length > 0)
 }
 
+function addCalendarDays(dateString: string, days: number): string {
+  const [year, month, day] = dateString.split('-').map(Number)
+  const utc = new Date(Date.UTC(year, month - 1, day + days))
+  return utc.toISOString().slice(0, 10)
+}
+
+export function upcomingTourDates(now = new Date(), count = 7): string[] {
+  const dates: string[] = []
+  let cursor = getDateStringInGymTimezone(now)
+
+  for (let offset = 0; dates.length < count && offset < 21; offset += 1) {
+    if (getAvailableTimeSlotsForDate(cursor, now).length > 0) {
+      dates.push(cursor)
+    }
+    cursor = addCalendarDays(cursor, 1)
+  }
+
+  return dates
+}
+
+const TOUR_TIME_CHOICES = [
+  '5:00 AM',
+  '8:00 AM',
+  '10:00 AM',
+  '12:00 PM',
+  '3:00 PM',
+  '6:00 PM',
+  '8:00 PM',
+]
+
+export function tourTimeChoices(dateInput: string, now = new Date()): string[] {
+  const available = new Set(getAvailableTimeSlotsForDate(dateInput, now))
+  return TOUR_TIME_CHOICES.filter((slot) => available.has(slot))
+}
+
+export function formatTourDateLabel(dateString: string): string {
+  const [year, month, day] = dateString.split('-').map(Number)
+  const date = new Date(Date.UTC(year, month - 1, day))
+
+  return new Intl.DateTimeFormat('en-US', {
+    weekday: 'short',
+    month: 'short',
+    day: 'numeric',
+    timeZone: 'UTC',
+  }).format(date)
+}
+
 export function isValidTimeSlotForDate(
   dateInput: string,
   time: string,

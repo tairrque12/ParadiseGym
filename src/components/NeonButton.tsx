@@ -20,6 +20,7 @@ export function NeonButton({
   variant = 'primary',
   className,
   membership,
+  testId,
 }: {
   href?: string
   target?: React.HTMLAttributeAnchorTarget
@@ -33,6 +34,7 @@ export function NeonButton({
     location: AnalyticsLocation
     placement: JoinPlacement
   }
+  testId?: string
 }) {
   const classes = cn(
     base,
@@ -46,7 +48,7 @@ export function NeonButton({
 
   if (disabled) {
     return (
-      <button type="button" disabled className={classes}>
+      <button type="button" disabled className={classes} data-testid={testId}>
         {children}
       </button>
     )
@@ -59,6 +61,7 @@ export function NeonButton({
         target={target}
         rel={rel}
         className={classes}
+        data-testid={testId}
         onClick={() => {
           if (membership) trackJoinOnlineClick(membership)
           onClick?.()
@@ -70,7 +73,7 @@ export function NeonButton({
   }
 
   return (
-    <button type="button" onClick={onClick} className={classes}>
+    <button type="button" onClick={onClick} className={classes} data-testid={testId}>
       {children}
     </button>
   )

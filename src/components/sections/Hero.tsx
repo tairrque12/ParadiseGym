@@ -6,7 +6,12 @@ import { Wordmark } from '@/components/Logo'
 import { NeonButton } from '@/components/NeonButton'
 import { GrainOverlay } from '@/components/motion'
 import { useModal } from '@/context/modal-context'
-import { LOCATIONS } from '@/lib/locations'
+import {
+  ABC_CHECKOUT_NOTE,
+  joinUrl,
+  LOCATIONS,
+  TOUR_FALLBACK_LABEL,
+} from '@/lib/locations'
 import { usePrefersReducedMotion } from '@/hooks/use-prefers-reduced-motion'
 
 export function Hero() {
@@ -38,17 +43,26 @@ export function Hero() {
           <p className="mt-4 max-w-xl text-lg text-white/75 sm:mt-6 sm:text-xl">
             Where Strength Meets Aesthetics
           </p>
-          <div className="mt-8 flex flex-col gap-4 sm:mt-10 sm:flex-row sm:items-center">
+          <div className="mt-8 flex flex-col items-start gap-4 sm:mt-10">
+            <div className="flex flex-col items-start gap-2">
+              <NeonButton
+                href={joinUrl('harlingen', 'hero')}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="normal-case tracking-normal"
+                testId="hero-join"
+                membership={{ location: 'harlingen', placement: 'hero' }}
+              >
+                {harlingen.ctaLabel}
+              </NeonButton>
+              <p className="max-w-sm text-sm text-white/80">{ABC_CHECKOUT_NOTE}</p>
+            </div>
             <NeonButton
-              href={harlingen.joinLink}
-              target="_blank"
-              rel="noopener noreferrer"
-              membership={{ location: 'harlingen', placement: 'hero' }}
+              onClick={() => openTourModal('hero')}
+              variant="outline"
+              className="normal-case tracking-normal"
             >
-              {harlingen.ctaLabel}
-            </NeonButton>
-            <NeonButton onClick={() => openTourModal('hero')} variant="outline">
-              Free Gym Tour
+              {TOUR_FALLBACK_LABEL}
             </NeonButton>
           </div>
         </div>

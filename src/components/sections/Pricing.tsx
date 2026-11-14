@@ -8,7 +8,9 @@ import {
   PRICING_FOOTER_NOTE,
   type MembershipOption,
 } from '@/lib/membership-options'
-import { LOCATIONS } from '@/lib/locations'
+import { TourPrompt } from '@/components/tour-prompt'
+import { ABC_CHECKOUT_NOTE, joinUrl, LOCATIONS } from '@/lib/locations'
+import { feeDisclosureEnabled, planFeeSummary } from '@/lib/plan-fees'
 import { SECTION_IDS } from '@/lib/sections'
 import { cn } from '@/lib/utils'
 
@@ -22,16 +24,14 @@ function CategoryHeader({ label }: { label: string }) {
   )
 }
 
-function PricingRow({
-  option,
-  joinLink,
-}: {
-  option: MembershipOption
-  joinLink: string
-}) {
+function PricingRow({ option }: { option: MembershipOption }) {
+  const feeSummary = feeDisclosureEnabled()
+    ? planFeeSummary('harlingen', option.slug)
+    : null
+
   return (
     <TrackedPlanLink
-      href={joinLink}
+      href={joinUrl('harlingen', option.slug)}
       location="harlingen"
       plan={option.name}
       target="_blank"
@@ -44,6 +44,11 @@ function PricingRow({
       <div className="min-w-0 flex-1">
         <span className="block font-medium text-white transition-colors group-hover:text-neon">
           {option.name}
+          {option.slug === '12_month_contract' ? (
+            <span className="ml-2 inline-flex items-center rounded-full border border-white/40 px-2 py-0.5 align-middle text-xs font-medium normal-case tracking-normal text-white">
+              Recommended
+            </span>
+          ) : null}
         </span>
         {option.subLabel ? (
           <span className="mt-1 block text-xs uppercase tracking-[0.14em] text-white/45">
@@ -61,6 +66,11 @@ function PricingRow({
             {option.priceNote}
           </span>
         ) : null}
+        {feeSummary ? (
+          <span className="mt-1 block max-w-[14rem] text-sm font-normal normal-case leading-snug tracking-normal text-white/80">
+            {feeSummary}
+          </span>
+        ) : null}
         <span className="mt-1 block text-[10px] font-semibold uppercase tracking-[0.18em] text-white/35 transition-colors group-hover:text-neon/70">
           Join Now
         </span>
@@ -72,18 +82,16 @@ function PricingRow({
 function PricingColumn({
   label,
   options,
-  joinLink,
 }: {
   label: string
   options: readonly MembershipOption[]
-  joinLink: string
 }) {
   return (
     <div className="flex flex-col border-t border-white/15 pt-6">
       <CategoryHeader label={label} />
       <div className="flex flex-col">
         {options.map((option) => (
-          <PricingRow key={option.slug} option={option} joinLink={joinLink} />
+          <PricingRow key={option.slug} option={option} />
         ))}
       </div>
     </div>
@@ -120,16 +128,8 @@ export function Pricing() {
         </SectionReveal>
 
         <div className="relative z-10 grid gap-10 lg:grid-cols-2 lg:gap-12">
-          <PricingColumn
-            label="Recurring"
-            options={recurring}
-            joinLink={harlingen.joinLink}
-          />
-          <PricingColumn
-            label="Single Payment"
-            options={singlePayment}
-            joinLink={harlingen.joinLink}
-          />
+          <PricingColumn label="Recurring" options={recurring} />
+          <PricingColumn label="Single Payment" options={singlePayment} />
         </div>
 
         <SectionReveal className="mt-10 border border-neon/20 bg-carbon/70 px-5 py-4 sm:px-6">
@@ -141,8 +141,10 @@ export function Pricing() {
           </p>
         </SectionReveal>
 
-        <SectionReveal className="mt-6">
-          <p className="text-xs leading-relaxed text-white/45">
+        <SectionReveal className="mt-6 space-y-2">
+          <p className="text-sm leading-relaxed text-white/80">{ABC_CHECKOUT_NOTE}</p>
+          <TourPrompt>Not ready to join? Book a free tour</TourPrompt>
+          <p className="text-sm leading-relaxed text-white/80">
             {PRICING_FOOTER_NOTE}
           </p>
         </SectionReveal>
