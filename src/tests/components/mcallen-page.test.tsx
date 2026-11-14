@@ -18,7 +18,8 @@ function renderMcAllen() {
 describe('McAllen page', () => {
   it('keeps the SEO title and description for McAllen', () => {
     expect(metadata.title).toBe('Paradise Gym McAllen')
-    expect(metadata.description).toMatch(/Official Grand Opening Date — Coming Soon/i)
+    expect(metadata.description).toMatch(/Opens Nov 28/i)
+    expect(metadata.description).not.toMatch(/coming soon/i)
     expect(metadata.description).not.toMatch(/sq ft/i)
   })
 
@@ -35,9 +36,8 @@ describe('McAllen page', () => {
   it('shows static grand opening copy instead of a live countdown', () => {
     renderMcAllen()
 
-    expect(screen.getByTestId('grand-opening-note')).toHaveTextContent(
-      'Official Grand Opening Date — Coming Soon'
-    )
+    expect(screen.getByTestId('mcallen-opening')).toHaveTextContent('Opens Nov 28')
+    expect(screen.queryByText(/grand opening date — coming soon/i)).not.toBeInTheDocument()
     expect(screen.queryByTestId('presale-countdown')).not.toBeInTheDocument()
     expect(screen.queryByText(/opening in/i)).not.toBeInTheDocument()
     expect(screen.queryByText(/\bdays left\b/i)).not.toBeInTheDocument()
@@ -106,7 +106,7 @@ describe('McAllen page', () => {
     expect(screen.queryByRole('heading', { name: 'Showers' })).not.toBeInTheDocument()
     expect(screen.getAllByText(LOCATIONS.mcallen.presaleNote!).length).toBeGreaterThan(0)
     expect(screen.getByTestId('hero-photo-caption')).toHaveTextContent(
-      'Photo from our Harlingen gym. McAllen is opening soon.'
+      'Photo from our Harlingen gym. McAllen opens Nov 28.'
     )
     expect(heroJoin).not.toHaveTextContent(/due today/i)
   })

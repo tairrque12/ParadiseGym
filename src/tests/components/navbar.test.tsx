@@ -31,6 +31,7 @@ describe('Navbar', () => {
     const header = screen.getByRole('banner')
     expect(within(header).getByTestId('nav-row')).toHaveClass('h-[60px]')
     expect(screen.getByTestId('opening-banner')).toHaveAttribute('href', '/mcallen')
+    expect(screen.getByTestId('opening-banner-arrow')).toHaveClass('bg-neon', 'w-14')
     expect(screen.queryByTestId('location-announcement')).not.toBeInTheDocument()
     expect(within(header).queryByText('Call')).not.toBeInTheDocument()
 

@@ -80,10 +80,15 @@ const config: Config = {
             textShadow: '0 0 26px rgba(57, 255, 20, 0.75)',
           },
         },
+        'banner-nudge': {
+          '0%, 100%': { transform: 'translateX(0)' },
+          '50%': { transform: 'translateX(4px)' },
+        },
       },
       animation: {
         'mobile-bar-in': 'mobile-bar-in 180ms ease-out',
         'neon-pulse': 'neon-pulse 2.8s ease-in-out infinite',
+        'banner-nudge': 'banner-nudge 1.15s ease-in-out infinite',
       },
     },
   },
