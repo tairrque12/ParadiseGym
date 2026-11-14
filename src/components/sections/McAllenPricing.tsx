@@ -2,6 +2,7 @@ import { ArrowUpRight } from 'lucide-react'
 import { GrainOverlay, SectionReveal } from '@/components/motion'
 import { TrackedPlanLink } from '@/components/tracked-plan-link'
 import { ABC_CHECKOUT_NOTE, joinUrl, LOCATIONS } from '@/lib/locations'
+import { planFeeSummary } from '@/lib/plan-fees'
 import { PRICING_DISCOUNT_NOTE } from '@/lib/membership-options'
 import { SECTION_IDS } from '@/lib/sections'
 
@@ -29,7 +30,10 @@ export function McAllenPricing() {
         </SectionReveal>
 
         <div className="grid gap-5 md:grid-cols-3 md:gap-6">
-          {mcallen.membershipOptions.map((option) => (
+          {mcallen.membershipOptions.map((option) => {
+            const feeSummary = planFeeSummary('mcallen', option.slug)
+
+            return (
             <TrackedPlanLink
               key={option.slug}
               href={joinUrl('mcallen', option.slug)}
@@ -59,6 +63,12 @@ export function McAllenPricing() {
                     {option.subLabel}
                   </span>
                 ) : null}
+
+                {feeSummary ? (
+                  <span className="mt-4 block text-sm font-normal normal-case leading-snug tracking-normal text-white/80">
+                    {feeSummary}
+                  </span>
+                ) : null}
               </div>
 
               <span className="mt-8 inline-flex items-center justify-center gap-2 rounded-sm bg-neon px-5 py-3 text-sm font-semibold uppercase tracking-wider text-carbon transition-shadow group-hover:shadow-neon">
@@ -66,7 +76,8 @@ export function McAllenPricing() {
                 <ArrowUpRight className="h-4 w-4" aria-hidden />
               </span>
             </TrackedPlanLink>
-          ))}
+            )
+          })}
         </div>
 
         <p className="mt-8 text-sm leading-relaxed text-white/80">{ABC_CHECKOUT_NOTE}</p>

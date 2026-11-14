@@ -9,6 +9,7 @@ import {
   type MembershipOption,
 } from '@/lib/membership-options'
 import { ABC_CHECKOUT_NOTE, joinUrl, LOCATIONS } from '@/lib/locations'
+import { planFeeSummary } from '@/lib/plan-fees'
 import { SECTION_IDS } from '@/lib/sections'
 import { cn } from '@/lib/utils'
 
@@ -23,6 +24,8 @@ function CategoryHeader({ label }: { label: string }) {
 }
 
 function PricingRow({ option }: { option: MembershipOption }) {
+  const feeSummary = planFeeSummary('harlingen', option.slug)
+
   return (
     <TrackedPlanLink
       href={joinUrl('harlingen', option.slug)}
@@ -58,6 +61,11 @@ function PricingRow({ option }: { option: MembershipOption }) {
         {option.priceNote ? (
           <span className="ml-1 text-xs font-medium text-white/50">
             {option.priceNote}
+          </span>
+        ) : null}
+        {feeSummary ? (
+          <span className="mt-1 block max-w-[14rem] text-sm font-normal normal-case leading-snug tracking-normal text-white/80">
+            {feeSummary}
           </span>
         ) : null}
         <span className="mt-1 block text-[10px] font-semibold uppercase tracking-[0.18em] text-white/35 transition-colors group-hover:text-neon/70">

@@ -40,7 +40,7 @@ describe('McAllen page', () => {
     )
     expect(screen.queryByTestId('presale-countdown')).not.toBeInTheDocument()
     expect(screen.queryByText(/opening in/i)).not.toBeInTheDocument()
-    expect(screen.queryByText(/\bdays\b/i)).not.toBeInTheDocument()
+    expect(screen.queryByText(/\bdays left\b/i)).not.toBeInTheDocument()
   })
 
   it('places the pre-sale pricing section directly after the hero', () => {
@@ -77,6 +77,8 @@ describe('McAllen page', () => {
       expect(link).toHaveAttribute('rel', 'noopener noreferrer')
       expect(link).toHaveTextContent(price)
       expect(link).toHaveTextContent(/join now/i)
+      expect(link).toHaveTextContent(/due today/i)
+      expect(link).not.toHaveTextContent(/\$30/)
     }
 
     expect(pricing.queryByText('Week Pass')).not.toBeInTheDocument()
