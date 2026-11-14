@@ -96,7 +96,6 @@ export function Reviews() {
             <h2 className="relative mt-3 font-heading text-4xl uppercase leading-tight tracking-tight text-white sm:text-5xl lg:text-6xl">
               What Our Members Say
             </h2>
-            {/* PLACEHOLDER: Demo testimonials — replace with real member reviews before launch. */}
           </SectionReveal>
 
           <StaggerContainer className="relative z-10 grid gap-10 pt-2 sm:grid-cols-2 sm:pt-0 lg:col-span-8 lg:gap-12">
