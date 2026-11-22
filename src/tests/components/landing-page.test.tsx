@@ -34,6 +34,17 @@ describe('Landing page', () => {
     expect(document.getElementById('gallery')).not.toBeInTheDocument()
   })
 
+  it('numbers every amenity that is on the page', () => {
+    renderHome()
+
+    const amenities = within(document.getElementById('amenities') as HTMLElement)
+    expect(amenities.getAllByText(/^\d{2}$/).map((node) => node.textContent)).toEqual([
+      '01',
+      '02',
+      '03',
+    ])
+  })
+
   it('links membership externally and does not offer a tour', () => {
     renderHome()
 

@@ -151,5 +151,13 @@ describe('McAllen page', () => {
 
     expect(document.getElementById('amenities')).toBeInTheDocument()
     expect(document.getElementById('reviews')).toBeInTheDocument()
+
+    const amenities = within(document.getElementById('amenities') as HTMLElement)
+    expect(amenities.getAllByText(/^\d{2}$/).map((node) => node.textContent)).toEqual([
+      '01',
+      '02',
+    ])
+    expect(amenities.getByRole('heading', { name: 'Infrared Saunas' })).toBeInTheDocument()
+    expect(amenities.getByRole('heading', { name: 'Posing Room' })).toBeInTheDocument()
   })
 })

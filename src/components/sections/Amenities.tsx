@@ -8,7 +8,6 @@ import { cn } from '@/lib/utils'
 
 const AMENITIES = [
   {
-    numeral: '01',
     title: 'Showers',
     description:
       'Spacious locker rooms with premium showers — rinse off and head out feeling fresh after every session.',
@@ -18,7 +17,6 @@ const AMENITIES = [
     },
   },
   {
-    numeral: '02',
     title: 'Infrared Saunas',
     description:
       'Recover faster with infrared heat built into your membership. No add-on fees, no reservation hassles.',
@@ -28,7 +26,6 @@ const AMENITIES = [
     },
   },
   {
-    numeral: '03',
     title: 'Posing Room',
     description:
       'Dedicated posing room with optimal lighting for check-ins, progress pics, and prep — included for all members.',
@@ -111,7 +108,12 @@ export function Amenities({ includeShowers = true }: { includeShowers?: boolean 
 
         <div className="mt-12 lg:mt-16">
           {amenities.map((amenity, index) => (
-            <AmenityRow key={amenity.title} {...amenity} flip={index === 1} />
+            <AmenityRow
+              key={amenity.title}
+              {...amenity}
+              numeral={String(index + 1).padStart(2, '0')}
+              flip={index === 1}
+            />
           ))}
         </div>
       </div>
